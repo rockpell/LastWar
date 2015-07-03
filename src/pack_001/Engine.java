@@ -1,0 +1,88 @@
+package pack_001;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class Engine {
+	private static Engine instance;
+	private final Set<Laser1> coliderSet = new HashSet<Laser1>();
+	
+	public static Engine getInstance(){
+		if(instance == null){
+			instance = new Engine();
+		}
+		return instance;
+	}
+	
+	private DataManagement dm;
+	
+	private Engine(){
+
+	}
+	
+	public void startLoop(){
+		Thread th1 = new Thread(new Looper("what", 20));
+		th1.start();
+		dm = DataManagement.getInstance();
+	}
+	
+	public synchronized void addColider(Laser1 target){
+		coliderSet.add(target);
+	}
+	
+	public synchronized void removeColider(Laser1 target){
+		coliderSet.remove(target);
+	}
+	
+	public Set<Laser1> getColiderSet(){
+		return coliderSet;
+	}
+	
+	public void loopColider(){
+		if(coliderSet.size() > 0){
+//			System.out.println("coliderSet.size() : " + coliderSet.size());
+		}
+		Set<Laser1> coliderSet2 = new HashSet<Laser1>(coliderSet);
+		
+		for(Laser1 c : coliderSet2){
+//			if(c.getTrigger())
+//				System.out.println(dm.getPlayer().collision(c.getBounds()) );
+			c.count();
+		}
+	}
+}
+
+class Looper implements Runnable{
+	String name;
+	int interval = 0, playTime = 0;
+	
+	Screen sc;
+	Engine engine;
+	DataManagement dm;
+	
+	Looper(String name, int interval){
+		this.name = name;
+		this.interval = interval;
+		sc = Screen.getInstance();
+		engine = Engine.getInstance();
+		dm = DataManagement.getInstance();
+	}
+	
+	@Override
+	public void run() {
+		while(!Thread.currentThread().isInterrupted()){
+			try {
+				sc.repaint();
+//				System.out.println("running");
+				engine.loopColider();
+				dm.getPlayer().work();
+				Thread.sleep(interval);
+				playTime += 1;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
