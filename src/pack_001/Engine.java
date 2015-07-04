@@ -15,6 +15,7 @@ public class Engine {
 	}
 	
 	private DataManagement dm;
+	private int playTime = 0, invokeTime = 0;
 	
 	private Engine(){
 
@@ -50,15 +51,31 @@ public class Engine {
 			c.count();
 		}
 	}
+	
+	public int getPlayTime(){
+		return playTime;
+	}
+	
+	public void setPlayTime(int number){
+		playTime = number;
+	}
+	
+	public void refreshInvoke(){
+		invokeTime = playTime;
+	}
+	
+	public int getInvokeTime(){
+		return invokeTime;
+	}
 }
 
 class Looper implements Runnable{
-	String name;
-	int interval = 0, playTime = 0;
+	private String name;
+	private int interval = 0, playTime = 0;
 	
-	Screen sc;
-	Engine engine;
-	DataManagement dm;
+	private Screen sc;
+	private Engine engine;
+	private DataManagement dm;
 	
 	Looper(String name, int interval){
 		this.name = name;
@@ -66,6 +83,8 @@ class Looper implements Runnable{
 		sc = Screen.getInstance();
 		engine = Engine.getInstance();
 		dm = DataManagement.getInstance();
+		
+		playTime = engine.getPlayTime();
 	}
 	
 	@Override
@@ -77,7 +96,7 @@ class Looper implements Runnable{
 				engine.loopColider();
 				dm.getPlayer().work();
 				Thread.sleep(interval);
-				playTime += 1;
+				engine.setPlayTime(playTime += 1);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

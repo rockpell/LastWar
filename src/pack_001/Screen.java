@@ -191,6 +191,9 @@ public class Screen extends JFrame{
 //        mgc.drawImage(beams, 100, 100, null);
 //        mgc.drawImage(beam1, 800, 150, null);
         
+        mgc.setColor(Color.black);
+        mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
+        
 		g.drawImage(memoryimage, 0, 0, this);
 		
 	}
@@ -199,11 +202,22 @@ public class Screen extends JFrame{
 		for(Laser1 la : Engine.getInstance().getColiderSet()){
 			if(!la.getTrigger()){
 				g.setColor(Color.red);
-			    g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
+				
+				if(la.getName().equals("row")){
+					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
+				} else {
+					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getPosition("x"), la.getSize("height"));
+				}
 			} else {
 				g.setColor(Color.blue);
-			    g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
-			    g.fillRect(la.getPosition("x"), la.getPosition("y") - 5, la.getSize("width"), 10);
+				
+				if(la.getName().equals("row")){
+					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
+			    	g.fillRect(la.getPosition("x"), la.getPosition("y") - 5, la.getSize("width"), 10);
+				} else {
+					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getPosition("x"), la.getSize("height"));
+			    	g.fillRect(la.getPosition("x") - 5, la.getPosition("y"), 10, la.getSize("height"));
+				}
 			}
 		}
 	}

@@ -6,8 +6,11 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DataManagement {
 	private static DataManagement instance;
@@ -20,14 +23,17 @@ public class DataManagement {
 	}
 	
 	private Player player;
+	private GameLevel gameLevel;
 	
 	private DataManagement(){
 		player = new Player();
 		player.setPosition(50, 50);
 		player.setSize(48, 48);
 		
-		new Laser1(0, 200, 1200, 1);
-		new Laser1(0, 600, 1200, 1);
+		gameLevel = new GameLevel();
+		gameLevel.pattern1();
+//		new Laser1(0, 200, 1200, 1);
+//		new Laser1(0, 600, 1200, 1);
 	}
 	
 	public Player getPlayer(){
@@ -140,13 +146,10 @@ class Player extends Colider implements Unit{
 }
 
 class Laser1 extends Colider implements Laser{
+	private String name;
 	private int x = 0, y = 0, width = 0, height = 0;
 	private int count = 0;
 	private boolean trigger = false;
-	
-	public Laser1(){
-		Engine.getInstance().addColider(this);
-	}
 	
 	public Laser1(int x, int y, int width, int height){
 		Engine.getInstance().addColider(this);
@@ -154,13 +157,19 @@ class Laser1 extends Colider implements Laser{
 		setPosition(x, y);
 		setBox(0, 0, width, height);
 		System.out.println("create Laser1");
+		
+		if(x == 0){
+			name = "row";
+		} else if(y == 0){
+			name = "col";
+		}
 	}
 	
 	public void count(){
 		count++;
 		if(count > 80 && !trigger){
 			trigger = true;
-			new Laser1(0, 400, 1200, 1);
+//			new Laser1(0, 400, 1200, 1);
 		} else if(count > 120){
 			dead();
 		}
@@ -222,4 +231,45 @@ class Laser1 extends Colider implements Laser{
 		return trigger;
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
+}
+
+class GameLevel {
+	private Engine engine;
+	private int nowLevel = 0;
+	
+	public GameLevel(){
+		engine = Engine.getInstance();
+	}
+	
+	void levelStart(){
+		
+	}
+	
+	void pattern1(){
+		int time = engine.getPlayTime();
+		int itime = engine.getInvokeTime();
+		
+//		if(time - itime )
+		Timer timer = new Timer();
+		
+		TimerTask myTask = new TimerTask() {
+		    public void run() {
+		    	new Laser1(150, 0, 1, 1000);
+		    }
+		};
+		
+		TimerTask myTask2 = new TimerTask() {
+		    public void run() {
+		    	new Laser1(0, 300, 1200, 1);
+		    }
+		};
+		
+		
+		timer.schedule(myTask, 1000);
+		timer.schedule(myTask2, 3000);
+	}
 }
