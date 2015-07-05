@@ -20,17 +20,12 @@ public class DataManagement {
 	}
 	
 	private Player player;
-//	private GameLevel gameLevel;
 	
 	private DataManagement(){
 		player = new Player();
 		player.setPosition(50, 50);
 		player.setSize(48, 48);
 		
-//		gameLevel = new GameLevel();
-//		gameLevel.pattern1();
-//		new Laser1(0, 200, 1200, 1);
-//		new Laser1(0, 600, 1200, 1);
 	}
 	
 	public Player getPlayer(){
@@ -148,6 +143,25 @@ class Laser1 extends Colider implements Laser{
 	private int count = 0;
 	private boolean trigger = false;
 	
+	public Laser1(int x, int y){
+		Engine.getInstance().addColider(this);
+		setPosition(x, y);
+		setBox(0, 0, width, height);
+		System.out.println("create Laser1");
+		
+		if(x == 0){
+			name = "row";
+			width = 1200;
+			height = 1;
+		} else if(y == 0){
+			name = "col";
+			width = 1;
+			height = 1000;
+		}
+		
+		setSize(width, height);
+	}
+	
 	public Laser1(int x, int y, int width, int height){
 		Engine.getInstance().addColider(this);
 		setSize(width, height);
@@ -237,23 +251,93 @@ class Laser1 extends Colider implements Laser{
 class GameLevel {
 	private Engine engine;
 	private int nowLevel = 0;
+	private boolean levelUp = true, refresh = false, patternChange = false;
+	private int targetIndex = 0;
 	
 	public GameLevel(){
 		engine = Engine.getInstance();
 	}
 	
-	void levelStart(){
-		pattern1();
+	public void levelStart(){
+		if(levelUp){
+			nowLevel += 1;
+			levelUp = false;
+			engine.refreshInvoke();
+		}
+		
+		if(refresh){
+			refresh = false;
+			engine.refreshInvoke();
+			patternChange = true;
+		}
+		
+		if(patternChange){
+			patternChange = false;
+			if(targetIndex == 0){
+				targetIndex = 1;
+			} else if(targetIndex == 1){
+				targetIndex = 0;
+			}
+		}
+		
+		if(targetIndex == 0){
+			pattern1();
+		} else if(targetIndex == 1) {
+			pattern2();
+		}
+		
 	}
 	
-	void pattern1(){
+	private void pattern1(){
 		int time = engine.getPlayTime();
 		int itime = engine.getInvokeTime();
 		
-		if(time - itime == 100){
-			new Laser1(150, 0, 1, 1000);
-		} else if(time - itime == 300){
-			new Laser1(0, 300, 1200, 1);
+		switch(time - itime){
+		case 100 :
+			new Laser1(150, 0);
+			break;
+		case 180 :
+			new Laser1(190, 0);
+			break;
+		case 300 :
+			new Laser1(0, 300);
+			break;
+		case 500 :
+			new Laser1(180, 0);
+			new Laser1(0, 400);
+			break;
+		case 700 :
+			new Laser1(100, 0);
+			new Laser1(400, 0);
+			new Laser1(0, 200);
+			new Laser1(0, 500);
+			break;
+		case 900 :
+			refresh = true;
+			break;
+		}
+	}
+	
+	private void pattern2(){
+		int time = engine.getPlayTime();
+		int itime = engine.getInvokeTime();
+		
+		switch(time - itime){
+		case 100 :
+			new Laser1(150, 0);
+			new Laser1(250, 0);
+			new Laser1(350, 0);
+			new Laser1(450, 0);
+			break;
+		case 300 :
+			new Laser1(0, 200);
+			new Laser1(0, 300);
+			new Laser1(0, 400);
+			new Laser1(0, 500);
+			break;
+		case 500 :
+			refresh = true;
+			break;
 		}
 	}
 }
