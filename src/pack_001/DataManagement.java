@@ -6,11 +6,8 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DataManagement {
 	private static DataManagement instance;
@@ -23,15 +20,15 @@ public class DataManagement {
 	}
 	
 	private Player player;
-	private GameLevel gameLevel;
+//	private GameLevel gameLevel;
 	
 	private DataManagement(){
 		player = new Player();
 		player.setPosition(50, 50);
 		player.setSize(48, 48);
 		
-		gameLevel = new GameLevel();
-		gameLevel.pattern1();
+//		gameLevel = new GameLevel();
+//		gameLevel.pattern1();
 //		new Laser1(0, 200, 1200, 1);
 //		new Laser1(0, 600, 1200, 1);
 	}
@@ -246,30 +243,17 @@ class GameLevel {
 	}
 	
 	void levelStart(){
-		
+		pattern1();
 	}
 	
 	void pattern1(){
 		int time = engine.getPlayTime();
 		int itime = engine.getInvokeTime();
 		
-//		if(time - itime )
-		Timer timer = new Timer();
-		
-		TimerTask myTask = new TimerTask() {
-		    public void run() {
-		    	new Laser1(150, 0, 1, 1000);
-		    }
-		};
-		
-		TimerTask myTask2 = new TimerTask() {
-		    public void run() {
-		    	new Laser1(0, 300, 1200, 1);
-		    }
-		};
-		
-		
-		timer.schedule(myTask, 1000);
-		timer.schedule(myTask2, 3000);
+		if(time - itime == 100){
+			new Laser1(150, 0, 1, 1000);
+		} else if(time - itime == 300){
+			new Laser1(0, 300, 1200, 1);
+		}
 	}
 }

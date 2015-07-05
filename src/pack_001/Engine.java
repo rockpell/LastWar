@@ -76,6 +76,7 @@ class Looper implements Runnable{
 	private Screen sc;
 	private Engine engine;
 	private DataManagement dm;
+	private GameLevel gameLevel;
 	
 	Looper(String name, int interval){
 		this.name = name;
@@ -85,6 +86,8 @@ class Looper implements Runnable{
 		dm = DataManagement.getInstance();
 		
 		playTime = engine.getPlayTime();
+		
+		gameLevel = new GameLevel();
 	}
 	
 	@Override
@@ -97,6 +100,7 @@ class Looper implements Runnable{
 				dm.getPlayer().work();
 				Thread.sleep(interval);
 				engine.setPlayTime(playTime += 1);
+				gameLevel.levelStart();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
