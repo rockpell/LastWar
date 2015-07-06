@@ -46,8 +46,12 @@ public class Engine {
 		Set<Laser1> coliderSet2 = new HashSet<Laser1>(coliderSet);
 		
 		for(Laser1 c : coliderSet2){
-//			if(c.getTrigger())
-//				System.out.println(dm.getPlayer().collision(c.getBounds()) );
+			if(c.getTrigger()){
+				if(dm.getPlayer().collision(c.getBounds())){
+					System.out.println("colide");
+				}
+			}
+				
 			c.count();
 		}
 	}

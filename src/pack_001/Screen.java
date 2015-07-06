@@ -204,19 +204,28 @@ public class Screen extends JFrame{
 				g.setColor(Color.red);
 				
 				if(la.getName().equals("row")){
-					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
+					int temp = la.calLaserSize("height");
+					int temp2 = 1;
+					if(temp >= 1){
+						temp2 = temp;
+					}
+					g.fillRect(la.getPosition("x"), la.getPosition("y") - temp2/2, la.getSize("width"), temp2);
 				} else {
-					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getPosition("x"), la.getSize("height"));
+					int temp = la.calLaserSize("width");
+					int temp2 = 1;
+					if(temp >= 1){
+						temp2 = temp;
+					}
+					
+					g.fillRect(la.getPosition("x") - temp2/2, la.getPosition("y"), temp2, la.getSize("height"));
 				}
 			} else {
 				g.setColor(Color.blue);
 				
 				if(la.getName().equals("row")){
-					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getSize("width"), la.getPosition("y"));
-			    	g.fillRect(la.getPosition("x"), la.getPosition("y") - 5, la.getSize("width"), 10);
+			    	g.fillRect(la.getPosition("x"), la.getPosition("y") - la.getSize("height")/2, la.getSize("width"), la.getSize("height"));
 				} else {
-					g.drawLine(la.getPosition("x"), la.getPosition("y"), la.getPosition("x"), la.getSize("height"));
-			    	g.fillRect(la.getPosition("x") - 5, la.getPosition("y"), 10, la.getSize("height"));
+			    	g.fillRect(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height"));
 				}
 			}
 		}
