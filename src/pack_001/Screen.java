@@ -36,7 +36,7 @@ public class Screen extends JFrame{
 		return instance;
 	}
 	
-	int screenWidth = 1200, screenHeight = 800;
+	private int screenWidth = 1200, screenHeight = 800;
 	
 //	private static final long serialVersionUID = -711163588504124217L;
 	
@@ -47,6 +47,10 @@ public class Screen extends JFrame{
 	private DataManagement dm;
 	private Image mshi;
 	private BufferedImage beams, beam1, beam2, beam3;
+	private Image arrow_right, arrow_left, arrow_up, arrow_down;
+	private int rowNumber = 11, calNumber = 21;
+	public final int rowStartX = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, calStartX = 90, calStartY1 = 50, calStartY2 = screenHeight - 150;
+	
 	
 	private Screen() {
 		 super("Last War");
@@ -90,10 +94,11 @@ public class Screen extends JFrame{
 							break;
 						}
 						
-						if(temp > 1){
-							player.move(keyValue);
-							return;
-						}
+					}
+					
+					if(temp > 1){
+						player.move(keyValue);
+						return;
 					}
 				}
 				
@@ -112,16 +117,36 @@ public class Screen extends JFrame{
 			@Override
 			public synchronized void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
+				
 				keyList.remove(e.getKeyCode());
+				
+				for(int it : keyList){
+					switch(it){
+					case KeyEvent.VK_UP:
+						player.move("up");
+						break;
+					case KeyEvent.VK_DOWN:
+						player.move("down");
+						break;
+					case KeyEvent.VK_RIGHT:
+						player.move("right");
+						break;
+					case KeyEvent.VK_LEFT:
+						player.move("left");
+						break;
+					}
+					return;
+				}
+				
 				if(keyList.size() == 0){
 					player.move("stop");
 				}
 			}
 
 			@Override
-			public void keyTyped(KeyEvent e) {
+			public synchronized void keyTyped(KeyEvent e) { // not working arrow key
 				// TODO Auto-generated method stub
-				
+//				System.out.println(e.getKeyChar());
 			}
 			 
 		 });
@@ -142,6 +167,10 @@ public class Screen extends JFrame{
 	private void loadImage() {
 		try {
 			 mshi = new ImageIcon("resource/people.png").getImage();
+			 arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
+			 arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
+			 arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
+			 arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
 			 
 			 File file = new File("resource/beams.png");
 			 FileInputStream fis = new FileInputStream(file);
@@ -194,8 +223,23 @@ public class Screen extends JFrame{
         mgc.setColor(Color.black);
         mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
         
+        
+        drawArrow();
+        
 		g.drawImage(memoryimage, 0, 0, this);
 		
+	}
+	
+	void drawArrow(){
+		for(int i = 0; i < rowNumber; i++){
+			mgc.drawImage(arrow_right, rowStartX, rowStartY + i*50, null);
+			mgc.drawImage(arrow_left, rowStartX2, rowStartY + i*50, null);
+		}
+		
+		for(int i = 0; i < calNumber; i++){
+			mgc.drawImage(arrow_down, calStartX + i*50, calStartY1 , null);
+			mgc.drawImage(arrow_up, calStartX + i*50, calStartY2, null);
+		}
 	}
 	
 	void drawLaser(Graphics2D g){
@@ -230,4 +274,5 @@ public class Screen extends JFrame{
 			}
 		}
 	}
+	
 }

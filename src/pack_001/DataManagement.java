@@ -21,11 +21,12 @@ public class DataManagement {
 		return instance;
 	}
 	
+	
 	private Player player;
 	
 	private DataManagement(){
 		player = new Player();
-		player.setPosition(50, 50);
+		player.setPosition(550, 350);
 		player.setSize(48, 48);
 		
 	}
@@ -33,6 +34,7 @@ public class DataManagement {
 	public Player getPlayer(){
 		return player;
 	}
+	
 }
 
 class Player extends Colider implements Unit{
@@ -41,6 +43,7 @@ class Player extends Colider implements Unit{
 	private int width, height;
 	private int hp = 100;
 	private int speed = 5;
+	private int swidth = 1100, sheight = 630;
 	
 	Engine engine;
 	
@@ -82,10 +85,10 @@ class Player extends Colider implements Unit{
 	@Override
 	public void work() {
 		// TODO Auto-generated method stub
-		if(x + dx > 0){
+		if(x + dx > 50 && x + dx < swidth){
 			x += dx;
 		}
-		if(y + dy > 50){
+		if(y + dy > 50 && y + dy < sheight){
 			y += dy;
 		}
 		
@@ -142,14 +145,14 @@ class Player extends Colider implements Unit{
 class Laser1 extends Colider implements Laser{
 	private String name;
 	private int x = 0, y = 0, width = 0, height = 0;
-	private int count = 0, countLimit = 60, deadLimit = 85;
+	private int count = 0, countLimit = 50, deadLimit = 75;
 	private boolean trigger = false;
 	
 	public Laser1(int x, int y){
 		Engine.getInstance().addColider(this);
 		setPosition(x, y);
 		
-		System.out.println("create Laser1");
+//		System.out.println("create Laser1");
 		
 		if(x == 0){
 			name = "row";
@@ -291,15 +294,19 @@ class GameLevel {
 			if(targetIndex == 0){
 				targetIndex = 1;
 			} else if(targetIndex == 1){
+				targetIndex = 2;
+			} else if(targetIndex == 2){
 				targetIndex = 0;
 			}
 		}
 		
-		if(targetIndex == 0){
-			pattern1();
-		} else if(targetIndex == 1) {
-			pattern2();
-		}
+//		if(targetIndex == 0){
+//			pattern1();
+//		} else if(targetIndex == 1) {
+//			pattern2();
+//		} else if(targetIndex == 2) {
+//			pattern3();
+//		}
 		
 	}
 	
@@ -308,65 +315,104 @@ class GameLevel {
 		int itime = engine.getInvokeTime();
 		
 		switch(time - itime){
-		case 100 :
-			new Laser1(150, 0);
-			break;
-		case 160 :
-			new Laser1(190, 0);
-			break;
-		case 300 :
-			new Laser1(0, 300);
-			new Laser1(0, 500);
-			break;
-		case 400 :
-			new Laser1(200, 0);
-			new Laser1(0, 700);
-		case 500 :
-			new Laser1(180, 0);
-			new Laser1(0, 400);
-			break;
-		case 700 :
-			new Laser1(100, 0);
-			new Laser1(400, 0);
-			new Laser1(0, 200);
-			new Laser1(0, 500);
-			break;
-		case 850 :
-			refresh = true;
-			break;
+		case 60 :
+			new Laser1(0, 2);
 		}
 	}
 	
-	private void pattern2(){
-		int time = engine.getPlayTime();
-		int itime = engine.getInvokeTime();
-		
-		switch(time - itime){
-		case 100 :
-			new Laser1(150, 0);
-			new Laser1(250, 0);
-			new Laser1(350, 0);
-			new Laser1(450, 0);
-			break;
-		case 200 :
-			new Laser1(180, 0);
-			new Laser1(0, 250);
-			break;
-		case 250 :
-			new Laser1(100, 0);
-			new Laser1(0, 700);
-			break;
-		case 300 :
-			new Laser1(0, 200);
-			new Laser1(0, 300);
-			new Laser1(0, 400);
-			new Laser1(0, 500);
-			break;
-		case 450 :
-			refresh = true;
-			break;
-		}
-	}
+//	private void pattern1(){
+//		int time = engine.getPlayTime();
+//		int itime = engine.getInvokeTime();
+//		
+//		switch(time - itime){
+//		case 60 :
+//			new Laser1(150, 0);
+//			break;
+//		case 160 :
+//			new Laser1(190, 0);
+//			break;
+//		case 300 :
+//			new Laser1(0, 300);
+//			new Laser1(0, 500);
+//			break;
+//		case 400 :
+//			new Laser1(200, 0);
+//			new Laser1(0, 700);
+//		case 500 :
+//			new Laser1(180, 0);
+//			new Laser1(0, 400);
+//			break;
+//		case 700 :
+//			new Laser1(100, 0);
+//			new Laser1(400, 0);
+//			new Laser1(0, 200);
+//			new Laser1(0, 500);
+//			break;
+//		case 800 :
+//			refresh = true;
+//			break;
+//		}
+//	}
+//	
+//	private void pattern2(){
+//		int time = engine.getPlayTime();
+//		int itime = engine.getInvokeTime();
+//		
+//		switch(time - itime){
+//		case 60 :
+//			new Laser1(150, 0);
+//			new Laser1(250, 0);
+//			new Laser1(350, 0);
+//			new Laser1(450, 0);
+//			break;
+//		case 200 :
+//			new Laser1(180, 0);
+//			new Laser1(0, 250);
+//			break;
+//		case 250 :
+//			new Laser1(100, 0);
+//			new Laser1(0, 700);
+//			break;
+//		case 300 :
+//			new Laser1(0, 200);
+//			new Laser1(0, 300);
+//			new Laser1(0, 400);
+//			new Laser1(0, 500);
+//			break;
+//		case 400 :
+//			refresh = true;
+//			break;
+//		}
+//	}
+//	
+//	private void pattern3(){
+//		int time = engine.getPlayTime();
+//		int itime = engine.getInvokeTime();
+//		
+//		switch(time - itime){
+//		case 60 :
+//			new Laser1(150, 0);
+//			break;
+//		case 150 :
+//			new Laser1(200, 0);
+//			break;
+//		case 200 :
+//			new Laser1(250, 0);
+//			break;
+//		case 250 :
+//			new Laser1(300, 0);
+//			break;
+//		case 300 :
+//			new Laser1(350, 0);
+//			break;
+//		case 350 :
+//			new Laser1(400, 0);
+//			break;
+//		case 450 :
+//			refresh = true;
+//			break;
+//		}
+//	}
 }
 
 class JPaser {
