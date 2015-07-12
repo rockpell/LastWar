@@ -6,13 +6,22 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class DataManagement {
-	private static DataManagement instance;
+	private static DataManagement instance = DataManagement.getInstance();
 	public static DataManagement getInstance(){
 		if(instance == null){
 			instance = new DataManagement();
@@ -21,20 +30,56 @@ public class DataManagement {
 		return instance;
 	}
 	
-	
+	private final Set<LaserArrow> arrowSet = new HashSet<LaserArrow>();
 	private Player player;
+	
+	public final int screenWidth = 1200, screenHeight = 800;
+	public final int rowNumber = 11, colNumber = 21;
+	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
 	private DataManagement(){
 		player = new Player();
 		player.setPosition(550, 350);
 		player.setSize(48, 48);
 		
+		initArrow();
+		
+		JPaser abc = new JPaser();
 	}
 	
 	public Player getPlayer(){
 		return player;
 	}
 	
+	private void initArrow(){
+		for(int i = 0; i < 4; i++){
+			int limit = 0;
+			
+			if(i < 2){
+				limit = rowNumber;
+			} else {
+				limit = colNumber;
+			}
+			
+			for(int v = 0; v < limit; v++){
+				arrowSet.add(new LaserArrow(i, v));
+			}
+		}
+	}
+	
+	public LaserArrow findArrow(int x, int y){
+		for (LaserArrow lar : arrowSet){
+			if(lar.equals(new LaserArrow(x, y)) ){
+				return lar;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Set<LaserArrow> getArrowSet(){
+		return arrowSet;
+	}
 }
 
 class Player extends Colider implements Unit{
@@ -147,46 +192,32 @@ class Laser1 extends Colider implements Laser{
 	private int x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
 	private boolean trigger = false;
+	private int indexX, indexY;
+	
+	private DataManagement dm;
+	private LaserArrow linkLar;
 	
 	public Laser1(int x, int y){
-		Engine.getInstance().addColider(this);
+		dm = DataManagement.getInstance();
+		if(Engine.getInstance().addColider(this)){
+			linkLar = dm.findArrow(x, y);
+			linkLar.setExist(true);
+		}
+		
 		setPosition(x, y);
 		
-//		System.out.println("create Laser1");
-		
-		if(x == 0){
-			name = "row";
-			width = 1200;
-			height = 10;
-		} else if(y == 0){
-			name = "col";
-			width = 10;
-			height = 1000;
-		}
+		indexX = x;
+		indexY = y;
 		
 		setSize(width, height);
 		setBox(0, 0, width, height);
 	}
 	
-	public Laser1(int x, int y, int width, int height){
-		Engine.getInstance().addColider(this);
-		setSize(width, height);
-		setPosition(x, y);
-		setBox(0, 0, width, height);
-		System.out.println("create Laser1");
-		
-		if(x == 0){
-			name = "row";
-		} else if(y == 0){
-			name = "col";
-		}
-	}
 	
 	public void count(){
 		count++;
 		if(count > countLimit && !trigger){
 			trigger = true;
-//			new Laser1(0, 400, 1200, 1);
 		} else if(count > deadLimit){
 			dead();
 		}
@@ -196,7 +227,10 @@ class Laser1 extends Colider implements Laser{
 	@Override
 	public void dead() {
 		// TODO Auto-generated method stub
-		Engine.getInstance().removeColider(this);
+		if(Engine.getInstance().removeColider(this)){
+			linkLar.setExist(false);
+		}
+		
 	}
 
 	@Override
@@ -207,8 +241,22 @@ class Laser1 extends Colider implements Laser{
 
 	@Override
 	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
+//		this.x = x;
+//		this.y = y;
+		
+		if(x == 0 || x == 1){
+			name = "row" + (x+1);
+			width = 1150 - 32;
+			height = 10;
+			this.x = dm.rowStartX1 + 32;
+			this.y = dm.rowStartY + y*50 + 16;
+		} else if(x == 2 || x == 3){
+			name = "col" + (x-1);
+			width = 10;
+			height = 600 - 32;
+			this.x = dm.colStartX + y*50 + 16;
+			this.y = dm.colStartY1 + 32;
+		}
 	}
 
 	@Override
@@ -266,6 +314,49 @@ class Laser1 extends Colider implements Laser{
 	
 }
 
+class LaserArrow {
+	private int indexX, indexY;
+	private boolean exist = false;
+	
+	LaserArrow(int x, int y){
+		indexX = x;
+		indexY = y;
+	}
+	
+	public int getIndexX(){
+		return indexX;
+	}
+	
+	public int getIndexY(){
+		return indexY;
+	}
+	
+	@Override
+	public int hashCode(){
+		return new HashCodeBuilder().append(indexX).append(indexY).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if(!(obj instanceof LaserArrow))
+			return false;
+		if(obj == this)
+			return true;
+		
+		LaserArrow lar = (LaserArrow)obj;
+		return new EqualsBuilder().append(indexX, lar.indexX).append(indexY, lar.indexY).isEquals();
+		
+	}
+	
+	public boolean isExist(){
+		return exist;
+	}
+	
+	public void setExist(boolean mod){
+		exist = mod;
+	}
+}
+
 class GameLevel {
 	private Engine engine;
 	private int nowLevel = 0;
@@ -299,7 +390,7 @@ class GameLevel {
 				targetIndex = 0;
 			}
 		}
-		
+		pattern1();
 //		if(targetIndex == 0){
 //			pattern1();
 //		} else if(targetIndex == 1) {
@@ -316,7 +407,25 @@ class GameLevel {
 		
 		switch(time - itime){
 		case 60 :
-			new Laser1(0, 2);
+			new Laser1(0, 1);
+			new Laser1(0, 5);
+			new Laser1(0, 8);
+			break;
+		case 100 :
+			new Laser1(2, 2);
+			new Laser1(2, 0);
+			new Laser1(2, 5);
+			break;
+		case 170 :
+			new Laser1(3, 2);
+			new Laser1(3, 5);
+			break;
+		case 220 :
+			new Laser1(3, 15);
+			break;
+		case 270 :
+			refresh = true;
+			break;
 		}
 	}
 	
@@ -418,6 +527,29 @@ class GameLevel {
 class JPaser {
 	
 	JPaser(){
+		File abc = new File("resource/last_war.json");
+		
 		JSONParser jsonParser = new JSONParser();
+		try{
+			
+			File bhc = new File(abc.getAbsolutePath());
+			
+			JSONObject jsonObject = (JSONObject)jsonParser.parse(new FileReader(bhc));
+			Set<String> keys = jsonObject.keySet();
+			
+			for(String jso : keys){
+				System.out.println(jso);
+				System.out.println(jsonObject.get(jso));
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

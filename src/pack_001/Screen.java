@@ -48,18 +48,21 @@ public class Screen extends JFrame{
 	private Image mshi;
 	private BufferedImage beams, beam1, beam2, beam3;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
-	private int rowNumber = 11, calNumber = 21;
-	public final int rowStartX = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, calStartX = 90, calStartY1 = 50, calStartY2 = screenHeight - 150;
+	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	
 	
 	private Screen() {
 		 super("Last War");
+		 
+		 dm = DataManagement.getInstance();
+		 player = dm.getPlayer();
 		 
 		 setSize(screenWidth, screenHeight);
 		 
 		 this.setLocationRelativeTo(null);
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 setVisible(true);
+		 
 		 
 		 this.addKeyListener(new KeyListener(){
 			 private final Set<Integer> keyList = new HashSet<Integer>();
@@ -158,8 +161,7 @@ public class Screen extends JFrame{
 			 }
 		 });
 		 
-		 dm = DataManagement.getInstance();
-		 player = dm.getPlayer();
+		
 		 
 		 loadImage();
 	}
@@ -171,6 +173,10 @@ public class Screen extends JFrame{
 			 arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
 			 arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
 			 arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
+			 arrow_right_red = new ImageIcon("resource/arrow_right_red.png").getImage();
+			 arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
+			 arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
+			 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
 			 
 			 File file = new File("resource/beams.png");
 			 FileInputStream fis = new FileInputStream(file);
@@ -231,15 +237,52 @@ public class Screen extends JFrame{
 	}
 	
 	void drawArrow(){
-		for(int i = 0; i < rowNumber; i++){
-			mgc.drawImage(arrow_right, rowStartX, rowStartY + i*50, null);
-			mgc.drawImage(arrow_left, rowStartX2, rowStartY + i*50, null);
+		for(LaserArrow lar : dm.getArrowSet()){
+			
+			switch(lar.getIndexX()){
+			case 0:
+				if(lar.isExist()){
+					mgc.drawImage(arrow_right_red, dm.rowStartX1, dm.rowStartY + lar.getIndexY()*50, null);
+				} else {
+					mgc.drawImage(arrow_right, dm.rowStartX1, dm.rowStartY + lar.getIndexY()*50, null);
+				}
+				break;
+			case 1:
+				if(lar.isExist()){
+					mgc.drawImage(arrow_left_red, dm.rowStartX2, dm.rowStartY + lar.getIndexY()*50, null);
+				} else {
+					mgc.drawImage(arrow_left, dm.rowStartX2, dm.rowStartY + lar.getIndexY()*50, null);
+				}
+				
+				break;
+			case 2:
+				if(lar.isExist()){
+					mgc.drawImage(arrow_down_red, dm.colStartX + lar.getIndexY()*50, dm.colStartY1 , null);
+				} else {
+					mgc.drawImage(arrow_down, dm.colStartX + lar.getIndexY()*50, dm.colStartY1 , null);
+				}
+				
+				break;
+			case 3:
+				if(lar.isExist()){
+					mgc.drawImage(arrow_up_red, dm.colStartX + lar.getIndexY()*50, dm.colStartY2, null);
+				} else {
+					mgc.drawImage(arrow_up, dm.colStartX + lar.getIndexY()*50, dm.colStartY2, null);
+				}
+				
+			}
+			
 		}
 		
-		for(int i = 0; i < calNumber; i++){
-			mgc.drawImage(arrow_down, calStartX + i*50, calStartY1 , null);
-			mgc.drawImage(arrow_up, calStartX + i*50, calStartY2, null);
-		}
+//		for(int i = 0; i < dm.rowNumber; i++){
+//			mgc.drawImage(arrow_right, dm.rowStartX1, dm.rowStartY + i*50, null);
+//			mgc.drawImage(arrow_left, dm.rowStartX2, dm.rowStartY + i*50, null);
+//		}
+//		
+//		for(int i = 0; i < dm.colNumber; i++){
+//			mgc.drawImage(arrow_down, dm.colStartX + i*50, dm.colStartY1 , null);
+//			mgc.drawImage(arrow_up, dm.colStartX + i*50, dm.colStartY2, null);
+//		}
 	}
 	
 	void drawLaser(Graphics2D g){
@@ -247,7 +290,7 @@ public class Screen extends JFrame{
 			if(!la.getTrigger()){
 				g.setColor(Color.red);
 				
-				if(la.getName().equals("row")){
+				if(la.getName().contains("row")){
 					int temp = la.calLaserSize("height");
 					int temp2 = 1;
 					if(temp >= 1){
@@ -266,7 +309,7 @@ public class Screen extends JFrame{
 			} else {
 				g.setColor(Color.blue);
 				
-				if(la.getName().equals("row")){
+				if(la.getName().contains("row")){
 			    	g.fillRect(la.getPosition("x"), la.getPosition("y") - la.getSize("height")/2, la.getSize("width"), la.getSize("height"));
 				} else {
 			    	g.fillRect(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height"));

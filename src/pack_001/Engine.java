@@ -27,12 +27,12 @@ public class Engine {
 		dm = DataManagement.getInstance();
 	}
 	
-	public synchronized void addColider(Laser1 target){
-		coliderSet.add(target);
+	public synchronized boolean addColider(Laser1 target){
+		return coliderSet.add(target);
 	}
 	
-	public synchronized void removeColider(Laser1 target){
-		coliderSet.remove(target);
+	public synchronized boolean removeColider(Laser1 target){
+		return coliderSet.remove(target);
 	}
 	
 	public Set<Laser1> getColiderSet(){
