@@ -10,13 +10,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.print.attribute.IntegerSyntax;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -526,6 +537,8 @@ class GameLevel {
 
 class JPaser {
 	
+	Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
+
 	JPaser(){
 		File abc = new File("resource/last_war.json");
 		
@@ -535,11 +548,50 @@ class JPaser {
 			File bhc = new File(abc.getAbsolutePath());
 			
 			JSONObject jsonObject = (JSONObject)jsonParser.parse(new FileReader(bhc));
+			
 			Set<String> keys = jsonObject.keySet();
 			
 			for(String jso : keys){
+				JSONObject jsonTemp = (JSONObject)jsonObject.get(jso);
 				System.out.println(jso);
+				
 				System.out.println(jsonObject.get(jso));
+				
+				if(jso.equals("sequence")){
+					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+					Set<String> keys2 = jsonTemp2.keySet();
+					
+					for(String jos2 : keys2){
+						
+						System.out.println(jsonTemp2.get(jos2));
+						
+						JSONArray jsonTemp3 = (JSONArray)jsonTemp2.get(jos2);
+						for(int i = 0; i < jsonTemp3.size(); i++){
+							
+							System.out.println(jsonTemp3.get(i));
+							
+						}
+					}
+				} else {
+					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+					Set<String> keys2 = jsonTemp2.keySet();
+					
+					System.out.println("test :  "  + new JsonPattern(jsonTemp2).map.get("100").get(0).x);
+					
+					
+//					for(String jos2 : keys2){
+//						System.out.println(jos2);
+//						System.out.println(jsonTemp2.get(jos2));
+//						
+//						JSONArray jsonTemp3 = (JSONArray)jsonTemp2.get(jos2);
+//						
+//						for(int i = 0; i < jsonTemp3.size(); i++){
+//							
+//							System.out.println(jsonTemp3.get(i));
+////							System.out.println("x : " + ((JSONObject)jsonTemp3.get(i)).get("x"));
+//						}
+//					}
+				}
 			}
 			
 			
@@ -552,4 +604,44 @@ class JPaser {
 		}
 		
 	}
+	
+}
+
+class JsonPattern {
+	Map<String, ArrayList<Point>> map = new HashMap<String, ArrayList<Point>>();
+	
+	JsonPattern(Object target){
+		if(target instanceof JSONObject){
+			JSONObject temp1 = ((JSONObject)target);
+			Set<String> keys = temp1.keySet();
+			
+			for(String text : keys){
+				map.put(text, toArray(temp1.get(text)) );
+			}
+			
+		}
+		System.out.println(map);
+	}
+	
+	ArrayList<Point> toArray(Object target){
+		ArrayList<Point> result = new ArrayList<Point>();
+		
+		if(target instanceof JSONArray){
+			JSONArray temp1 = ((JSONArray)target);
+			
+			for(int i = 0; i< temp1.size(); i++){
+				JSONObject tempObject = (JSONObject)temp1.get(i);
+				
+				int x = Integer.parseInt("" + tempObject.get("x"));
+				int y = Integer.parseInt("" + tempObject.get("y"));
+				result.add(new Point(x, y));
+			}
+		}
+		
+		return result;
+	}
+}
+
+class Sequence {
+	Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
 }
