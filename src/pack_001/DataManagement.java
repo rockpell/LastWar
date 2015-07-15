@@ -42,6 +42,7 @@ public class DataManagement {
 	}
 	
 	private final Set<LaserArrow> arrowSet = new HashSet<LaserArrow>();
+	private JParser gameScenario;
 	private Player player;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
@@ -49,13 +50,12 @@ public class DataManagement {
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
 	private DataManagement(){
+		gameScenario = new JParser();
 		player = new Player();
 		player.setPosition(550, 350);
 		player.setSize(48, 48);
 		
 		initArrow();
-		
-		JPaser abc = new JPaser();
 	}
 	
 	public Player getPlayer(){
@@ -90,6 +90,10 @@ public class DataManagement {
 	
 	public Set<LaserArrow> getArrowSet(){
 		return arrowSet;
+	}
+	
+	public JParser getScenario(){
+		return gameScenario;
 	}
 }
 
@@ -370,19 +374,35 @@ class LaserArrow {
 
 class GameLevel {
 	private Engine engine;
-	private int nowLevel = 0;
+	private DataManagement dm;
+	
+	private Map<String, ArrayList<String>> sequenceData;
+	
+	private int nowLevel = 0, nowSequence = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
 	private int targetIndex = 0;
+	private String patternName = null;
 	
 	public GameLevel(){
 		engine = Engine.getInstance();
+		dm = DataManagement.getInstance();
+		sequenceData =  dm.getScenario().getSequenceData();
+		
+		patternName = "pattern1";
+		targetIndex = 1;
+		patternParser();
 	}
 	
 	public void levelStart(){
 		if(levelUp){
 			nowLevel += 1;
+			nowSequence += 1;
 			levelUp = false;
 			engine.refreshInvoke();
+			
+			if(sequenceData.containsKey(""+nowSequence)){
+				nowSequence = 1;
+			}
 		}
 		
 		if(refresh){
@@ -392,154 +412,54 @@ class GameLevel {
 		}
 		
 		if(patternChange){
+			ArrayList<String> tempList = sequenceData.get(""+nowSequence);
 			patternChange = false;
-			if(targetIndex == 0){
-				targetIndex = 1;
-			} else if(targetIndex == 1){
-				targetIndex = 2;
-			} else if(targetIndex == 2){
+			
+			patternName = tempList.get(targetIndex);
+			
+			targetIndex += 1;
+			
+			if(tempList.size() <= targetIndex){
 				targetIndex = 0;
+				levelUp = true;
 			}
+			
 		}
-		pattern1();
-//		if(targetIndex == 0){
-//			pattern1();
-//		} else if(targetIndex == 1) {
-//			pattern2();
-//		} else if(targetIndex == 2) {
-//			pattern3();
-//		}
+		
+		patternParser();
 		
 	}
 	
-	private void pattern1(){
+	private void patternParser(){
+		Map<String, ArrayList<Point>> patternMap = dm.getScenario().getPatternData().get(patternName).getMap();
 		int time = engine.getPlayTime();
 		int itime = engine.getInvokeTime();
+		String timeText = "" + (time - itime);
 		
-		switch(time - itime){
-		case 60 :
-			new Laser1(0, 1);
-			new Laser1(0, 5);
-			new Laser1(0, 8);
-			break;
-		case 100 :
-			new Laser1(2, 2);
-			new Laser1(2, 0);
-			new Laser1(2, 5);
-			break;
-		case 170 :
-			new Laser1(3, 2);
-			new Laser1(3, 5);
-			break;
-		case 220 :
-			new Laser1(3, 15);
-			break;
-		case 270 :
-			refresh = true;
-			break;
+		if(patternMap.containsKey(timeText)){
+			ArrayList<Point> tempList = patternMap.get(timeText);
+			
+			if(tempList.size() == 0){
+				refresh = true;
+			}
+			
+			for(int i = 0; i < tempList.size(); i++){
+				Point tempPoint = tempList.get(i);
+				new Laser1(tempPoint.x, tempPoint.y);
+			}
 		}
+		
+		
 	}
 	
-//	private void pattern1(){
-//		int time = engine.getPlayTime();
-//		int itime = engine.getInvokeTime();
-//		
-//		switch(time - itime){
-//		case 60 :
-//			new Laser1(150, 0);
-//			break;
-//		case 160 :
-//			new Laser1(190, 0);
-//			break;
-//		case 300 :
-//			new Laser1(0, 300);
-//			new Laser1(0, 500);
-//			break;
-//		case 400 :
-//			new Laser1(200, 0);
-//			new Laser1(0, 700);
-//		case 500 :
-//			new Laser1(180, 0);
-//			new Laser1(0, 400);
-//			break;
-//		case 700 :
-//			new Laser1(100, 0);
-//			new Laser1(400, 0);
-//			new Laser1(0, 200);
-//			new Laser1(0, 500);
-//			break;
-//		case 800 :
-//			refresh = true;
-//			break;
-//		}
-//	}
-//	
-//	private void pattern2(){
-//		int time = engine.getPlayTime();
-//		int itime = engine.getInvokeTime();
-//		
-//		switch(time - itime){
-//		case 60 :
-//			new Laser1(150, 0);
-//			new Laser1(250, 0);
-//			new Laser1(350, 0);
-//			new Laser1(450, 0);
-//			break;
-//		case 200 :
-//			new Laser1(180, 0);
-//			new Laser1(0, 250);
-//			break;
-//		case 250 :
-//			new Laser1(100, 0);
-//			new Laser1(0, 700);
-//			break;
-//		case 300 :
-//			new Laser1(0, 200);
-//			new Laser1(0, 300);
-//			new Laser1(0, 400);
-//			new Laser1(0, 500);
-//			break;
-//		case 400 :
-//			refresh = true;
-//			break;
-//		}
-//	}
-//	
-//	private void pattern3(){
-//		int time = engine.getPlayTime();
-//		int itime = engine.getInvokeTime();
-//		
-//		switch(time - itime){
-//		case 60 :
-//			new Laser1(150, 0);
-//			break;
-//		case 150 :
-//			new Laser1(200, 0);
-//			break;
-//		case 200 :
-//			new Laser1(250, 0);
-//			break;
-//		case 250 :
-//			new Laser1(300, 0);
-//			break;
-//		case 300 :
-//			new Laser1(350, 0);
-//			break;
-//		case 350 :
-//			new Laser1(400, 0);
-//			break;
-//		case 450 :
-//			refresh = true;
-//			break;
-//		}
-//	}
 }
 
-class JPaser {
+class JParser {
 	
-	Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
+	private Map<String, ArrayList<String>> sequenceData = new HashMap<String, ArrayList<String>>();
+	private Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
 
-	JPaser(){
+	JParser(){
 		File abc = new File("resource/last_war.json");
 		
 		JSONParser jsonParser = new JSONParser();
@@ -559,42 +479,15 @@ class JPaser {
 				
 				if(jso.equals("sequence")){
 					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-					Set<String> keys2 = jsonTemp2.keySet();
+					seqenceToMap(jsonTemp2);
 					
-					for(String jos2 : keys2){
-						
-						System.out.println(jsonTemp2.get(jos2));
-						
-						JSONArray jsonTemp3 = (JSONArray)jsonTemp2.get(jos2);
-						for(int i = 0; i < jsonTemp3.size(); i++){
-							
-							System.out.println(jsonTemp3.get(i));
-							
-						}
-					}
 				} else {
 					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-					Set<String> keys2 = jsonTemp2.keySet();
 					
-					System.out.println("test :  "  + new JsonPattern(jsonTemp2).map.get("100").get(0).x);
+					patternData.put(jso, new JsonPattern(jsonTemp2));
 					
-					
-//					for(String jos2 : keys2){
-//						System.out.println(jos2);
-//						System.out.println(jsonTemp2.get(jos2));
-//						
-//						JSONArray jsonTemp3 = (JSONArray)jsonTemp2.get(jos2);
-//						
-//						for(int i = 0; i < jsonTemp3.size(); i++){
-//							
-//							System.out.println(jsonTemp3.get(i));
-////							System.out.println("x : " + ((JSONObject)jsonTemp3.get(i)).get("x"));
-//						}
-//					}
 				}
 			}
-			
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -605,10 +498,42 @@ class JPaser {
 		
 	}
 	
+	void seqenceToMap(Object target){
+		if(target instanceof JSONObject){
+			JSONObject tempObject = (JSONObject)target;
+			Set<String> keys = tempObject.keySet();
+			
+			for(String text : keys){
+				sequenceData.put(text, seqenceToArray(tempObject.get(text)) );
+			}
+		}
+	}
+	
+	ArrayList<String> seqenceToArray(Object target){
+		ArrayList<String> result = new ArrayList<String>();
+		
+		if(target instanceof JSONArray){
+			JSONArray tempArray = (JSONArray)target;
+			for(int i = 0; i < tempArray.size(); i++){
+				result.add((String) tempArray.get(i));
+			}
+			
+		}
+		
+		return result;
+	}
+	
+	Map<String, ArrayList<String>> getSequenceData(){
+		return sequenceData;
+	}
+	
+	Map<String, JsonPattern> getPatternData(){
+		return patternData;
+	}
 }
 
 class JsonPattern {
-	Map<String, ArrayList<Point>> map = new HashMap<String, ArrayList<Point>>();
+	private Map<String, ArrayList<Point>> map = new HashMap<String, ArrayList<Point>>();
 	
 	JsonPattern(Object target){
 		if(target instanceof JSONObject){
@@ -620,7 +545,7 @@ class JsonPattern {
 			}
 			
 		}
-		System.out.println(map);
+//		System.out.println(map);
 	}
 	
 	ArrayList<Point> toArray(Object target){
@@ -640,8 +565,8 @@ class JsonPattern {
 		
 		return result;
 	}
-}
-
-class Sequence {
-	Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+	
+	Map<String, ArrayList<Point>> getMap(){
+		return map;
+	}
 }

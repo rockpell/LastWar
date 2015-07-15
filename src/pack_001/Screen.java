@@ -50,6 +50,7 @@ public class Screen extends JFrame{
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	
+	private boolean gameStart = false;
 	
 	private Screen() {
 		 super("Last War");
@@ -113,6 +114,11 @@ public class Screen extends JFrame{
 					player.move("right");
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
+				} else if(e.getKeyCode() == KeyEvent.VK_SPACE){
+					if(!gameStart){
+						gameStart = true;
+						Engine.getInstance().startLoop();
+					}
 				}
 				
 			}

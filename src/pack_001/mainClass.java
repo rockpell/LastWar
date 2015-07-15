@@ -8,13 +8,12 @@ public class mainClass {
 //		Screen abc = Screen.getInstance();
 		Engine engine = Engine.getInstance();
 		
-		engine.startLoop();
-		
 		EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 Screen ex = Screen.getInstance();
                 ex.setVisible(true);
+//                engine.startLoop();
             }
         });
 	}
