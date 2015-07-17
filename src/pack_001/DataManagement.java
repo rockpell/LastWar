@@ -388,7 +388,8 @@ class GameLevel {
 		dm = DataManagement.getInstance();
 		sequenceData =  dm.getScenario().getSequenceData();
 		
-		patternName = "pattern1";
+		patternName = sequenceData.get("1").get(0);
+		
 		targetIndex = 1;
 		patternParser();
 	}
@@ -400,7 +401,7 @@ class GameLevel {
 			levelUp = false;
 			engine.refreshInvoke();
 			
-			if(sequenceData.containsKey(""+nowSequence)){
+			if(nowSequence > 3){
 				nowSequence = 1;
 			}
 		}
