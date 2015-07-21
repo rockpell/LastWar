@@ -46,9 +46,9 @@ public class Screen extends JFrame{
 	private Player player;
 	private DataManagement dm;
 	private Image mshi;
-	private BufferedImage beams, beam1, beam2, beam3;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
+	private Image brick_wall_001;
 	
 	private boolean gameStart = false;
 	
@@ -72,6 +72,8 @@ public class Screen extends JFrame{
 				if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN ||
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
+				} else if(e.getKeyCode() == KeyEvent.VK_A){
+					dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
 				}
 				
 				if(keyList.size() > 1){
@@ -173,27 +175,16 @@ public class Screen extends JFrame{
 	}
 	
 	private void loadImage() {
-		try {
-			 mshi = new ImageIcon("resource/people.png").getImage();
-			 arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
-			 arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
-			 arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
-			 arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
-			 arrow_right_red = new ImageIcon("resource/arrow_right_red.png").getImage();
-			 arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
-			 arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
-			 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
-			 
-			 File file = new File("resource/beams.png");
-			 FileInputStream fis = new FileInputStream(file);
-			 beams = ImageIO.read(fis);
-			 
-			 beam1 = beams.getSubimage(38, 170, 36, 30);
-			 beam2 = beam1.getSubimage(0, 8, beam1.getWidth(), beam1.getHeight() - 15);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 mshi = new ImageIcon("resource/people.png").getImage();
+		 arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
+		 arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
+		 arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
+		 arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
+		 arrow_right_red = new ImageIcon("resource/arrow_right_red.png").getImage();
+		 arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
+		 arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
+		 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
+		 brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
     }
 	
 	public void update(Graphics g) {
@@ -217,29 +208,41 @@ public class Screen extends JFrame{
 		mgc.setBackground(Color.white);
 		mgc.clearRect(0, 0, screenWidth, screenHeight);
 		
-		Point2D.Float point = player.getPosition();
+		
 		
 		mgc.setColor(Color.pink);
 	    mgc.fillRect(0, screenHeight - 100, screenWidth, 100);
 	    
 	    drawLaser(mgc);
-		
+	    drawWall();
+	    
+	    Point2D.Float point = player.getPosition();
 		AffineTransform t = new AffineTransform();
         t.translate(point.x, point.y); // x/y set here
         t.scale(1, 1); // scale = 1 
+        
         mgc.drawImage(mshi, t, null);
-
-//        mgc.drawImage(beams, 100, 100, null);
-//        mgc.drawImage(beam1, 800, 150, null);
+        
+//        mgc.drawImage(brick_wall_001, 20, 45, null);
         
         mgc.setColor(Color.black);
         mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
         
-        
         drawArrow();
+       
         
 		g.drawImage(memoryimage, 0, 0, this);
 		
+	}
+	
+	void drawWall(){
+        
+		for(Wall1 wa : dm.getWallSet()){
+			AffineTransform t = new AffineTransform();
+	        t.translate(wa.getPosition("x"), wa.getPosition("y")); // x/y set here
+	        t.scale(1, 1);
+			mgc.drawImage(brick_wall_001, t, null);
+		}
 	}
 	
 	void drawArrow(){

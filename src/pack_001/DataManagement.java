@@ -42,6 +42,7 @@ public class DataManagement {
 	}
 	
 	private final Set<LaserArrow> arrowSet = new HashSet<LaserArrow>();
+	private final Set<Wall1> wallSet = new HashSet<Wall1>();
 	private JParser gameScenario;
 	private Player player;
 	
@@ -88,8 +89,17 @@ public class DataManagement {
 		return null;
 	}
 	
+	public boolean addWall(float x, float y){
+		wallSet.add(new Wall1(x, y));
+		return false;
+	}
+	
 	public Set<LaserArrow> getArrowSet(){
 		return arrowSet;
+	}
+	
+	public Set<Wall1> getWallSet(){
+		return wallSet;
 	}
 	
 	public JParser getScenario(){
@@ -202,11 +212,80 @@ class Player extends Colider implements Unit{
 	
 }
 
+class Wall1 extends Colider implements Wall {
+	
+	private float x, y;
+	private int width, height;
+	private int count;
+	private boolean outTrigger = false;
+	
+	Wall1(float x, float y){
+		setPosition(x, y);
+		setSize(48, 48);
+		trigger = true; // 충돌 가능
+	}
+	
+	@Override
+	public void dead() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void count() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		// TODO Auto-generated method stub
+		this.width = width;
+		this.height = height;
+		setBox(0, 0, width, height);
+	}
+	
+	@Override
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public float getPosition(String text){
+		if(text.equals("x")){
+			return x;
+		} else {
+			return y;
+		}
+	}
+	
+	
+	@Override
+	public Float getBounds() {
+		// TODO Auto-generated method stub
+		return new Rectangle2D.Float(x + cx, y + cy, cwidth, cheight);
+	}
+
+	@Override
+	public boolean collision(Rectangle2D.Float target) {
+		// TODO Auto-generated method stub
+		return target.intersects(this.getBounds());
+	}
+	
+	public boolean getOutTrigger(){
+		return outTrigger;
+	}
+}
+
 class Laser1 extends Colider implements Laser{
 	private String name;
 	private int x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
-	private boolean trigger = false;
 	private int indexX, indexY;
 	
 	private DataManagement dm;
@@ -307,10 +386,6 @@ class Laser1 extends Colider implements Laser{
 		}
 	}
 	
-	public boolean getTrigger(){
-		return trigger;
-	}
-	
 	public String getName(){
 		return name;
 	}
@@ -400,8 +475,8 @@ class GameLevel {
 			nowSequence += 1;
 			levelUp = false;
 			engine.refreshInvoke();
-			
-			if(nowSequence > 3){
+			System.out.println("nowSequence : "+nowSequence);
+			if(nowSequence > 4){
 				nowSequence = 1;
 			}
 		}
