@@ -114,6 +114,7 @@ class Player extends Colider implements Unit{
 	private int hp = 100;
 	private int speed = 5;
 	private int swidth = 1100, sheight = 630;
+	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	
 	Engine engine;
 	
@@ -162,8 +163,24 @@ class Player extends Colider implements Unit{
 			y += dy;
 		}
 		
+		if(isMoveRight){
+			x -= speed;
+			isMoveRight = false;
+		}
+		if(isMoveLeft){
+			x += speed;
+			isMoveLeft = false;
+		}
+		if(isMoveUp){
+			y += speed;
+			isMoveUp = false;
+		}
+		if(isMoveDown){
+			y -= speed;
+			isMoveDown = false;
+		}
 	}
-
+	
 	@Override
 	public void dead() {
 		// TODO Auto-generated method stub
@@ -207,9 +224,37 @@ class Player extends Colider implements Unit{
 	}
 	
 	public boolean collision(Rectangle2D.Float target){
-		return target.intersects(this.getBounds());
+		boolean result = target.intersects(this.getBounds());
+		
+		if(result) 
+			checkMoveable(target);
+		
+		return result;
 	}
 	
+	private void checkMoveable(Rectangle2D.Float target){
+//		target
+		if( (x + cx) + cwidth >= target.x && x + cx < target.x 
+				&& y + cy < target.y + target.height && y + cy + cheight > target.y){ // 물체를 기준으로 왼쪽에서 충돌
+//			System.out.println("colide left");
+			isMoveRight = true;
+		}
+		if( x + cx <= target.x + target.width && (x + cx + cwidth) > target.x + target.width
+				&& y + cy < target.y + target.height && y + cy + cheight > target.y){ // 물체 오른쪽에 충돌
+//			System.out.println("colide right");
+			isMoveLeft = true;
+		}
+		if( y + cy < target.y && y + cy + cwidth >= target.y
+				&& x + cx < target.x + target.width && x + cx + cwidth > target.x){ // 물체 위쪽에 충돌
+//			System.out.println("colide up");
+			isMoveDown = true;
+		}
+		if( y + cy <= target.y + target.height && y + cy + cheight > target.y + target.height
+				&& x + cx < target.x + target.width && x + cx + cwidth > target.x){ // 물체 아래쪽에 충돌
+//			System.out.println("colide down");
+			isMoveUp = true;
+		}
+	}
 }
 
 class Wall1 extends Colider implements Wall {

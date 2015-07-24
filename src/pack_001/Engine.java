@@ -44,6 +44,7 @@ public class Engine {
 //			System.out.println("coliderSet.size() : " + coliderSet.size());
 		}
 		Set<Laser1> coliderSet2 = new HashSet<Laser1>(coliderSet);
+		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
 		
 		for(Laser1 c : coliderSet2){
 			if(c.getTrigger()){
@@ -53,6 +54,14 @@ public class Engine {
 			}
 				
 			c.count();
+		}
+		
+		for(Wall1 w : wallSet2){
+			if(w.getTrigger()){
+				if(dm.getPlayer().collision(w.getBounds())){
+					System.out.println("colide wall");
+				}
+			}
 		}
 	}
 	
