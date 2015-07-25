@@ -224,15 +224,10 @@ class Player extends Colider implements Unit{
 	}
 	
 	public boolean collision(Rectangle2D.Float target){
-		boolean result = target.intersects(this.getBounds());
-		
-		if(result) 
-			checkMoveable(target);
-		
-		return result;
+		return target.intersects(this.getBounds());
 	}
 	
-	private void checkMoveable(Rectangle2D.Float target){
+	public void checkMoveable(Rectangle2D.Float target){
 //		target
 		if( (x + cx) + cwidth >= target.x && x + cx < target.x 
 				&& y + cy < target.y + target.height && y + cy + cheight > target.y){ // 물체를 기준으로 왼쪽에서 충돌
@@ -262,7 +257,7 @@ class Wall1 extends Colider implements Wall {
 	private float x, y;
 	private int width, height;
 	private int count;
-	private boolean outTrigger = false;
+	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
 	Wall1(float x, float y){
 		setPosition(x, y);
@@ -324,6 +319,18 @@ class Wall1 extends Colider implements Wall {
 	
 	public boolean getOutTrigger(){
 		return outTrigger;
+	}
+	
+	public void setOutTrigger(boolean value){
+		outTrigger = value;
+	}
+	
+	public boolean getOutTriggerMoment(){
+		return outTriggerMoment;
+	}
+	
+	public void setOutTriggerMoment(boolean value){
+		outTriggerMoment = value;
 	}
 }
 

@@ -59,7 +59,13 @@ public class Engine {
 		for(Wall1 w : wallSet2){
 			if(w.getTrigger()){
 				if(dm.getPlayer().collision(w.getBounds())){
-					System.out.println("colide wall");
+//					System.out.println("colide wall");
+					if(w.getOutTrigger())
+						w.setOutTriggerMoment(true);
+					if(w.getOutTriggerMoment())
+						dm.getPlayer().checkMoveable(w.getBounds());
+				} else {
+					w.setOutTrigger(true);
 				}
 			}
 		}
