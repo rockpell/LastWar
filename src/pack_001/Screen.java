@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -164,7 +165,7 @@ public class Screen extends JFrame{
 		 
 		 this.addMouseListener(new MouseAdapter() {
 			 public void mouseClicked(MouseEvent e){
-				 player.setPosition(e.getPoint());
+//				 player.setPosition(e.getPoint());
 //				 repaint();
 			 }
 		 });
@@ -229,13 +230,13 @@ public class Screen extends JFrame{
         mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
         
         drawArrow();
-       
+        drawSkill();
         
 		g.drawImage(memoryimage, 0, 0, this);
 		
 	}
 	
-	void drawWall(){
+	private void drawWall(){
         
 		for(Wall1 wa : dm.getWallSet()){
 			AffineTransform t = new AffineTransform();
@@ -245,7 +246,7 @@ public class Screen extends JFrame{
 		}
 	}
 	
-	void drawArrow(){
+	private void drawArrow(){
 		for(LaserArrow lar : dm.getArrowSet()){
 			
 			switch(lar.getIndexX()){
@@ -283,18 +284,9 @@ public class Screen extends JFrame{
 			
 		}
 		
-//		for(int i = 0; i < dm.rowNumber; i++){
-//			mgc.drawImage(arrow_right, dm.rowStartX1, dm.rowStartY + i*50, null);
-//			mgc.drawImage(arrow_left, dm.rowStartX2, dm.rowStartY + i*50, null);
-//		}
-//		
-//		for(int i = 0; i < dm.colNumber; i++){
-//			mgc.drawImage(arrow_down, dm.colStartX + i*50, dm.colStartY1 , null);
-//			mgc.drawImage(arrow_up, dm.colStartX + i*50, dm.colStartY2, null);
-//		}
 	}
 	
-	void drawLaser(Graphics2D g){
+	private void drawLaser(Graphics2D g){
 		for(Laser1 la : Engine.getInstance().getColiderSet()){
 			if(!la.getTrigger()){
 				g.setColor(Color.red);
@@ -306,6 +298,7 @@ public class Screen extends JFrame{
 						temp2 = temp;
 					}
 					g.fillRect(la.getPosition("x"), la.getPosition("y") - temp2/2, la.getSize("width"), temp2);
+//					g.fill(new Rectangle2D.Float(59.5f, 89.5f, 10.0f, 10.0f));
 				} else {
 					int temp = la.calLaserSize("width");
 					int temp2 = 1;
@@ -325,6 +318,11 @@ public class Screen extends JFrame{
 				}
 			}
 		}
+	}
+	
+	private void drawSkill(){
+		mgc.drawRect(188, 712, 70, 70);
+		mgc.drawImage(brick_wall_001, 200, 725, null);
 	}
 	
 }

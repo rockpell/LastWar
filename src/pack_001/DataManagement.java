@@ -113,7 +113,7 @@ class Player extends Colider implements Unit{
 	private int width, height;
 	private int hp = 100;
 	private int speed = 5;
-	private int swidth = 1100, sheight = 630;
+	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	
 	Engine engine;
@@ -159,7 +159,7 @@ class Player extends Colider implements Unit{
 		if(x + dx > 50 && x + dx < swidth){
 			x += dx;
 		}
-		if(y + dy > 50 && y + dy < sheight){
+		if(y + dy > 80 && y + dy < sheight){
 			y += dy;
 		}
 		
@@ -339,6 +339,8 @@ class Laser1 extends Colider implements Laser{
 	private int x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
 	private int indexX, indexY;
+	private boolean wallColide = false;
+	private float wallX = 0, wallY = 0;
 	
 	private DataManagement dm;
 	private LaserArrow linkLar;
@@ -454,6 +456,11 @@ class Laser1 extends Colider implements Laser{
 		return 0;
 	}
 	
+	public void setWallColide(Rectangle2D.Float target){
+		wallColide = true;
+		wallX = target.x;
+		wallY = target.y;
+	}
 }
 
 class LaserArrow {

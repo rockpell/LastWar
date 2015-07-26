@@ -52,7 +52,13 @@ public class Engine {
 					System.out.println("colide");
 				}
 			}
-				
+			
+			for(Wall1 w : wallSet2){
+				if(w.collision(c.getBounds())){
+//					System.out.println(w.getBounds().x + "    :    " + w.getBounds().y);
+				}
+			}
+			
 			c.count();
 		}
 		
