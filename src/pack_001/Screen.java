@@ -214,8 +214,8 @@ public class Screen extends JFrame{
 		mgc.setColor(Color.pink);
 	    mgc.fillRect(0, screenHeight - 100, screenWidth, 100);
 	    
-	    drawLaser(mgc);
 	    drawWall();
+	    drawLaser(mgc);
 	    
 	    Point2D.Float point = player.getPosition();
 		AffineTransform t = new AffineTransform();
@@ -230,6 +230,7 @@ public class Screen extends JFrame{
         mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
         
         drawArrow();
+        
         drawSkill();
         
 		g.drawImage(memoryimage, 0, 0, this);
@@ -292,29 +293,39 @@ public class Screen extends JFrame{
 				g.setColor(Color.red);
 				
 				if(la.getName().contains("row")){
-					int temp = la.calLaserSize("height");
-					int temp2 = 1;
-					if(temp >= 1){
-						temp2 = temp;
-					}
-					g.fillRect(la.getPosition("x"), la.getPosition("y") - temp2/2, la.getSize("width"), temp2);
-//					g.fill(new Rectangle2D.Float(59.5f, 89.5f, 10.0f, 10.0f));
-				} else {
-					int temp = la.calLaserSize("width");
-					int temp2 = 1;
+					float temp = la.calLaserSize("height");
+					float temp2 = 1;
 					if(temp >= 1){
 						temp2 = temp;
 					}
 					
-					g.fillRect(la.getPosition("x") - temp2/2, la.getPosition("y"), temp2, la.getSize("height"));
+					float laX = 0, laY = 0, laH = 0, laW = 0;
+					
+					laX = la.getPosition("x");
+					laY = la.getPosition("y") - temp2/2;
+					laW = la.getSize("width");
+					laH = temp2;
+					
+					g.fill(new Rectangle2D.Float(laX, laY, laW, laH));
+					
+
+				} else {
+					float temp = la.calLaserSize("width");
+					float temp2 = 1;
+					if(temp >= 1){
+						temp2 = temp;
+					}
+					
+					g.fill(new Rectangle2D.Float(la.getPosition("x") - temp2/2, la.getPosition("y"), temp2, la.getSize("height") ) );
+					
 				}
 			} else {
 				g.setColor(Color.blue);
 				
 				if(la.getName().contains("row")){
-			    	g.fillRect(la.getPosition("x"), la.getPosition("y") - la.getSize("height")/2, la.getSize("width"), la.getSize("height"));
+			    	g.fill(new Rectangle2D.Float(la.getPosition("x"), la.getPosition("y") - la.getSize("height")/2, la.getSize("width"), la.getSize("height")) );
 				} else {
-			    	g.fillRect(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height"));
+			    	g.fill(new Rectangle2D.Float(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height")) );
 				}
 			}
 		}

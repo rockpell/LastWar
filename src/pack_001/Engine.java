@@ -47,15 +47,20 @@ public class Engine {
 		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
 		
 		for(Laser1 c : coliderSet2){
-			if(c.getTrigger()){
-				if(dm.getPlayer().collision(c.getBounds())){
-					System.out.println("colide");
-				}
-			}
 			
 			for(Wall1 w : wallSet2){
 				if(w.collision(c.getBounds())){
 //					System.out.println(w.getBounds().x + "    :    " + w.getBounds().y);
+					if(!c.getWallColide()) // 레이저는 벽과 한 번만 충돌 가능
+						c.setWallColide(w.getBounds()); // laser와 wall 충돌
+				}
+			}
+			
+			if(c.getTrigger()){
+				if(dm.getPlayer().collision(c.getBounds())){
+					System.out.println("colide");
+					System.out.println(c.getBounds());
+					System.out.println(dm.getPlayer().getBounds());
 				}
 			}
 			

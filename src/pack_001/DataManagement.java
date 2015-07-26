@@ -336,11 +336,12 @@ class Wall1 extends Colider implements Wall {
 
 class Laser1 extends Colider implements Laser{
 	private String name;
-	private int x = 0, y = 0, width = 0, height = 0;
+	private float x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
 	private int indexX, indexY;
 	private boolean wallColide = false;
 	private float wallX = 0, wallY = 0;
+	private Rectangle2D.Float wallRectange;
 	
 	private DataManagement dm;
 	private LaserArrow linkLar;
@@ -357,7 +358,7 @@ class Laser1 extends Colider implements Laser{
 		indexX = x;
 		indexY = y;
 		
-		setSize(width, height);
+//		setSize(width, height);
 		setBox(0, 0, width, height);
 	}
 	
@@ -389,10 +390,8 @@ class Laser1 extends Colider implements Laser{
 
 	@Override
 	public void setPosition(int x, int y) {
-//		this.x = x;
-//		this.y = y;
 		
-		if(x == 0 || x == 1){
+		if(x == 0 || x == 1){ // ºÐ¸®
 			name = "row" + (x+1);
 			width = 1150 - 32;
 			height = 10;
@@ -424,7 +423,7 @@ class Laser1 extends Colider implements Laser{
 		return false;
 	}
 	
-	public int getPosition(String name){
+	public float getPosition(String name){
 		if(name.equals("x")){
 			return x;
 		} else {
@@ -432,7 +431,7 @@ class Laser1 extends Colider implements Laser{
 		}
 	}
 	
-	public int getSize(String name){
+	public float getSize(String name){
 		if(name.equals("width")){
 			return width;
 		} else {
@@ -444,12 +443,12 @@ class Laser1 extends Colider implements Laser{
 		return name;
 	}
 	
-	public int calLaserSize(String text){
+	public float calLaserSize(String text){
 		if(text.equals("height")){
-			int temp = countLimit - height;
+			float temp = countLimit - height;
 			return count - temp;
 		} else if(text.equals("width")){
-			int temp = countLimit - width;
+			float temp = countLimit - width;
 			return count - temp;
 		}
 		
@@ -458,8 +457,40 @@ class Laser1 extends Colider implements Laser{
 	
 	public void setWallColide(Rectangle2D.Float target){
 		wallColide = true;
+		wallRectange = (Rectangle2D.Float)target.clone();
 		wallX = target.x;
 		wallY = target.y;
+		setSizeWhileColide();
+	}
+	
+	private void setSizeWhileColide(){
+		if(name.equals("row1")){
+			width = wallRectange.x - dm.rowStartX1 - 32;
+		} else if(name.equals("row2")){
+			x = wallRectange.x + wallRectange.width;
+			width -= (x - wallRectange.width);
+		} else if(name.equals("col1")){
+			height = wallRectange.y - dm.colStartY1 - 32;
+		} else if(name.equals("col2")){
+			y = wallRectange.y + wallRectange.height;
+			height -= y;
+		}
+	}
+	
+	public boolean getWallColide(){
+		return wallColide;
+	}
+	
+	public float getWallPosition(String text){
+		if(text.equals("x")){
+			return wallX;
+		} else {
+			return wallY;
+		}
+	}
+	
+	public Rectangle2D.Float getWallRectangle(){
+		return wallRectange;
 	}
 }
 
