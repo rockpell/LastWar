@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Engine {
 	private static Engine instance;
-	private final Set<Laser1> coliderSet = new HashSet<Laser1>();
+	
 	
 	public static Engine getInstance(){
 		if(instance == null){
@@ -27,23 +27,12 @@ public class Engine {
 		dm = DataManagement.getInstance();
 	}
 	
-	public synchronized boolean addColider(Laser1 target){
-		return coliderSet.add(target);
-	}
-	
-	public synchronized boolean removeColider(Laser1 target){
-		return coliderSet.remove(target);
-	}
-	
-	public Set<Laser1> getColiderSet(){
-		return coliderSet;
-	}
 	
 	public void loopColider(){
-		if(coliderSet.size() > 0){
+		if(dm.getColiderSet().size() > 0){
 //			System.out.println("coliderSet.size() : " + coliderSet.size());
 		}
-		Set<Laser1> coliderSet2 = new HashSet<Laser1>(coliderSet);
+		Set<Laser1> coliderSet2 = new HashSet<Laser1>(dm.getColiderSet());
 		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
 		
 		for(Laser1 c : coliderSet2){
@@ -51,8 +40,10 @@ public class Engine {
 			for(Wall1 w : wallSet2){
 				if(w.collision(c.getBounds())){
 //					System.out.println(w.getBounds().x + "    :    " + w.getBounds().y);
-					if(!c.getWallColide()) // 레이저는 벽과 한 번만 충돌 가능
-						c.setWallColide(w.getBounds()); // laser와 wall 충돌
+					if(!c.getWallColide()){ // 레이저는 벽과 한 번만 충돌 가능
+//						c.setWallColide(w.getBounds()); // laser와 wall 충돌
+						dm.findColiderLaser(c).setWallColide(w.getBounds());
+					}
 				}
 			}
 			

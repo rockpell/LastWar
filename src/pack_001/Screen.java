@@ -288,7 +288,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawLaser(Graphics2D g){
-		for(Laser1 la : Engine.getInstance().getColiderSet()){
+		for(Laser1 la : dm.getColiderSet()){
 			if(!la.getTrigger()){
 				g.setColor(Color.red);
 				
