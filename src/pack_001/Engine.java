@@ -50,8 +50,8 @@ public class Engine {
 			if(c.getTrigger()){
 				if(dm.getPlayer().collision(c.getBounds())){
 					System.out.println("colide");
-					System.out.println(c.getBounds());
-					System.out.println(dm.getPlayer().getBounds());
+//					System.out.println(c.getBounds());
+//					System.out.println(dm.getPlayer().getBounds());
 				}
 			}
 			

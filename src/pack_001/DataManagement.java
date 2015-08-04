@@ -369,6 +369,7 @@ class Laser1 extends Colider implements Laser{
 	
 	public Laser1(int x, int y){
 		dm = DataManagement.getInstance();
+		
 		if(dm.addColider(this)){
 			linkLar = dm.findArrow(x, y);
 			linkLar.setExist(true);
@@ -477,7 +478,7 @@ class Laser1 extends Colider implements Laser{
 	}
 	
 	public void setWallColide(Rectangle2D.Float target){
-		wallColide = true;
+//		wallColide = true;
 		wallRectange = (Rectangle2D.Float)target.clone();
 		setSizeWhileColide();
 	}
@@ -486,22 +487,19 @@ class Laser1 extends Colider implements Laser{
 		if(name.equals("row1")){
 			width = wallRectange.x - dm.rowStartX1 - 32;
 			cwidth = width;
-			System.out.println("width :  " + width);
 		} else if(name.equals("row2")){
+			width = 1150 - 32;
 			x = wallRectange.x + wallRectange.width;
 			width -= (x - 32);
 			cwidth = width;
 		} else if(name.equals("col1")){
 			height = wallRectange.y - dm.colStartY1 - 32;
 			cheight = height;
-			System.out.println("height  :  " + height);
 		} else if(name.equals("col2")){
+			height = 600 - 32;
 			y = wallRectange.y + wallRectange.height;
-			System.out.println("before height   :  " + height);
-			height =  height - (y - 32);
+			height =  height - (y - 32*2 - 16);
 			cheight = height;
-			System.out.println("wallY : " + wallRectange.y + "   height " + height);
-			System.out.println("y : " + y);
 		}
 //		System.out.println("dm :    " + this.getBounds());
 	}
