@@ -42,7 +42,7 @@ public class Engine {
 //					System.out.println(w.getBounds().x + "    :    " + w.getBounds().y);
 					if(!c.getWallColide()){ // 레이저는 벽과 한 번만 충돌 가능
 //						c.setWallColide(w.getBounds()); // laser와 wall 충돌
-						dm.findColiderLaser(c).setWallColide(w.getBounds());
+						dm.findColiderLaser(c).setWallColide(w);
 					}
 				}
 			}
@@ -55,7 +55,7 @@ public class Engine {
 				}
 			}
 			
-			c.count();
+			c.work();
 		}
 		
 		for(Wall1 w : wallSet2){
@@ -70,6 +70,7 @@ public class Engine {
 					w.setOutTrigger(true);
 				}
 			}
+			w.work();
 		}
 	}
 	

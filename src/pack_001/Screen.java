@@ -240,10 +240,16 @@ public class Screen extends JFrame{
 	private void drawWall(){
         
 		for(Wall1 wa : dm.getWallSet()){
+			float wx = wa.getPosition("x");
+			float wy = wa.getPosition("y");
+			
 			AffineTransform t = new AffineTransform();
-	        t.translate(wa.getPosition("x"), wa.getPosition("y")); // x/y set here
+	        t.translate(wx, wy); // x/y set here
 	        t.scale(1, 1);
+	        
 			mgc.drawImage(brick_wall_001, t, null);
+			
+			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2, wy - 10);
 		}
 	}
 	

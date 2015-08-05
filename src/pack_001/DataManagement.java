@@ -90,9 +90,13 @@ public class DataManagement {
 		return null;
 	}
 	
-	public boolean addWall(float x, float y){
+	public synchronized boolean addWall(float x, float y){
 		wallSet.add(new Wall1(x, y));
 		return false;
+	}
+	
+	public synchronized boolean removeWall(Wall1 target){
+		return wallSet.remove(target);
 	}
 	
 	public Set<LaserArrow> getArrowSet(){
@@ -279,6 +283,7 @@ class Wall1 extends Colider implements Wall {
 	private float x, y;
 	private int width, height;
 	private int count;
+	private int hp = 5;
 	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
 	Wall1(float x, float y){
@@ -290,13 +295,18 @@ class Wall1 extends Colider implements Wall {
 	@Override
 	public void dead() {
 		// TODO Auto-generated method stub
-		
+		DataManagement.getInstance().removeWall(this);
 	}
 
-	@Override
-	public void count() {
-		// TODO Auto-generated method stub
-		
+	public void work() {
+		if(hp <= 0){
+			dead();
+		}
+	}
+	
+	public void damage(){
+		hp -= 1;
+		System.out.println("wall damaged  :  " + hp);
 	}
 
 	@Override
@@ -354,6 +364,18 @@ class Wall1 extends Colider implements Wall {
 	public void setOutTriggerMoment(boolean value){
 		outTriggerMoment = value;
 	}
+	
+	public int getHp(){
+		return hp;
+	}
+	
+	public int getSize(String text){
+		if(text.equals("height")){
+			return height;
+		} else {
+			return width;
+		}
+	}
 }
 
 class Laser1 extends Colider implements Laser{
@@ -362,7 +384,7 @@ class Laser1 extends Colider implements Laser{
 	private int count = 0, countLimit = 50, deadLimit = 75;
 	private int indexX, indexY;
 	private boolean wallColide = false;
-	private Rectangle2D.Float wallRectange;
+	private Wall1 targetWall;
 	
 	private DataManagement dm;
 	private LaserArrow linkLar;
@@ -385,7 +407,7 @@ class Laser1 extends Colider implements Laser{
 	}
 	
 	
-	public void count(){
+	public void work(){
 		count++;
 		if(count > countLimit && !trigger){
 			trigger = true;
@@ -400,6 +422,12 @@ class Laser1 extends Colider implements Laser{
 		// TODO Auto-generated method stub
 		if(dm.removeColider(this)){
 			linkLar.setExist(false);
+		}
+		
+		// wall에 데미지 입히는것 여기서 실행
+		// 충돌 처리가 여러번 일어나기 때문에 여기서 실행해야함
+		if(targetWall != null){
+			targetWall.damage();
 		}
 		
 	}
@@ -477,13 +505,14 @@ class Laser1 extends Colider implements Laser{
 		return 0;
 	}
 	
-	public void setWallColide(Rectangle2D.Float target){
-//		wallColide = true;
-		wallRectange = (Rectangle2D.Float)target.clone();
+	public void setWallColide(Wall1 w){
+		targetWall = w;
 		setSizeWhileColide();
 	}
 	
 	private void setSizeWhileColide(){
+		Rectangle2D.Float wallRectange = targetWall.getBounds();
+		
 		if(name.equals("row1")){
 			width = wallRectange.x - dm.rowStartX1 - 32;
 			cwidth = width;
@@ -508,8 +537,8 @@ class Laser1 extends Colider implements Laser{
 		return wallColide;
 	}
 	
-	public Rectangle2D.Float getWallRectangle(){
-		return wallRectange;
+	public Wall1 getTargetWall(){
+		return targetWall;
 	}
 }
 
@@ -633,7 +662,6 @@ class GameLevel {
 				new Laser1(tempPoint.x, tempPoint.y);
 			}
 		}
-		
 		
 	}
 	

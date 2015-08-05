@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D.Float;
 public interface Obstacle {
 	
 	public void dead();
-	public void count();
+	public void work();
 	public void setSize(int width, int height);
 	public void setPosition(int x, int y);
 }
