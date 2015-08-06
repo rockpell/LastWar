@@ -75,7 +75,8 @@ public class Screen extends JFrame{
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
 					if(!dm.getPlayer().getOutTrigger()){
-						dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+						if(dm.getWallSetCount() < dm.getWallLimit())
+							dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
 					}
 					dm.getPlayer().setOutTrigger(true);
 				}

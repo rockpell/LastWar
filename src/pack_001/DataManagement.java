@@ -51,6 +51,8 @@ public class DataManagement {
 	public final int rowNumber = 11, colNumber = 21;
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
+	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입 예정
+	
 	private DataManagement(){
 		gameScenario = new JParser();
 		player = new Player();
@@ -130,6 +132,18 @@ public class DataManagement {
 			}
 		}
 		return null;
+	}
+	
+	public int getWallLimit(){
+		return wallLimit;
+	}
+	
+	public void setWallLimit(int value){
+		wallLimit = value;
+	}
+	
+	public int getWallSetCount(){
+		return wallSet.size();
 	}
 }
 
