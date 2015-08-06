@@ -52,6 +52,7 @@ public class DataManagement {
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
 	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입 예정
+	private int coolTime = 15, coolTimeLeft = 0;
 	
 	private DataManagement(){
 		gameScenario = new JParser();
@@ -144,6 +145,21 @@ public class DataManagement {
 	
 	public int getWallSetCount(){
 		return wallSet.size();
+	}
+	
+	public int getCoolTimeLeft(){
+		return coolTimeLeft;
+	}
+	
+	public void initCoolTime(){
+		coolTimeLeft = coolTime;
+	}
+	
+	public void countCoolTime(){
+		if(coolTimeLeft > 0){
+			coolTimeLeft -= 1;
+		}
+		
 	}
 }
 

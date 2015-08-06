@@ -74,11 +74,14 @@ public class Screen extends JFrame{
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					if(!dm.getPlayer().getOutTrigger()){
-						if(dm.getWallSetCount() < dm.getWallLimit())
-							dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+					if(dm.getCoolTimeLeft() == 0){
+						if(!dm.getPlayer().getOutTrigger()){
+							if(dm.getWallSetCount() < dm.getWallLimit())
+								dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+						}
+						dm.getPlayer().setOutTrigger(true);
+						dm.initCoolTime();
 					}
-					dm.getPlayer().setOutTrigger(true);
 				}
 				
 				if(keyList.size() > 1){
@@ -253,7 +256,7 @@ public class Screen extends JFrame{
 	        
 			mgc.drawImage(brick_wall_001, t, null);
 			
-			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2, wy - 10);
+			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2 - 3, wy - 10);
 		}
 	}
 	
@@ -343,7 +346,10 @@ public class Screen extends JFrame{
 	
 	private void drawSkill(){
 		mgc.drawRect(188, 712, 70, 70);
-		mgc.drawImage(brick_wall_001, 200, 725, null);
+		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
+		
+		if(dm.getCoolTimeLeft() != 0)
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 188 + 30, 708);
 	}
 	
 }

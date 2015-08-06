@@ -135,6 +135,10 @@ class Looper implements Runnable{
 				Thread.sleep(interval);
 				engine.setPlayTime(playTime += 1);
 				gameLevel.levelStart();
+				
+				if(playTime % 20 == 0){
+					dm.countCoolTime();
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
