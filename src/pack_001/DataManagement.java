@@ -141,6 +141,7 @@ class Player extends Colider implements Unit{
 	private int speed = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
+	private boolean outTrigger = false;
 	
 	Engine engine;
 	
@@ -275,6 +276,14 @@ class Player extends Colider implements Unit{
 //			System.out.println("colide down");
 			isMoveUp = true;
 		}
+	}
+	
+	public boolean getOutTrigger(){
+		return outTrigger;
+	}
+	
+	public void setOutTrigger(boolean value){
+		outTrigger = value;
 	}
 }
 

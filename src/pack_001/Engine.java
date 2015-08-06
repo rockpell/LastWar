@@ -58,19 +58,31 @@ public class Engine {
 			c.work();
 		}
 		
+		boolean colideCheck = false;
+		
 		for(Wall1 w : wallSet2){
+			Player player = dm.getPlayer();
 			if(w.getTrigger()){
-				if(dm.getPlayer().collision(w.getBounds())){
+				if(player.collision(w.getBounds())){
 //					System.out.println("colide wall");
 					if(w.getOutTrigger())
 						w.setOutTriggerMoment(true);
+//					if(player.getOutTrigger())
+//						w.setOutTriggerMoment(true);
+						
 					if(w.getOutTriggerMoment())
-						dm.getPlayer().checkMoveable(w.getBounds());
+						player.checkMoveable(w.getBounds());
+					
+					colideCheck = true;
 				} else {
 					w.setOutTrigger(true);
 				}
 			}
 			w.work();
+		}
+		
+		if(!colideCheck){
+			dm.getPlayer().setOutTrigger(false);
 		}
 	}
 	
