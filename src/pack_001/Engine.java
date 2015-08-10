@@ -34,6 +34,7 @@ public class Engine {
 		}
 		Set<Laser1> coliderSet2 = new HashSet<Laser1>(dm.getColiderSet());
 		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
+		Set<Enemy1> enemySet2 = new HashSet<Enemy1>(dm.getEnemySet());
 		
 		for(Laser1 c : coliderSet2){
 			
@@ -83,6 +84,10 @@ public class Engine {
 		
 		if(!colideCheck){
 			dm.getPlayer().setOutTrigger(false);
+		}
+		
+		for(Enemy1 en : enemySet2){
+			en.work();
 		}
 	}
 	

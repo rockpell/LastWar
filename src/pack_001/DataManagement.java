@@ -44,6 +44,7 @@ public class DataManagement {
 	private final Set<LaserArrow> arrowSet = new HashSet<LaserArrow>();
 	private final Set<Wall1> wallSet = new HashSet<Wall1>();
 	private final Set<Laser1> coliderSet = new HashSet<Laser1>();
+	private final Set<Enemy1> enemySet = new HashSet<Enemy1>();
 	private JParser gameScenario;
 	private Player player;
 	
@@ -59,6 +60,8 @@ public class DataManagement {
 		player = new Player();
 		player.setPosition(550, 350);
 		player.setSize(48, 48);
+		
+		addEnemy(new Enemy1(560, 370));
 		
 		initArrow();
 	}
@@ -126,6 +129,18 @@ public class DataManagement {
 		return coliderSet;
 	}
 	
+	public synchronized boolean addEnemy(Enemy1 target){
+		return enemySet.add(target);
+	}
+	
+	public synchronized boolean removeEnemy(Enemy1 target){
+		return enemySet.remove(target);
+	}
+	
+	public Set<Enemy1> getEnemySet(){
+		return enemySet;
+	}
+	
 	public Laser1 findColiderLaser(Laser1 target){
 		for(Laser1 la : coliderSet){
 			if(la.equals(target)){
@@ -167,7 +182,7 @@ class Player extends Colider implements Unit{
 	private float x, y;
 	private float dx = 0, dy = 0;
 	private int width, height;
-	private int hp = 100;
+	private int hp = 3;
 	private int speed = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
@@ -317,6 +332,129 @@ class Player extends Colider implements Unit{
 	}
 }
 
+class Enemy1 extends Colider implements Unit {
+	private float x, y; 
+	private float dx, dy;
+	private int width, height;
+	private float speed = 1.5f;
+	private int hp = 5;
+	private int swidth = 1100, sheight = 600;
+	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
+	private Point2D.Float movePoint;
+	
+	Enemy1(float x, float y){
+		setPosition(x, y);
+		setSize(48, 48);
+		move(new Point2D.Float(600, 420));
+	}
+	
+	public void move(Point2D.Float target){
+		movePoint = target;
+		
+		if(target.x > this.x){
+			dx = speed;
+		} else if(target.x < this.x){
+			dx = -speed;
+		} else {
+			dx = 0;
+		}
+		
+		if(target.y > this.y){
+			dy = speed;
+		} else if(target.y < this.y){
+			dy = -speed;
+		} else {
+			dy = 0;
+		}
+	}
+	
+	@Override
+	public void work() {
+		if(x - speed < movePoint.x && movePoint.x < x + speed){
+			dx = 0;
+		}
+		
+		if(y - speed < movePoint.y && movePoint.y < y + speed){
+			dy = 0;
+		}
+		
+		if(x + dx > 50 && x + dx < swidth){
+			x += dx;
+		}
+		if(y + dy > 80 && y + dy < sheight){
+			y += dy;
+		}
+		
+		if(isMoveRight){
+			x -= speed;
+			isMoveRight = false;
+		}
+		if(isMoveLeft){
+			x += speed;
+			isMoveLeft = false;
+		}
+		if(isMoveUp){
+			y += speed;
+			isMoveUp = false;
+		}
+		if(isMoveDown){
+			y -= speed;
+			isMoveDown = false;
+		}
+	}
+
+	@Override
+	public void dead() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getHp() {
+		// TODO Auto-generated method stub
+		return hp;
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		setBox(0, 0, width, height);
+	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void setPosition(float x, float y){
+		this.x = x;
+		this.y = y;
+	}
+	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
+	}
+
+	@Override
+	public Float getBounds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean collision(Float target) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+}
+
 class Wall1 extends Colider implements Wall {
 	
 	private float x, y;
@@ -436,7 +574,7 @@ class Laser1 extends Colider implements Laser{
 			linkLar.setExist(true);
 		}
 		
-		setPosition(x, y);
+		setPosition(linkLar.getIndexX(), linkLar.getIndexY());
 		
 		indexX = x;
 		indexY = y;
@@ -486,12 +624,14 @@ class Laser1 extends Colider implements Laser{
 			height = 10;
 			this.x = dm.rowStartX1 + 32;
 			this.y = dm.rowStartY + y*50 + 16;
+			
 		} else if(x == 2 || x == 3){
 			name = "col" + (x-1);
 			width = 10;
 			height = 600 - 32;
 			this.x = dm.colStartX + y*50 + 16;
 			this.y = dm.colStartY1 + 32;
+			
 		}
 	}
 

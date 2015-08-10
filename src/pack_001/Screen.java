@@ -223,6 +223,7 @@ public class Screen extends JFrame{
 	    
 	    drawWall();
 	    drawLaser(mgc);
+	    drawEnemy();
 	    
 	    Point2D.Float point = player.getPosition();
 		AffineTransform t = new AffineTransform();
@@ -234,7 +235,7 @@ public class Screen extends JFrame{
 //        mgc.drawImage(brick_wall_001, 20, 45, null);
         
         mgc.setColor(Color.black);
-        mgc.drawString("time : " + Engine.getInstance().getPlayTime(), screenWidth - 100, 50);
+        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
         
         drawArrow();
         
@@ -341,6 +342,15 @@ public class Screen extends JFrame{
 			    	g.fill(new Rectangle2D.Float(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height")) );
 				}
 			}
+		}
+	}
+	
+	private void drawEnemy(){
+		for(Enemy1 en : dm.getEnemySet()){
+			AffineTransform t = new AffineTransform();
+	        t.translate(en.getX(), en.getY());
+			
+			mgc.drawImage(brick_wall_001, t, null);
 		}
 	}
 	
