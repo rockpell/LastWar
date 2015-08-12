@@ -87,7 +87,23 @@ public class Engine {
 		}
 		
 		for(Enemy1 en : enemySet2){
+			Player player = dm.getPlayer();
+			
+			for(Wall1 wa : wallSet2){
+				if(wa.getTrigger()){
+					if(en.collision(wa.getBounds())){
+						en.checkMoveable(wa.getBounds());
+					}
+				}
+			}
+			
+			if(en.collision(player.getBounds())){
+				en.checkMoveable(player.getBounds());
+				player.checkMoveable(en.getBounds());
+			}
+			
 			en.work();
+			en.move(player.getPosition());
 		}
 	}
 	

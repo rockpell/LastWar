@@ -61,7 +61,7 @@ public class DataManagement {
 		player.setPosition(550, 350);
 		player.setSize(48, 48);
 		
-		addEnemy(new Enemy1(560, 370));
+		addEnemy(new Enemy1(680, 430));
 		
 		initArrow();
 	}
@@ -366,6 +366,11 @@ class Enemy1 extends Colider implements Unit {
 		} else {
 			dy = 0;
 		}
+		
+		if(dx != 0 && dy != 0){
+			dx = (float)(dx / Math.sqrt(2));
+			dy = (float)(dy / Math.sqrt(2));
+		}
 	}
 	
 	@Override
@@ -376,13 +381,6 @@ class Enemy1 extends Colider implements Unit {
 		
 		if(y - speed < movePoint.y && movePoint.y < y + speed){
 			dy = 0;
-		}
-		
-		if(x + dx > 50 && x + dx < swidth){
-			x += dx;
-		}
-		if(y + dy > 80 && y + dy < sheight){
-			y += dy;
 		}
 		
 		if(isMoveRight){
@@ -400,6 +398,32 @@ class Enemy1 extends Colider implements Unit {
 		if(isMoveDown){
 			y -= speed;
 			isMoveDown = false;
+		}
+		
+		if(x + dx > 50 && x + dx < swidth){
+			x += dx;
+		}
+		if(y + dy > 80 && y + dy < sheight){
+			y += dy;
+		}
+	}
+	
+	public void checkMoveable(Rectangle2D.Float target){
+		if( (x + cx) + cwidth >= target.x && x + cx < target.x 
+				&& y + cy < target.y + target.height && y + cy + cheight > target.y){ // 물체를 기준으로 왼쪽에서 충돌
+			isMoveRight = true;
+		}
+		if( x + cx <= target.x + target.width && (x + cx + cwidth) > target.x + target.width
+				&& y + cy < target.y + target.height && y + cy + cheight > target.y){ // 물체 오른쪽에 충돌
+			isMoveLeft = true;
+		}
+		if( y + cy < target.y && y + cy + cwidth >= target.y
+				&& x + cx < target.x + target.width && x + cx + cwidth > target.x){ // 물체 위쪽에 충돌
+			isMoveDown = true;
+		}
+		if( y + cy <= target.y + target.height && y + cy + cheight > target.y + target.height
+				&& x + cx < target.x + target.width && x + cx + cwidth > target.x){ // 물체 아래쪽에 충돌
+			isMoveUp = true;
 		}
 	}
 
@@ -444,13 +468,13 @@ class Enemy1 extends Colider implements Unit {
 	@Override
 	public Float getBounds() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Rectangle2D.Float(x + cx, y + cy, cwidth, cheight);
 	}
 
 	@Override
-	public boolean collision(Float target) {
+	public boolean collision(Rectangle2D.Float target) {
 		// TODO Auto-generated method stub
-		return false;
+		return target.intersects(this.getBounds());
 	}
 	
 }
