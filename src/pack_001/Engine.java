@@ -103,7 +103,6 @@ public class Engine {
 			}
 			
 			en.work();
-			en.move(player.getPosition());
 		}
 	}
 	

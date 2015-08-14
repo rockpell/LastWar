@@ -340,12 +340,14 @@ class Enemy1 extends Colider implements Unit {
 	private int hp = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
-	private Point2D.Float movePoint;
+	private boolean randMove = true;
+	private Point2D.Float movePoint = null;
+	private int rand_number = 0, direction = 0;
+	private float vision = 150.0f;
 	
 	Enemy1(float x, float y){
 		setPosition(x, y);
 		setSize(48, 48);
-		move(new Point2D.Float(600, 420));
 	}
 	
 	public void move(Point2D.Float target){
@@ -373,14 +375,67 @@ class Enemy1 extends Colider implements Unit {
 		}
 	}
 	
+	private void randomMove(){
+		rand_number += 1;
+		
+		switch(direction){ // enemy의 이동 방향
+		case 0 : //left
+			dx = -speed;
+			dy = 0;
+			break;
+		case 1 : // right
+			dx = speed;
+			dy = 0;
+			break;
+		case 2 : // up
+			dy = -speed;
+			dx = 0;
+			break;
+		case 3 : // down
+			dy = speed;
+			dx = 0;
+			break;
+		}
+		
+		if(rand_number > 100){
+			directionChange();
+			rand_number = 0;
+		}
+	}
+	
+	private void directionChange(){
+		direction = (int)(Math.random() * 3);
+	}
+	
+	private void calDistance(){
+		Point2D.Float target = DataManagement.getInstance().getPlayer().getPosition();
+		float x1 = (float) Math.pow((this.x - target.x), 2);
+		float x2 = (float) Math.pow((this.y - target.y), 2);
+		
+		if(Math.sqrt(x1 + x2) < vision){
+			randMove = false;
+		} else {
+			randMove = true;
+		}
+		
+	}
+	
 	@Override
 	public void work() {
+		calDistance();
+
 		if(x - speed < movePoint.x && movePoint.x < x + speed){
 			dx = 0;
 		}
 		
 		if(y - speed < movePoint.y && movePoint.y < y + speed){
 			dy = 0;
+		}
+		
+		if(!randMove){
+			move(DataManagement.getInstance().getPlayer().getPosition());
+		} else {
+			randomMove();
 		}
 		
 		if(isMoveRight){
@@ -402,9 +457,14 @@ class Enemy1 extends Colider implements Unit {
 		
 		if(x + dx > 50 && x + dx < swidth){
 			x += dx;
+		} else if(x + dx < 50 || x + dx < swidth){
+			directionChange();
 		}
+		
 		if(y + dy > 80 && y + dy < sheight){
 			y += dy;
+		} else if(y + dy < 80 || y + dy > sheight){
+			directionChange();
 		}
 	}
 	
@@ -450,11 +510,13 @@ class Enemy1 extends Colider implements Unit {
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
+		movePoint = new Point2D.Float(x, y);
 	}
 	
 	public void setPosition(float x, float y){
 		this.x = x;
 		this.y = y;
+		movePoint = new Point2D.Float(x, y);
 	}
 	
 	public float getX(){
