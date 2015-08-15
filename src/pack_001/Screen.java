@@ -49,7 +49,7 @@ public class Screen extends JFrame{
 	private Image mshi;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	private Image brick_wall_001;
+	private Image brick_wall_001, excavator_001;
 	
 	private boolean gameStart = false;
 	
@@ -193,6 +193,7 @@ public class Screen extends JFrame{
 		 arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
 		 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
 		 brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
+		 excavator_001 = new ImageIcon("resource/excavator.png").getImage();
     }
 	
 	public void update(Graphics g) {
@@ -225,12 +226,8 @@ public class Screen extends JFrame{
 	    drawLaser(mgc);
 	    drawEnemy();
 	    
-	    Point2D.Float point = player.getPosition();
-		AffineTransform t = new AffineTransform();
-        t.translate(point.x, point.y); // x/y set here
-        t.scale(1, 1); // scale = 1 
-        
-        mgc.drawImage(mshi, t, null);
+	    drawPlayer();
+	    
         
 //        mgc.drawImage(brick_wall_001, 20, 45, null);
         
@@ -245,6 +242,17 @@ public class Screen extends JFrame{
 		
 	}
 	
+	private void drawPlayer(){
+		Point2D.Float point = player.getPosition();
+		AffineTransform t = new AffineTransform();
+        t.translate(point.x, point.y); // x/y set here
+        t.scale(1, 1); // scale = 1 
+        
+        mgc.drawImage(mshi, t, null);
+        mgc.setColor(Color.red);
+        mgc.drawString(String.valueOf(player.getHp()), player.getPosition().x + player.getWidth()/2 - 3, player.getPosition().y - 5);
+	}
+	
 	private void drawWall(){
         
 		for(Wall1 wa : dm.getWallSet()){
@@ -256,7 +264,7 @@ public class Screen extends JFrame{
 	        t.scale(1, 1);
 	        
 			mgc.drawImage(brick_wall_001, t, null);
-			
+			mgc.setColor(Color.red);
 			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2 - 3, wy - 10);
 		}
 	}
@@ -350,7 +358,13 @@ public class Screen extends JFrame{
 			AffineTransform t = new AffineTransform();
 	        t.translate(en.getX(), en.getY());
 			
-			mgc.drawImage(brick_wall_001, t, null);
+			mgc.drawImage(excavator_001, t, null);
+			
+			if(!en.getRandMove()){
+				mgc.setColor(Color.red);
+				mgc.drawString(String.valueOf(en.getHp()), en.getX() + en.getWidth()/2 - 3, en.getY() + - 8);
+			}
+			
 		}
 	}
 	

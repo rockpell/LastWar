@@ -97,6 +97,14 @@ public class Engine {
 				}
 			}
 			
+			for(Laser1 la : coliderSet2){
+				if(en.getDamageable()){
+					if(en.collision(la.getBounds())){
+						en.damaged(); 
+					}
+				}
+			}
+			
 			if(en.collision(player.getBounds())){
 				en.checkMoveable(player.getBounds());
 				player.checkMoveable(en.getBounds());

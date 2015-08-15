@@ -330,6 +330,14 @@ class Player extends Colider implements Unit{
 	public void setOutTrigger(boolean value){
 		outTrigger = value;
 	}
+	
+	public int getHeight(){
+		return height;
+	}
+	
+	public int getWidth(){
+		return width;
+	}
 }
 
 class Enemy1 extends Colider implements Unit {
@@ -340,9 +348,10 @@ class Enemy1 extends Colider implements Unit {
 	private int hp = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
-	private boolean randMove = true;
+	private boolean randMove = true; // randMove == 랜덤 이동(플레이어 인식 못할 경우 랜덤 이동) 
+	private boolean damageable = false, damaged = false; // damageable == 플레이어 인식 시에만 데미지 입음, damaged == 피해 입음 상태 표시
 	private Point2D.Float movePoint = null;
-	private int rand_number = 0, direction = 0;
+	private int rand_number = 0, direction = 0, damage_count = 0;
 	private float vision = 150.0f;
 	
 	Enemy1(float x, float y){
@@ -414,8 +423,10 @@ class Enemy1 extends Colider implements Unit {
 		
 		if(Math.sqrt(x1 + x2) < vision){
 			randMove = false;
+			damageable = true;
 		} else {
 			randMove = true;
+			damageable = false;
 		}
 		
 	}
@@ -423,7 +434,15 @@ class Enemy1 extends Colider implements Unit {
 	@Override
 	public void work() {
 		calDistance();
-
+		
+		if(damaged){
+			damage_count += 1;
+			if(damage_count > 50) {
+				damage_count = 0;
+				damaged = false;
+			}
+		}
+		
 		if(x - speed < movePoint.x && movePoint.x < x + speed){
 			dx = 0;
 		}
@@ -490,9 +509,19 @@ class Enemy1 extends Colider implements Unit {
 	@Override
 	public void dead() {
 		// TODO Auto-generated method stub
-		
+		DataManagement.getInstance().removeEnemy(this);
 	}
-
+	
+	public void damaged(){
+		if(!damaged){
+			hp -= 1;
+			damaged = true;
+			if(hp <= 0){
+				dead();
+			}
+		}
+	}
+	
 	@Override
 	public int getHp() {
 		// TODO Auto-generated method stub
@@ -526,7 +555,15 @@ class Enemy1 extends Colider implements Unit {
 	public float getY(){
 		return y;
 	}
-
+	
+	public int getHeight(){
+		return height;
+	}
+	
+	public int getWidth(){
+		return width;
+	}
+	
 	@Override
 	public Float getBounds() {
 		// TODO Auto-generated method stub
@@ -539,6 +576,13 @@ class Enemy1 extends Colider implements Unit {
 		return target.intersects(this.getBounds());
 	}
 	
+	public boolean getRandMove(){
+		return randMove;
+	}
+	
+	public boolean getDamageable(){
+		return damageable;
+	}
 }
 
 class Wall1 extends Colider implements Wall {
