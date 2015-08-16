@@ -187,6 +187,8 @@ class Player extends Colider implements Unit{
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	private boolean outTrigger = false;
+	private boolean damaged = false; // damaged == 피해 입음 상태 표시
+	private int damage_count = 0;
 	
 	Engine engine;
 	
@@ -227,12 +229,32 @@ class Player extends Colider implements Unit{
 	
 	@Override
 	public void work() {
-		// TODO Auto-generated method stub
+		if(damaged){
+			damage_count += 1;
+			if(damage_count > 50) {
+				damage_count = 0;
+				damaged = false;
+			}
+		}
+		
 		if(x + dx > 50 && x + dx < swidth){
 			x += dx;
 		}
 		if(y + dy > 80 && y + dy < sheight){
 			y += dy;
+		}
+		
+		if(x <= 50){
+			x += speed;
+		}
+		if(x >= swidth){
+			x -= speed;
+		}
+		if(y >= sheight){
+			y -= speed;
+		}
+		if(y <= 80){
+			y += speed;
 		}
 		
 		if(isMoveRight){
@@ -251,6 +273,17 @@ class Player extends Colider implements Unit{
 			y -= speed;
 			isMoveDown = false;
 		}
+	}
+	
+	public void damaged(){
+		if(!damaged){
+			hp -= 1;
+			damaged = true;
+			if(hp <= 0){
+				dead();
+			}
+		}
+		
 	}
 	
 	@Override

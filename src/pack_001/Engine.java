@@ -35,6 +35,7 @@ public class Engine {
 		Set<Laser1> coliderSet2 = new HashSet<Laser1>(dm.getColiderSet());
 		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
 		Set<Enemy1> enemySet2 = new HashSet<Enemy1>(dm.getEnemySet());
+		Player player = dm.getPlayer();
 		
 		for(Laser1 c : coliderSet2){
 			
@@ -49,10 +50,8 @@ public class Engine {
 			}
 			
 			if(c.getTrigger()){
-				if(dm.getPlayer().collision(c.getBounds())){
-					System.out.println("colide");
-//					System.out.println(c.getBounds());
-//					System.out.println(dm.getPlayer().getBounds());
+				if(player.collision(c.getBounds())){
+					player.damaged();
 				}
 			}
 			
@@ -62,7 +61,6 @@ public class Engine {
 		boolean colideCheck = false;
 		
 		for(Wall1 w : wallSet2){
-			Player player = dm.getPlayer();
 			if(w.getTrigger()){
 				if(player.collision(w.getBounds())){
 //					System.out.println("colide wall");
@@ -83,11 +81,11 @@ public class Engine {
 		}
 		
 		if(!colideCheck){
-			dm.getPlayer().setOutTrigger(false);
+			player.setOutTrigger(false);
 		}
 		
 		for(Enemy1 en : enemySet2){
-			Player player = dm.getPlayer();
+			
 			
 			for(Wall1 wa : wallSet2){
 				if(wa.getTrigger()){
@@ -98,16 +96,20 @@ public class Engine {
 			}
 			
 			for(Laser1 la : coliderSet2){
-				if(en.getDamageable()){
-					if(en.collision(la.getBounds())){
-						en.damaged(); 
+				if(la.getTrigger()){
+					if(en.getDamageable()){
+						if(en.collision(la.getBounds())){
+							en.damaged(); 
+						}
 					}
 				}
+				
 			}
 			
 			if(en.collision(player.getBounds())){
 				en.checkMoveable(player.getBounds());
 				player.checkMoveable(en.getBounds());
+				player.damaged();
 			}
 			
 			en.work();
