@@ -16,17 +16,37 @@ public class Engine {
 	
 	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
+	private boolean stopOn = false;
+	Looper game_loop;
+	Thread th1;
 	
 	private Engine(){
 
 	}
 	
 	public void startLoop(){
-		Thread th1 = new Thread(new Looper("what", 20));
+		if(game_loop == null){
+			game_loop = new Looper("what", 20);
+		}
+		
+		th1 = new Thread(game_loop);
 		th1.start();
+		
 		dm = DataManagement.getInstance();
 	}
 	
+	public void stopLoop(){
+		stopOn = true;
+	}
+	
+	public void killThread(){
+		if(stopOn){
+			th1.interrupt();
+//			th1.stop();
+			stopOn = false;
+		}
+		
+	}
 	
 	public void loopColider(){
 		if(dm.getColiderSet().size() > 0){
@@ -159,16 +179,19 @@ class Looper implements Runnable{
 		while(!Thread.currentThread().isInterrupted()){
 			try {
 				sc.repaint();
-//				System.out.println("running");
+				
 				engine.loopColider();
 				dm.getPlayer().work();
-				Thread.sleep(interval);
+				
 				engine.setPlayTime(playTime += 1);
 				gameLevel.levelStart();
 				
 				if(playTime % 20 == 0){
 					dm.countCoolTime();
 				}
+				
+				Thread.sleep(interval);
+				engine.killThread();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

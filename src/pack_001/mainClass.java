@@ -13,7 +13,6 @@ public class mainClass {
             public void run() {
                 Screen ex = Screen.getInstance();
                 ex.setVisible(true);
-//                engine.startLoop();
             }
         });
 	}

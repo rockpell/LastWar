@@ -52,6 +52,7 @@ public class Screen extends JFrame{
 	private Image brick_wall_001, excavator_001;
 	
 	private boolean gameStart = false;
+	private boolean stopOn = true;
 	
 	private Screen() {
 		 super("Last War");
@@ -126,8 +127,15 @@ public class Screen extends JFrame{
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE){
 					if(!gameStart){
+						stopScreenOn();
 						gameStart = true;
 						Engine.getInstance().startLoop();
+						System.out.println("startLoop");
+					} else {
+						stopScreenOn();
+						gameStart = false;
+						Engine.getInstance().stopLoop();
+						System.out.println("stopLoop");
 					}
 				}
 				
@@ -237,7 +245,7 @@ public class Screen extends JFrame{
         drawArrow();
         
         drawSkill();
-        
+        stopScreen();
 		g.drawImage(memoryimage, 0, 0, this);
 		
 	}
@@ -374,6 +382,16 @@ public class Screen extends JFrame{
 		
 		if(dm.getCoolTimeLeft() != 0)
 			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 188 + 30, 708);
+	}
+	
+	private void stopScreenOn(){
+		stopOn = !stopOn;
+	}
+	
+	private void stopScreen(){
+		if(stopOn){
+			mgc.drawString("STOP", 450, 300);
+		}
 	}
 	
 }
