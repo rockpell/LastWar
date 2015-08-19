@@ -44,6 +44,7 @@ public class Engine {
 			th1.interrupt();
 //			th1.stop();
 			stopOn = false;
+			Screen.getInstance().repaint();
 		}
 		
 	}

@@ -1,6 +1,7 @@
 package pack_001;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -130,12 +131,10 @@ public class Screen extends JFrame{
 						stopScreenOn();
 						gameStart = true;
 						Engine.getInstance().startLoop();
-						System.out.println("startLoop");
 					} else {
 						stopScreenOn();
 						gameStart = false;
 						Engine.getInstance().stopLoop();
-						System.out.println("stopLoop");
 					}
 				}
 				
@@ -390,7 +389,10 @@ public class Screen extends JFrame{
 	
 	private void stopScreen(){
 		if(stopOn){
-			mgc.drawString("STOP", 450, 300);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			mgc.setColor(Color.red);
+			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2 - 40);
+			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
 	}
 	

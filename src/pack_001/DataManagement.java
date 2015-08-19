@@ -385,7 +385,7 @@ class Enemy1 extends Colider implements Unit {
 	private boolean damageable = false, damaged = false; // damageable == 플레이어 인식 시에만 데미지 입음, damaged == 피해 입음 상태 표시
 	private Point2D.Float movePoint = null;
 	private int rand_number = 0, direction = 0, damage_count = 0;
-	private float vision = 150.0f;
+	private float vision = 200.0f;
 	
 	Enemy1(float x, float y){
 		setPosition(x, y);
