@@ -182,7 +182,7 @@ class Player extends Colider implements Unit{
 	private float x, y;
 	private float dx = 0, dy = 0;
 	private int width, height;
-	private int hp = 3;
+	private int hp = 3, maxHp = 3;
 	private int speed = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
@@ -296,6 +296,10 @@ class Player extends Colider implements Unit{
 		// TODO Auto-generated method stub
 		return hp;
 	}
+	
+	public int getMaxHp(){
+		return maxHp;
+	}
 
 	@Override
 	public void setSize(int width, int height) {
@@ -378,7 +382,7 @@ class Enemy1 extends Colider implements Unit {
 	private float dx, dy;
 	private int width, height;
 	private float speed = 1.5f;
-	private int hp = 5;
+	private int hp = 5, maxHp = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	private boolean randMove = true; // randMove == 랜덤 이동(플레이어 인식 못할 경우 랜덤 이동) 
@@ -560,6 +564,10 @@ class Enemy1 extends Colider implements Unit {
 		// TODO Auto-generated method stub
 		return hp;
 	}
+	
+	public int getMaxHp(){
+		return maxHp;
+	}
 
 	@Override
 	public void setSize(int width, int height) {
@@ -623,7 +631,7 @@ class Wall1 extends Colider implements Wall {
 	private float x, y;
 	private int width, height;
 	private int count;
-	private int hp = 5;
+	private int hp = 5, maxHp = 5;
 	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
 	Wall1(float x, float y){
@@ -676,6 +684,14 @@ class Wall1 extends Colider implements Wall {
 		}
 	}
 	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
+	}
+	
 	
 	@Override
 	public Float getBounds() {
@@ -709,12 +725,24 @@ class Wall1 extends Colider implements Wall {
 		return hp;
 	}
 	
+	public int getMaxHp(){
+		return maxHp;
+	}
+	
 	public int getSize(String text){
 		if(text.equals("height")){
 			return height;
 		} else {
 			return width;
 		}
+	}
+	
+	public int getWidth(){
+		return width;
+	}
+	
+	public int getHeight(){
+		return height;
 	}
 }
 

@@ -256,8 +256,24 @@ public class Screen extends JFrame{
         t.scale(1, 1); // scale = 1 
         
         mgc.drawImage(mshi, t, null);
-        mgc.setColor(Color.red);
-        mgc.drawString(String.valueOf(player.getHp()), player.getPosition().x + player.getWidth()/2 - 3, player.getPosition().y - 5);
+        
+        Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
+        Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45 * ((float)player.getHp()/(float)player.getMaxHp()), 15);
+        
+        mgc.setColor(Color.gray);
+		mgc.fill(out_line1);
+		
+		if(!(player.getHp() <= 0)){
+			mgc.setColor(Color.red);
+			mgc.fill(in_line1);
+		}
+		
+        mgc.setColor(Color.black);
+		mgc.draw(out_line1);
+		
+        mgc.setColor(Color.white);
+        mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
+        
 	}
 	
 	private void drawWall(){
@@ -271,8 +287,26 @@ public class Screen extends JFrame{
 	        t.scale(1, 1);
 	        
 			mgc.drawImage(brick_wall_001, t, null);
-			mgc.setColor(Color.red);
-			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2 - 3, wy - 10);
+			
+//			mgc.setColor(Color.red);
+//			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2 - 3, wy - 10);
+			
+			Rectangle2D out_line1 = new Rectangle2D.Float(wa.getX(), wa.getY() - 18, wa.getWidth(), 15);
+	        Rectangle2D in_line1 = new Rectangle2D.Float(wa.getX(), wa.getY() - 18, wa.getWidth() * ((float)wa.getHp()/(float)wa.getMaxHp()), 15);
+	        
+	        mgc.setColor(Color.gray);
+			mgc.fill(out_line1);
+			
+			if(!(wa.getHp() <= 0)){
+				mgc.setColor(Color.red);
+				mgc.fill(in_line1);
+			}
+			
+	        mgc.setColor(Color.black);
+			mgc.draw(out_line1);
+			
+	        mgc.setColor(Color.white);
+	        mgc.drawString(String.valueOf(wa.getHp()) + " / " + String.valueOf(wa.getMaxHp()), wa.getX() + wa.getWidth()/2 - 12, wa.getY() - 6);
 		}
 	}
 	
@@ -368,8 +402,23 @@ public class Screen extends JFrame{
 			mgc.drawImage(excavator_001, t, null);
 			
 			if(!en.getRandMove()){
-				mgc.setColor(Color.red);
-				mgc.drawString(String.valueOf(en.getHp()), en.getX() + en.getWidth()/2 - 3, en.getY() + - 8);
+				
+				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45, 15);
+		        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
+		        
+		        mgc.setColor(Color.gray);
+				mgc.fill(out_line1);
+				
+				if(!(en.getHp() <= 0)){
+					mgc.setColor(Color.red);
+					mgc.fill(in_line1);
+				}
+				
+		        mgc.setColor(Color.black);
+				mgc.draw(out_line1);
+				
+		        mgc.setColor(Color.white);
+		        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - 12, en.getY() - 6);
 			}
 			
 		}
