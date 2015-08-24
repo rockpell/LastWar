@@ -61,8 +61,6 @@ public class DataManagement {
 		player.setPosition(550, 350);
 		player.setSize(48, 48);
 		
-		addEnemy(new Enemy1(680, 430));
-		
 		initArrow();
 	}
 	
@@ -391,7 +389,22 @@ class Enemy1 extends Colider implements Unit {
 	private int rand_number = 0, direction = 0, damage_count = 0;
 	private float vision = 200.0f;
 	
+	private DataManagement dm;
+	
+	Enemy1(){
+		dm = DataManagement.getInstance();
+		
+		dm.addEnemy(this);
+		
+		setPosition(550.0f, 350.0f);
+		setSize(48, 48);
+	}
+	
 	Enemy1(float x, float y){
+		dm = DataManagement.getInstance();
+		
+		dm.addEnemy(this);
+		
 		setPosition(x, y);
 		setSize(48, 48);
 	}
@@ -521,6 +534,19 @@ class Enemy1 extends Colider implements Unit {
 			y += dy;
 		} else if(y + dy < 80 || y + dy > sheight){
 			directionChange();
+		}
+		
+		if(x <= 50){
+			x += speed;
+		}
+		if(x >= swidth){
+			x -= speed;
+		}
+		if(y >= sheight){
+			y -= speed;
+		}
+		if(y <= 80){
+			y += speed;
 		}
 	}
 	
@@ -1029,7 +1055,12 @@ class GameLevel {
 			
 			for(int i = 0; i < tempList.size(); i++){
 				Point tempPoint = tempList.get(i);
-				new Laser1(tempPoint.x, tempPoint.y);
+				if(tempPoint.x == 99 && tempPoint.y == 99){
+					new Enemy1();
+				} else {
+					new Laser1(tempPoint.x, tempPoint.y);
+				}
+				
 			}
 		}
 		
@@ -1153,3 +1184,5 @@ class JsonPattern {
 		return map;
 	}
 }
+
+

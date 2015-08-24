@@ -127,13 +127,13 @@ public class Screen extends JFrame{
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE){
-					if(!gameStart){
+					if(stopOn){
 						stopScreenOn();
 						gameStart = true;
 						Engine.getInstance().startLoop();
 					} else {
 						stopScreenOn();
-						gameStart = false;
+//						gameStart = false;
 						Engine.getInstance().stopLoop();
 					}
 				}
@@ -177,12 +177,12 @@ public class Screen extends JFrame{
 			 
 		 });
 		 
-		 this.addMouseListener(new MouseAdapter() {
-			 public void mouseClicked(MouseEvent e){
-//				 player.setPosition(e.getPoint());
-//				 repaint();
-			 }
-		 });
+//		 this.addMouseListener(new MouseAdapter() {
+//			 public void mouseClicked(MouseEvent e){
+////				 player.setPosition(e.getPoint());
+////				 repaint();
+//			 }
+//		 });
 		 
 		
 		 
@@ -223,27 +223,25 @@ public class Screen extends JFrame{
 		
 		mgc.setBackground(Color.white);
 		mgc.clearRect(0, 0, screenWidth, screenHeight);
-		
-		
-		
-		mgc.setColor(Color.pink);
-	    mgc.fillRect(0, screenHeight - 100, screenWidth, 100);
 	    
-	    drawWall();
-	    drawLaser(mgc);
-	    drawEnemy();
-	    
-	    drawPlayer();
-	    
-        
-//        mgc.drawImage(brick_wall_001, 20, 45, null);
-        
-        mgc.setColor(Color.black);
-        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
-        
-        drawArrow();
-        
-        drawSkill();
+		if(gameStart){
+			warpGate();
+		    drawWall();
+		    drawLaser(mgc);
+		    drawEnemy();
+		    
+		    drawPlayer();
+	        
+	        mgc.setColor(Color.black);
+	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
+       
+        	mgc.setColor(Color.pink);
+    	    mgc.fillRect(0, screenHeight - 100, screenWidth, 100);
+    	    
+            drawArrow();
+            drawSkill();
+        }
+
         stopScreen();
 		g.drawImage(memoryimage, 0, 0, this);
 		
@@ -257,22 +255,25 @@ public class Screen extends JFrame{
         
         mgc.drawImage(mshi, t, null);
         
-        Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
-        Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45 * ((float)player.getHp()/(float)player.getMaxHp()), 15);
+        if(!stopOn){
+        	Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
+            Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45 * ((float)player.getHp()/(float)player.getMaxHp()), 15);
+            
+            mgc.setColor(Color.gray);
+    		mgc.fill(out_line1);
+    		
+    		if(!(player.getHp() <= 0)){
+    			mgc.setColor(Color.red);
+    			mgc.fill(in_line1);
+    		}
+    		
+            mgc.setColor(Color.black);
+    		mgc.draw(out_line1);
+    		
+            mgc.setColor(Color.white);
+            mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
+        }
         
-        mgc.setColor(Color.gray);
-		mgc.fill(out_line1);
-		
-		if(!(player.getHp() <= 0)){
-			mgc.setColor(Color.red);
-			mgc.fill(in_line1);
-		}
-		
-        mgc.setColor(Color.black);
-		mgc.draw(out_line1);
-		
-        mgc.setColor(Color.white);
-        mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
         
 	}
 	
@@ -401,7 +402,7 @@ public class Screen extends JFrame{
 			
 			mgc.drawImage(excavator_001, t, null);
 			
-			if(!en.getRandMove()){
+			if(!stopOn && !en.getRandMove()){
 				
 				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45, 15);
 		        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
@@ -425,11 +426,12 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawSkill(){
-		mgc.drawRect(188, 712, 70, 70);
+		mgc.setColor(Color.black);
+		mgc.drawRect(192, 716, 64, 64);
 		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
 		
 		if(dm.getCoolTimeLeft() != 0)
-			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 188 + 30, 708);
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 188 + 30, 712);
 	}
 	
 	private void stopScreenOn(){
@@ -440,9 +442,14 @@ public class Screen extends JFrame{
 		if(stopOn){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
-			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2 - 40);
+			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
+	}
+	
+	private void warpGate(){
+		mgc.setColor(Color.black);
+		mgc.drawRect(548, 348, 60, 60);
 	}
 	
 }
