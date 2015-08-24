@@ -107,7 +107,6 @@ public class Engine {
 		
 		for(Enemy1 en : enemySet2){
 			
-			
 			for(Wall1 wa : wallSet2){
 				if(wa.getTrigger()){
 					if(en.collision(wa.getBounds())){
@@ -134,6 +133,12 @@ public class Engine {
 			}
 			
 			en.work();
+		}
+		
+		if(player.collision(dm.getWarpGate().getBounds()) ){
+			player.setWallAble(false);
+		} else {
+			player.setWallAble(true);
 		}
 	}
 	

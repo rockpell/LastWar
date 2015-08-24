@@ -76,7 +76,7 @@ public class Screen extends JFrame{
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					if(dm.getCoolTimeLeft() == 0){
+					if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
 						if(!dm.getPlayer().getOutTrigger()){
 							if(dm.getWallSetCount() < dm.getWallLimit())
 								dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
@@ -449,7 +449,9 @@ public class Screen extends JFrame{
 	
 	private void warpGate(){
 		mgc.setColor(Color.black);
-		mgc.drawRect(548, 348, 60, 60);
+//		mgc.drawRect(548, 348, 60, 60);
+		mgc.draw(dm.getWarpGate().getBounds());
+		
 	}
 	
 }

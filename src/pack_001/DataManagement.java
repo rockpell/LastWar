@@ -47,6 +47,7 @@ public class DataManagement {
 	private final Set<Enemy1> enemySet = new HashSet<Enemy1>();
 	private JParser gameScenario;
 	private Player player;
+	private WarpGate warp_gate;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
 	public final int rowNumber = 11, colNumber = 21;
@@ -62,10 +63,15 @@ public class DataManagement {
 		player.setSize(48, 48);
 		
 		initArrow();
+		warp_gate = new WarpGate();
 	}
 	
 	public Player getPlayer(){
 		return player;
+	}
+	
+	public WarpGate getWarpGate(){
+		return warp_gate;
 	}
 	
 	private void initArrow(){
@@ -184,7 +190,7 @@ class Player extends Colider implements Unit{
 	private int speed = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
-	private boolean outTrigger = false;
+	private boolean outTrigger = false, wall_able = true;
 	private boolean damaged = false; // damaged == 피해 입음 상태 표시
 	private int damage_count = 0;
 	
@@ -297,6 +303,14 @@ class Player extends Colider implements Unit{
 	
 	public int getMaxHp(){
 		return maxHp;
+	}
+	
+	public boolean isWallAble(){
+		return wall_able;
+	}
+	
+	public void setWallAble(boolean target){
+		wall_able = target;
 	}
 
 	@Override
@@ -1185,4 +1199,61 @@ class JsonPattern {
 	}
 }
 
+class WarpGate extends Colider implements Obstacle{
+	
+	WarpGate(){
+		setPosition(548, 348);
+		setSize(60, 60);
+	}
+	
+	@Override
+	public void dead() {
+		
+	}
 
+	@Override
+	public void work() {
+		
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		setBox(0, 0, width, height);
+	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	@Override
+	public Float getBounds() {
+		// TODO Auto-generated method stub
+		return new Rectangle2D.Float(x + cx, y + cy, cwidth, cheight);
+	}
+
+	@Override
+	public boolean collision(Rectangle2D.Float target) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public float getX(){
+		return this.x;
+	}
+	
+	public float getY(){
+		return this.y;
+	}
+	
+	public int getWidth(){
+		return this.width;
+	}
+	
+	public int getHeight(){
+		return this.height;
+	}
+}
