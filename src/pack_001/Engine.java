@@ -140,6 +140,8 @@ public class Engine {
 		} else {
 			player.setWallAble(true);
 		}
+		
+		dm.getWarpGate().work();
 	}
 	
 	public int getPlayTime(){

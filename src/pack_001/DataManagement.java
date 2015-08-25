@@ -59,11 +59,12 @@ public class DataManagement {
 	private DataManagement(){
 		gameScenario = new JParser();
 		player = new Player();
-		player.setPosition(550, 350);
+		player.setPosition(566, 350);
 		player.setSize(48, 48);
 		
 		initArrow();
 		warp_gate = new WarpGate();
+		warp_gate.setOpen();
 	}
 	
 	public Player getPlayer(){
@@ -399,8 +400,9 @@ class Enemy1 extends Colider implements Unit {
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	private boolean randMove = true; // randMove == 랜덤 이동(플레이어 인식 못할 경우 랜덤 이동) 
 	private boolean damageable = false, damaged = false; // damageable == 플레이어 인식 시에만 데미지 입음, damaged == 피해 입음 상태 표시
+	private boolean is_active = false; // 유닛 활성화 여부
 	private Point2D.Float movePoint = null;
-	private int rand_number = 0, direction = 0, damage_count = 0;
+	private int rand_number = 0, direction = 0, damage_count = 0, active_count = 0;
 	private float vision = 200.0f;
 	
 	private DataManagement dm;
@@ -409,8 +411,9 @@ class Enemy1 extends Colider implements Unit {
 		dm = DataManagement.getInstance();
 		
 		dm.addEnemy(this);
+		dm.getWarpGate().setOpen();
 		
-		setPosition(550.0f, 350.0f);
+		setPosition(566.0f, 350.0f);
 		setSize(48, 48);
 	}
 	
@@ -418,6 +421,7 @@ class Enemy1 extends Colider implements Unit {
 		dm = DataManagement.getInstance();
 		
 		dm.addEnemy(this);
+		dm.getWarpGate().setOpen();
 		
 		setPosition(x, y);
 		setSize(48, 48);
@@ -497,6 +501,15 @@ class Enemy1 extends Colider implements Unit {
 	
 	@Override
 	public void work() {
+		
+		if(!is_active){
+			active_count += 1;
+			if(active_count > 20){
+				is_active = true;
+			}
+			return;
+		}
+		
 		calDistance();
 		
 		if(damaged){
@@ -653,7 +666,10 @@ class Enemy1 extends Colider implements Unit {
 
 	@Override
 	public boolean collision(Rectangle2D.Float target) {
-		// TODO Auto-generated method stub
+		if(!is_active){
+			return false;
+		}
+		
 		return target.intersects(this.getBounds());
 	}
 	
@@ -663,6 +679,10 @@ class Enemy1 extends Colider implements Unit {
 	
 	public boolean getDamageable(){
 		return damageable;
+	}
+	
+	public boolean isActive(){
+		return is_active;
 	}
 }
 
@@ -1200,10 +1220,12 @@ class JsonPattern {
 }
 
 class WarpGate extends Colider implements Obstacle{
+	private boolean is_open = false;
+	private int open_count = 0;
 	
 	WarpGate(){
-		setPosition(548, 348);
-		setSize(60, 60);
+		setPosition(560, 346);
+		setSize(64, 64);
 	}
 	
 	@Override
@@ -1213,9 +1235,26 @@ class WarpGate extends Colider implements Obstacle{
 
 	@Override
 	public void work() {
-		
+		if(!is_open){
+			return;
+		} else {
+			open_count += 1;
+			if(open_count > 30){
+				open_count = 0;
+				is_open = false;
+			}
+		}
 	}
-
+	
+	public void setOpen(){
+		is_open = true;
+		open_count = 0;
+	}
+	
+	public boolean isOpen(){
+		return is_open;
+	}
+	
 	@Override
 	public void setSize(int width, int height) {
 		this.width = width;

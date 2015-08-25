@@ -51,6 +51,7 @@ public class Screen extends JFrame{
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	private Image brick_wall_001, excavator_001;
+	private Image closed_door, open_door;
 	
 	private boolean gameStart = false;
 	private boolean stopOn = true;
@@ -201,6 +202,8 @@ public class Screen extends JFrame{
 		 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
 		 brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
 		 excavator_001 = new ImageIcon("resource/excavator.png").getImage();
+		 closed_door = new ImageIcon("resource/closed_door.png").getImage();
+		 open_door = new ImageIcon("resource/open_door.png").getImage();
     }
 	
 	public void update(Graphics g) {
@@ -448,9 +451,19 @@ public class Screen extends JFrame{
 	}
 	
 	private void warpGate(){
-		mgc.setColor(Color.black);
-//		mgc.drawRect(548, 348, 60, 60);
-		mgc.draw(dm.getWarpGate().getBounds());
+		
+		float wx = dm.getWarpGate().x;
+		float wy = dm.getWarpGate().y;
+		
+		AffineTransform t = new AffineTransform();
+        t.translate(wx, wy); // x/y set here
+        t.scale(1, 1);
+        
+        if(dm.getWarpGate().isOpen()){
+        	mgc.drawImage(open_door, t, null);
+        } else {
+        	mgc.drawImage(closed_door, t, null);
+        }
 		
 	}
 	
