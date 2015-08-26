@@ -167,6 +167,10 @@ public class DataManagement {
 		return wallSet.size();
 	}
 	
+	public int getMaxCoolTime(){
+		return coolTime;
+	}
+	
 	public int getCoolTimeLeft(){
 		return coolTimeLeft;
 	}
