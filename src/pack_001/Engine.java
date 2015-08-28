@@ -6,7 +6,6 @@ import java.util.Set;
 public class Engine {
 	private static Engine instance;
 	
-	
 	public static Engine getInstance(){
 		if(instance == null){
 			instance = new Engine();

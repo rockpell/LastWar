@@ -5,22 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -132,6 +125,7 @@ public class Screen extends JFrame{
 						stopScreenOn();
 						gameStart = true;
 						Engine.getInstance().startLoop();
+						new AudioManagement();
 					} else {
 						stopScreenOn();
 //						gameStart = false;
@@ -239,13 +233,15 @@ public class Screen extends JFrame{
 	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
        
         	mgc.setColor(Color.pink);
-    	    mgc.fillRect(0, screenHeight - 100, screenWidth, 100);
+    	    mgc.fillRect(200, screenHeight - 100, screenWidth - 400, 100);
     	    
             drawArrow();
             drawSkill();
         }
 
         stopScreen();
+        beforeScreen();
+        
 		g.drawImage(memoryimage, 0, 0, this);
 		
 	}
@@ -430,15 +426,15 @@ public class Screen extends JFrame{
 	
 	private void drawSkill(){
 		mgc.setColor(Color.black);
-		mgc.drawRect(192, 716, 64, 64);
+		mgc.drawRect(294, 718, 60, 60);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
-		mgc.drawImage(abc.grayImage(), 200, 725, null);
+		mgc.drawImage(abc.grayImage(), 300, 725, null);
 
 		if(dm.getCoolTimeLeft() != 0)
-			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 188 + 30, 712);
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 288 + 30, 712);
 	}
 	
 	private void stopScreenOn(){
@@ -446,12 +442,27 @@ public class Screen extends JFrame{
 	}
 	
 	private void stopScreen(){
-		if(stopOn){
+		if(stopOn && gameStart){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
 			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
+	}
+	
+	private void beforeScreen(){
+		if(!gameStart){
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			
+			mgc.setColor(Color.black);
+			mgc.drawString("Last War", screenWidth / 2 - 160, 200);
+			
+			mgc.setColor(Color.red);
+			mgc.drawString("Press the SpaceBar", screenWidth / 2 - 330, 650);
+			
+			mgc.setFont(new Font("default", Font.PLAIN, 12));
+		}
+		
 	}
 	
 	private void warpGate(){

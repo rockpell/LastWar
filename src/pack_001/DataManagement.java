@@ -2,34 +2,42 @@ package pack_001;
 
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.print.attribute.IntegerSyntax;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import sun.audio.*;
 
 public class DataManagement {
 	private static DataManagement instance = DataManagement.getInstance();
@@ -53,18 +61,22 @@ public class DataManagement {
 	public final int rowNumber = 11, colNumber = 21;
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
-	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입 예정
+	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입
 	private int coolTime = 15, coolTimeLeft = 0;
 	
 	private DataManagement(){
-		gameScenario = new JParser();
-		player = new Player();
-		player.setPosition(566, 350);
-		player.setSize(48, 48);
+//		gameScenario = new JParser();
+//		player = new Player();
+//		player.setPosition(566, 350);
+//		player.setSize(48, 48);
+//		
+//		initArrow();
+//		warp_gate = new WarpGate();
+//		warp_gate.setOpen();
 		
-		initArrow();
-		warp_gate = new WarpGate();
-		warp_gate.setOpen();
+		initData();
+		
+//		new AudioManagement();
 	}
 	
 	public Player getPlayer(){
@@ -89,6 +101,10 @@ public class DataManagement {
 				arrowSet.add(new LaserArrow(i, v));
 			}
 		}
+	}
+	
+	private void allRemoveArrow(){
+		arrowSet.removeAll(arrowSet);
 	}
 	
 	public LaserArrow findArrow(int x, int y){
@@ -184,6 +200,36 @@ public class DataManagement {
 			coolTimeLeft -= 1;
 		}
 		
+	}
+	
+	public void initData(){
+		
+//		for(Laser1 la : coliderSet){
+//			removeColider(la);
+//		}
+//		
+//		for(Enemy1 en : enemySet){
+//			removeEnemy(en);
+//		}
+//		
+//		for(Wall1 wa : wallSet){
+//			removeWall(wa);
+//		}
+		coliderSet.removeAll(coliderSet);
+		enemySet.removeAll(enemySet);
+		wallSet.removeAll(wallSet);
+		arrowSet.removeAll(arrowSet);
+		
+		gameScenario = new JParser();
+		player = new Player();
+		player.setPosition(566, 350);
+		player.setSize(48, 48);
+		
+		initArrow();
+		warp_gate = new WarpGate();
+		warp_gate.setOpen();
+		
+		coolTime = 15;
 	}
 }
 
@@ -694,7 +740,7 @@ class Wall1 extends Colider implements Wall {
 	
 	private float x, y;
 	private int width, height;
-	private int count;
+//	private int count;
 	private int hp = 5, maxHp = 5;
 	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
@@ -814,7 +860,7 @@ class Laser1 extends Colider implements Laser{
 	private String name;
 	private float x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
-	private int indexX, indexY;
+//	private int indexX, indexY;
 	private boolean wallColide = false;
 	private Wall1 targetWall;
 	
@@ -831,8 +877,8 @@ class Laser1 extends Colider implements Laser{
 		
 		setPosition(linkLar.getIndexX(), linkLar.getIndexY());
 		
-		indexX = x;
-		indexY = y;
+//		indexX = x;
+//		indexY = y;
 		
 //		setSize(width, height); // setPosition에서 size도 입력
 		setBox(0, 0, width, height);
@@ -1130,13 +1176,13 @@ class JParser {
 				System.out.println(jsonObject.get(jso));
 				
 				if(jso.equals("sequence")){
-					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-					seqenceToMap(jsonTemp2);
+//					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+					seqenceToMap(jsonTemp);
 					
 				} else {
-					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+//					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
 					
-					patternData.put(jso, new JsonPattern(jsonTemp2));
+					patternData.put(jso, new JsonPattern(jsonTemp));
 					
 				}
 			}
@@ -1243,7 +1289,7 @@ class WarpGate extends Colider implements Obstacle{
 			return;
 		} else {
 			open_count += 1;
-			if(open_count > 30){
+			if(open_count > 40){
 				open_count = 0;
 				is_open = false;
 			}
@@ -1299,4 +1345,38 @@ class WarpGate extends Colider implements Obstacle{
 	public int getHeight(){
 		return this.height;
 	}
+	
+}
+
+class AudioManagement{
+	
+	AudioManagement(){
+			
+			URL url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
+			
+			playSound(url.getPath());
+	}
+	
+	public void playSound(String file_path){
+        try {
+            File file = new File(file_path);
+            final Clip clip = AudioSystem.getClip();
+            
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event){
+                    //CLOSE, OPEN, START, STOP
+                    if (event.getType() == LineEvent.Type.STOP)
+                        clip.close();
+                }
+
+            });
+
+            clip.open(AudioSystem.getAudioInputStream(file));
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 }
