@@ -1352,7 +1352,7 @@ class AudioManagement{
 	
 	AudioManagement(){
 			
-			URL url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
+			URL url = this.getClass().getClassLoader().getResource("game_music/perfect_crime.wav");
 			
 			playSound(url.getPath());
 	}
@@ -1373,7 +1373,9 @@ class AudioManagement{
             });
 
             clip.open(AudioSystem.getAudioInputStream(file));
-            clip.start();
+//            clip.setLoopPoints(0, 1);
+            clip.loop(clip.LOOP_CONTINUOUSLY);
+//            clip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
