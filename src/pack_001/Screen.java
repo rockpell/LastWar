@@ -40,13 +40,15 @@ public class Screen extends JFrame{
 	
 	private Player player;
 	private DataManagement dm;
+	private AudioManagement am;
+	
 	private Image mshi;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	private Image brick_wall_001, excavator_001;
 	private Image closed_door, open_door;
 	
-	private boolean gameStart = false;
+//	private boolean gameStart = false;
 	private boolean stopOn = true;
 	
 	private Screen() {
@@ -121,16 +123,32 @@ public class Screen extends JFrame{
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE){
-					if(stopOn){
-						stopScreenOn();
-						gameStart = true;
-						Engine.getInstance().startLoop();
-						new AudioManagement();
+					if(!dm.getGameEnd()){
+						if(stopOn){
+							if(!dm.getGameStart()){
+								loadImage();
+								am = dm.getAudio();
+							}
+							stopScreenOn();
+							dm.setGameStart(true);
+							Engine.getInstance().startLoop();
+							am.play();
+						} else {
+							stopScreenOn();
+//							gameStart = false;
+							Engine.getInstance().stopLoop();
+							am.stop();
+						}
 					} else {
-						stopScreenOn();
-//						gameStart = false;
-						Engine.getInstance().stopLoop();
+						dm.initData();
+						dm.setGameStart(true);
+						Engine.getInstance().newLoop();
+						Engine.getInstance().startLoop();
+						am.play();
+						stopOn = false;
+						player = dm.getPlayer();
 					}
+					
 				}
 				
 			}
@@ -172,32 +190,24 @@ public class Screen extends JFrame{
 			 
 		 });
 		 
-//		 this.addMouseListener(new MouseAdapter() {
-//			 public void mouseClicked(MouseEvent e){
-////				 player.setPosition(e.getPoint());
-////				 repaint();
-//			 }
-//		 });
-		 
-		
-		 
-		 loadImage();
 	}
 	
 	private void loadImage() {
-		 mshi = new ImageIcon("resource/people.png").getImage();
-		 arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
-		 arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
-		 arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
-		 arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
-		 arrow_right_red = new ImageIcon("resource/arrow_right_red.png").getImage();
-		 arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
-		 arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
-		 arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
-		 brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
-		 excavator_001 = new ImageIcon("resource/excavator.png").getImage();
-		 closed_door = new ImageIcon("resource/closed_door.png").getImage();
-		 open_door = new ImageIcon("resource/open_door.png").getImage();
+		dm.loadImage();
+		
+		mshi = dm.mshi;
+		arrow_right = dm.arrow_right;
+		arrow_left = dm.arrow_left;
+		arrow_up = dm.arrow_up;
+		arrow_down = dm.arrow_down;
+		arrow_right_red = dm.arrow_right_red;
+		arrow_left_red = dm.arrow_left_red;
+		arrow_up_red = dm.arrow_up_red;
+		arrow_down_red = dm.arrow_down_red;
+		brick_wall_001 = dm.brick_wall_001;
+		excavator_001 = dm.excavator_001;
+		closed_door = dm.closed_door;
+		open_door = dm.open_door;
     }
 	
 	public void update(Graphics g) {
@@ -221,7 +231,7 @@ public class Screen extends JFrame{
 		mgc.setBackground(Color.white);
 		mgc.clearRect(0, 0, screenWidth, screenHeight);
 	    
-		if(gameStart){
+		if(dm.getGameStart()){
 			warpGate();
 		    drawWall();
 		    drawLaser(mgc);
@@ -230,9 +240,10 @@ public class Screen extends JFrame{
 		    drawPlayer();
 	        
 	        mgc.setColor(Color.black);
+	        mgc.setFont(new Font("default", Font.PLAIN, 12));
 	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
        
-        	mgc.setColor(Color.pink);
+        	mgc.setColor(Color.gray);
     	    mgc.fillRect(200, screenHeight - 100, screenWidth - 400, 100);
     	    
             drawArrow();
@@ -241,6 +252,7 @@ public class Screen extends JFrame{
 
         stopScreen();
         beforeScreen();
+        afterScreen();
         
 		g.drawImage(memoryimage, 0, 0, this);
 		
@@ -273,11 +285,9 @@ public class Screen extends JFrame{
             mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
         }
         
-        
 	}
 	
 	private void drawWall(){
-        
 		for(Wall1 wa : dm.getWallSet()){
 			float wx = wa.getPosition("x");
 			float wy = wa.getPosition("y");
@@ -426,15 +436,17 @@ public class Screen extends JFrame{
 	
 	private void drawSkill(){
 		mgc.setColor(Color.black);
-		mgc.drawRect(294, 718, 60, 60);
+		mgc.drawRect(298, 722, 52, 52);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
 		mgc.drawImage(abc.grayImage(), 300, 725, null);
 
-		if(dm.getCoolTimeLeft() != 0)
+		if(dm.getCoolTimeLeft() != 0){
+			mgc.setFont(new Font("default", Font.PLAIN, 12));
 			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 288 + 30, 712);
+		}
 	}
 	
 	private void stopScreenOn(){
@@ -442,7 +454,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void stopScreen(){
-		if(stopOn && gameStart){
+		if(stopOn && dm.getGameStart()){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
 			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
@@ -451,7 +463,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeScreen(){
-		if(!gameStart){
+		if(!dm.getGameStart() && !dm.getGameEnd()){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			
 			mgc.setColor(Color.black);
@@ -463,6 +475,15 @@ public class Screen extends JFrame{
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
 		
+	}
+	
+	private void afterScreen(){
+		if(dm.getGameEnd()){
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			
+			mgc.setColor(Color.red);
+			mgc.drawString("Game Over", screenWidth / 2 - 160, 300);
+		}
 	}
 	
 	private void warpGate(){

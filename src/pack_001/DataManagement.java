@@ -22,10 +22,12 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -56,6 +58,13 @@ public class DataManagement {
 	private JParser gameScenario;
 	private Player player;
 	private WarpGate warp_gate;
+	private AudioManagement am;
+	
+	public Image mshi;
+	public Image arrow_right, arrow_left, arrow_up, arrow_down;
+	public Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
+	public Image brick_wall_001, excavator_001;
+	public Image closed_door, open_door;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
 	public final int rowNumber = 11, colNumber = 21;
@@ -64,19 +73,10 @@ public class DataManagement {
 	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입
 	private int coolTime = 15, coolTimeLeft = 0;
 	
+	private boolean gameStart = false, gameEnd = false;
+	
 	private DataManagement(){
-//		gameScenario = new JParser();
-//		player = new Player();
-//		player.setPosition(566, 350);
-//		player.setSize(48, 48);
-//		
-//		initArrow();
-//		warp_gate = new WarpGate();
-//		warp_gate.setOpen();
-		
 		initData();
-		
-//		new AudioManagement();
 	}
 	
 	public Player getPlayer(){
@@ -101,10 +101,6 @@ public class DataManagement {
 				arrowSet.add(new LaserArrow(i, v));
 			}
 		}
-	}
-	
-	private void allRemoveArrow(){
-		arrowSet.removeAll(arrowSet);
 	}
 	
 	public LaserArrow findArrow(int x, int y){
@@ -203,24 +199,13 @@ public class DataManagement {
 	}
 	
 	public void initData(){
-		
-//		for(Laser1 la : coliderSet){
-//			removeColider(la);
-//		}
-//		
-//		for(Enemy1 en : enemySet){
-//			removeEnemy(en);
-//		}
-//		
-//		for(Wall1 wa : wallSet){
-//			removeWall(wa);
-//		}
 		coliderSet.removeAll(coliderSet);
 		enemySet.removeAll(enemySet);
 		wallSet.removeAll(wallSet);
 		arrowSet.removeAll(arrowSet);
 		
 		gameScenario = new JParser();
+		player = null;
 		player = new Player();
 		player.setPosition(566, 350);
 		player.setSize(48, 48);
@@ -230,6 +215,53 @@ public class DataManagement {
 		warp_gate.setOpen();
 		
 		coolTime = 15;
+		
+		gameStart = false;
+		gameEnd = false;
+		
+		if(gameEnd){
+			Engine.getInstance().startLoop();
+		}
+	}
+	
+	public void loadImage() {
+		mshi = new ImageIcon("resource/people.png").getImage();
+		arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
+		arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
+		arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
+		arrow_down = new ImageIcon("resource/arrow_down.png").getImage();
+		arrow_right_red = new ImageIcon("resource/arrow_right_red.png").getImage();
+		arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
+		arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
+		arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
+		brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
+		excavator_001 = new ImageIcon("resource/excavator.png").getImage();
+		closed_door = new ImageIcon("resource/closed_door.png").getImage();
+		open_door = new ImageIcon("resource/open_door.png").getImage();
+		}
+	
+	public AudioManagement getAudio(){
+		if(am == null){
+			am = new AudioManagement();
+		}
+		
+		return am;
+	}
+	
+	public boolean getGameStart(){
+		return gameStart;
+	}
+	
+	public void setGameStart(boolean val){
+		gameStart = val;
+	}
+	
+	public boolean getGameEnd(){
+		return gameEnd;
+	}
+	
+	public void setGameEnd(boolean val){
+		gameEnd = val;
 	}
 }
 
@@ -343,7 +375,15 @@ class Player extends Colider implements Unit{
 	
 	@Override
 	public void dead() {
-		// TODO Auto-generated method stub
+		DataManagement dm = DataManagement.getInstance();
+		dm.getAudio().stop();
+		dm.setGameStart(false);
+		dm.setGameEnd(true);
+		
+		Engine.getInstance().stopLoop();
+		
+		System.out.println("dead");
+		
 	}
 
 	@Override
@@ -457,14 +497,16 @@ class Enemy1 extends Colider implements Unit {
 	
 	private DataManagement dm;
 	
-	Enemy1(){
+	Enemy1(int hp){
 		dm = DataManagement.getInstance();
 		
-		dm.addEnemy(this);
-		dm.getWarpGate().setOpen();
+		setHp(hp);
 		
 		setPosition(566.0f, 350.0f);
 		setSize(48, 48);
+		
+		dm.addEnemy(this);
+		dm.getWarpGate().setOpen();
 	}
 	
 	Enemy1(float x, float y){
@@ -660,6 +702,11 @@ class Enemy1 extends Colider implements Unit {
 				dead();
 			}
 		}
+	}
+	
+	private void setHp(int val){
+		this.maxHp = val;
+		this.hp = val;
 	}
 	
 	@Override
@@ -1121,7 +1168,7 @@ class GameLevel {
 		}
 		
 		patternParser();
-		
+//		System.out.println("nowLevle : " +nowLevel + "  nowSequence : " + nowSequence);
 	}
 	
 	private void patternParser(){
@@ -1140,7 +1187,11 @@ class GameLevel {
 			for(int i = 0; i < tempList.size(); i++){
 				Point tempPoint = tempList.get(i);
 				if(tempPoint.x == 99 && tempPoint.y == 99){
-					new Enemy1();
+					new Enemy1(3);
+				} else if(tempPoint.x == 99 && tempPoint.y == 100){
+					new Enemy1(4);
+				} else if(tempPoint.x == 99 && tempPoint.y == 101){
+					new Enemy1(5);
 				} else {
 					new Laser1(tempPoint.x, tempPoint.y);
 				}
@@ -1349,18 +1400,27 @@ class WarpGate extends Colider implements Obstacle{
 }
 
 class AudioManagement{
+	Clip clip;
+	URL url;
 	
 	AudioManagement(){
+//		url = this.getClass().getClassLoader().getResource("game_music/perfect_crime.wav");
+		url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
 			
-			URL url = this.getClass().getClassLoader().getResource("game_music/perfect_crime.wav");
-			
-			playSound(url.getPath());
 	}
 	
-	public void playSound(String file_path){
+	public void play(){
+		playSound(url.getPath());
+	}
+	
+	public void stop(){
+		clip.stop();
+	}
+	
+	private void playSound(String file_path){
         try {
             File file = new File(file_path);
-            final Clip clip = AudioSystem.getClip();
+            clip = AudioSystem.getClip();
             
             clip.addLineListener(new LineListener() {
                 @Override
@@ -1373,9 +1433,12 @@ class AudioManagement{
             });
 
             clip.open(AudioSystem.getAudioInputStream(file));
-//            clip.setLoopPoints(0, 1);
+
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(0f);
+            
             clip.loop(clip.LOOP_CONTINUOUSLY);
-//            clip.start();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

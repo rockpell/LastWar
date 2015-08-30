@@ -16,22 +16,27 @@ public class Engine {
 	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
 	private boolean stopOn = false;
-	Looper game_loop;
-	Thread th1;
+	private Looper game_loop;
+	private Thread th1;
 	
 	private Engine(){
 
 	}
 	
+	public void newLoop(){
+		game_loop = null;
+		game_loop = new Looper("restart", 20);
+	}
+	
 	public void startLoop(){
 		if(game_loop == null){
 			game_loop = new Looper("what", 20);
+			dm = DataManagement.getInstance();
 		}
 		
 		th1 = new Thread(game_loop);
 		th1.start();
 		
-		dm = DataManagement.getInstance();
 	}
 	
 	public void stopLoop(){
