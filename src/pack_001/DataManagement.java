@@ -1,5 +1,6 @@
 package pack_001;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -215,6 +216,7 @@ public class DataManagement {
 		warp_gate.setOpen();
 		
 		coolTime = 15;
+		coolTimeLeft = 0;
 		
 		gameStart = false;
 		gameEnd = false;
@@ -238,7 +240,8 @@ public class DataManagement {
 		excavator_001 = new ImageIcon("resource/excavator.png").getImage();
 		closed_door = new ImageIcon("resource/closed_door.png").getImage();
 		open_door = new ImageIcon("resource/open_door.png").getImage();
-		}
+		System.out.println("end");
+	}
 	
 	public AudioManagement getAudio(){
 		if(am == null){
@@ -379,6 +382,8 @@ class Player extends Colider implements Unit{
 		dm.getAudio().stop();
 		dm.setGameStart(false);
 		dm.setGameEnd(true);
+		
+		Screen.getInstance().beforeStartOn();
 		
 		Engine.getInstance().stopLoop();
 		
@@ -1141,11 +1146,12 @@ class GameLevel {
 			levelUp = false;
 			engine.refreshInvoke();
 			System.out.println("nowSequence : "+nowSequence);
-			if(nowSequence > 4){
+			if(nowSequence > sequenceData.size()){
+				
 				nowSequence = 1;
 			}
 		}
-		
+
 		if(refresh){
 			refresh = false;
 			engine.refreshInvoke();
@@ -1156,15 +1162,14 @@ class GameLevel {
 			ArrayList<String> tempList = sequenceData.get(""+nowSequence);
 			patternChange = false;
 			
-			patternName = tempList.get(targetIndex);
-			
-			targetIndex += 1;
-			
 			if(tempList.size() <= targetIndex){
 				targetIndex = 0;
 				levelUp = true;
 			}
 			
+			patternName = tempList.get(targetIndex);
+			
+			targetIndex += 1;
 		}
 		
 		patternParser();
@@ -1230,7 +1235,7 @@ class JParser {
 //					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
 					seqenceToMap(jsonTemp);
 					
-				} else {
+				} else if(jso.contains("pattern")){
 //					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
 					
 					patternData.put(jso, new JsonPattern(jsonTemp));

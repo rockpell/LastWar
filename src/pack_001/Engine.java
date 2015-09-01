@@ -43,6 +43,11 @@ public class Engine {
 		stopOn = true;
 	}
 	
+	public void loadThread(){
+		Thread lth1 = new Thread(new Loader());
+		lth1.start();
+	}
+	
 	public void killThread(){
 		if(stopOn){
 			th1.interrupt();
@@ -190,6 +195,8 @@ class Looper implements Runnable{
 	public void run() {
 		while(!Thread.currentThread().isInterrupted()){
 			try {
+				FPScounter.StartCounter();
+				
 				sc.repaint();
 				
 				engine.loopColider();
@@ -204,11 +211,61 @@ class Looper implements Runnable{
 				
 				Thread.sleep(interval);
 				engine.killThread();
+				
+				FPScounter.StopAndPost();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
 }
+
+class Loader implements Runnable {
+	
+	Loader(){
+		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		DataManagement.getInstance().loadImage();
+		Screen.getInstance().loadImage();
+		Engine.getInstance().startLoop();
+		DataManagement.getInstance().getAudio().play();
+		DataManagement.getInstance().setGameStart(true);
+		Screen.getInstance().stopScreenOn();
+	}
+}
+
+final class FPScounter {  
+    private static int startTime;  
+    private static int endTime;  
+    private static int frameTimes = 0;  
+    private static short frames = 0;  
+  
+//    /** Start counting the fps**/  
+    public final static void StartCounter()  {  
+        //get the current time  
+        startTime = (int) System.currentTimeMillis();  
+    }  
+  
+//    /**stop counting the fps and display it at the console*/  
+    public final static void StopAndPost(){  
+        //get the current time  
+        endTime = (int) System.currentTimeMillis();  
+        //the difference between start and end times  
+        frameTimes = frameTimes + endTime - startTime;  
+        //count one frame  
+        ++frames;  
+        //if the difference is greater than 1 second (or 1000ms) post the results  
+        if(frameTimes >= 1000){  
+            //post results at the console  
+            System.out.println("FPS : " + Long.toString(frames));  
+            //reset time differences and number of counted frames  
+            frames = 0;  
+            frameTimes = 0;  
+        }  
+    }  
+}  

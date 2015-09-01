@@ -49,7 +49,7 @@ public class Screen extends JFrame{
 	private Image closed_door, open_door;
 	
 //	private boolean gameStart = false;
-	private boolean stopOn = true;
+	private boolean stopOn = true, beforeStart = false;
 	
 	private Screen() {
 		 super("Last War");
@@ -126,16 +126,17 @@ public class Screen extends JFrame{
 					if(!dm.getGameEnd()){
 						if(stopOn){
 							if(!dm.getGameStart()){
-								loadImage();
+								Engine.getInstance().loadThread();
 								am = dm.getAudio();
+								beforeStart = true;
+							} else {
+								am.play();
+								stopScreenOn();
+								Engine.getInstance().startLoop();
 							}
-							stopScreenOn();
-							dm.setGameStart(true);
-							Engine.getInstance().startLoop();
-							am.play();
+							
 						} else {
 							stopScreenOn();
-//							gameStart = false;
 							Engine.getInstance().stopLoop();
 							am.stop();
 						}
@@ -192,8 +193,8 @@ public class Screen extends JFrame{
 		 
 	}
 	
-	private void loadImage() {
-		dm.loadImage();
+	public void loadImage() {
+//		dm.loadImage();
 		
 		mshi = dm.mshi;
 		arrow_right = dm.arrow_right;
@@ -449,8 +450,12 @@ public class Screen extends JFrame{
 		}
 	}
 	
-	private void stopScreenOn(){
+	public void stopScreenOn(){
 		stopOn = !stopOn;
+	}
+	
+	public void beforeStartOn(){
+		beforeStart = !beforeStart;
 	}
 	
 	private void stopScreen(){
@@ -459,16 +464,21 @@ public class Screen extends JFrame{
 			mgc.setColor(Color.red);
 			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
+		} else if(stopOn && !dm.getGameStart() && beforeStart){
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			mgc.setColor(Color.red);
+			mgc.drawString("LOADING", screenWidth / 2 - 160, screenHeight / 2);
+			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
 	}
 	
 	private void beforeScreen(){
-		if(!dm.getGameStart() && !dm.getGameEnd()){
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
-			
+		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart){
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
-			mgc.drawString("Last War", screenWidth / 2 - 160, 200);
+			mgc.drawString("Last War", screenWidth / 2 - 180, 200);
 			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
 			mgc.drawString("Press the SpaceBar", screenWidth / 2 - 330, 650);
 			
@@ -479,10 +489,16 @@ public class Screen extends JFrame{
 	
 	private void afterScreen(){
 		if(dm.getGameEnd()){
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 80));
 			
 			mgc.setColor(Color.red);
-			mgc.drawString("Game Over", screenWidth / 2 - 160, 300);
+			mgc.drawString("Game Over", screenWidth / 2 - 180, 220);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
+			
+			mgc.setColor(Color.red);
+			mgc.drawString("REPLAY?", screenWidth / 2 - 330, 560);
+			mgc.drawString("Press the SpaceBar", screenWidth / 2 - 330, 650);
 		}
 	}
 	
