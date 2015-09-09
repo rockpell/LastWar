@@ -60,6 +60,7 @@ public class DataManagement {
 	private Player player;
 	private WarpGate warp_gate;
 	private AudioManagement am;
+	private GameLevel gameLevel;
 	
 	public Image mshi;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
@@ -215,6 +216,9 @@ public class DataManagement {
 		warp_gate = new WarpGate();
 		warp_gate.setOpen();
 		
+		if(gameLevel != null)
+			gameLevel.init();
+		
 		coolTime = 15;
 		coolTimeLeft = 0;
 		
@@ -240,7 +244,6 @@ public class DataManagement {
 		excavator_001 = new ImageIcon("resource/excavator.png").getImage();
 		closed_door = new ImageIcon("resource/closed_door.png").getImage();
 		open_door = new ImageIcon("resource/open_door.png").getImage();
-		System.out.println("end");
 	}
 	
 	public AudioManagement getAudio(){
@@ -265,6 +268,15 @@ public class DataManagement {
 	
 	public void setGameEnd(boolean val){
 		gameEnd = val;
+	}
+	
+	public void createGameLevel(int type){
+		gameLevel = null;
+		gameLevel = new GameLevel(type);
+	}
+	
+	public GameLevel getGameLevel(){
+		return gameLevel;
 	}
 }
 
@@ -1124,19 +1136,35 @@ class GameLevel {
 	private Map<String, ArrayList<String>> sequenceData;
 	
 	private int nowLevel = 0, nowSequence = 0;
+	private int targetIndex = 1;
+	public int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
-	private int targetIndex = 0;
 	private String patternName = null;
 	
-	public GameLevel(){
+	public GameLevel(int type){
 		engine = Engine.getInstance();
 		dm = DataManagement.getInstance();
-		sequenceData =  dm.getScenario().getSequenceData();
+		
+		mode_type = type;
+		
+		if(type == 0){
+			sequenceData =  dm.getScenario().getSequenceData();
+		} else if(type == 1){
+			sequenceData =  dm.getScenario().getSequenceData2();
+		}
 		
 		patternName = sequenceData.get("1").get(0);
 		
+//		patternParser(0);
+	}
+	
+	public void init(){
+		nowSequence = 0;
 		targetIndex = 1;
-		patternParser();
+		levelUp = true;
+		refresh = false;
+		patternChange = false;
+		patternName = sequenceData.get("1").get(0);
 	}
 	
 	public void levelStart(){
@@ -1147,8 +1175,11 @@ class GameLevel {
 			engine.refreshInvoke();
 			System.out.println("nowSequence : "+nowSequence);
 			if(nowSequence > sequenceData.size()){
-				
-				nowSequence = 1;
+				if(mode_type == 0){
+					dm.getPlayer().dead();
+				} else {
+					nowSequence = 1;
+				}
 			}
 		}
 
@@ -1172,15 +1203,21 @@ class GameLevel {
 			targetIndex += 1;
 		}
 		
-		patternParser();
+		patternParser(0);
 //		System.out.println("nowLevle : " +nowLevel + "  nowSequence : " + nowSequence);
 	}
 	
-	private void patternParser(){
-		Map<String, ArrayList<Point>> patternMap = dm.getScenario().getPatternData().get(patternName).getMap();
+	private void patternParser(int type){
+		Map<String, ArrayList<Point>> patternMap = null;
 		int time = engine.getPlayTime();
 		int itime = engine.getInvokeTime();
 		String timeText = "" + (time - itime);
+		
+		if(type == 0){
+			patternMap = dm.getScenario().getPatternData().get(patternName).getMap();
+		} else if(type == 1){
+			patternMap = dm.getScenario().getPatternData2().get(patternName).getMap();
+		}
 		
 		if(patternMap.containsKey(timeText)){
 			ArrayList<Point> tempList = patternMap.get(timeText);
@@ -1203,7 +1240,6 @@ class GameLevel {
 				
 			}
 		}
-		
 	}
 	
 }
@@ -1212,6 +1248,9 @@ class JParser {
 	
 	private Map<String, ArrayList<String>> sequenceData = new HashMap<String, ArrayList<String>>();
 	private Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
+	
+	private Map<String, ArrayList<String>> sequenceData2 = new HashMap<String, ArrayList<String>>();
+	private Map<String, JsonPattern> patternData2 = new HashMap<String, JsonPattern>();
 
 	JParser(){
 		File abc = new File("resource/last_war.json");
@@ -1225,23 +1264,42 @@ class JParser {
 			
 			Set<String> keys = jsonObject.keySet();
 			
-			for(String jso : keys){
-				JSONObject jsonTemp = (JSONObject)jsonObject.get(jso);
-				System.out.println(jso);
+			for(String name : keys){
+				JSONObject temp = (JSONObject)jsonObject.get(name);
+				Set<String> keys2 = temp.keySet();
 				
-				System.out.println(jsonObject.get(jso));
-				
-				if(jso.equals("sequence")){
-//					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-					seqenceToMap(jsonTemp);
-					
-				} else if(jso.contains("pattern")){
-//					JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-					
-					patternData.put(jso, new JsonPattern(jsonTemp));
-					
+				if(name.equals("story")){
+					for(String jso : keys2){
+						JSONObject jsonTemp = (JSONObject)temp.get(jso);
+						System.out.println(jso);
+						System.out.println(temp.get(jso));
+						
+						if(jso.equals("sequence")){
+//							JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+							seqenceToMap(sequenceData, jsonTemp);
+							
+						} else if(jso.contains("pattern")){
+//							JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
+							
+							patternData.put(jso, new JsonPattern(jsonTemp));
+							
+						}
+					}
+				} else if(name.equals("never")){
+					for(String jso : keys2){
+						JSONObject jsonTemp = (JSONObject)temp.get(jso);
+						System.out.println(jso);
+						System.out.println(temp.get(jso));
+						
+						if(jso.equals("sequence")){
+							seqenceToMap(sequenceData2, jsonTemp);
+						} else if(jso.contains("pattern")){
+							patternData2.put(jso, new JsonPattern(jsonTemp));
+						}
+					}
 				}
 			}
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -1249,16 +1307,15 @@ class JParser {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
-	void seqenceToMap(Object target){
+	void seqenceToMap(Map<String, ArrayList<String>> map, Object target){
 		if(target instanceof JSONObject){
 			JSONObject tempObject = (JSONObject)target;
 			Set<String> keys = tempObject.keySet();
 			
 			for(String text : keys){
-				sequenceData.put(text, seqenceToArray(tempObject.get(text)) );
+				map.put(text, seqenceToArray(tempObject.get(text)) );
 			}
 		}
 	}
@@ -1271,7 +1328,6 @@ class JParser {
 			for(int i = 0; i < tempArray.size(); i++){
 				result.add((String) tempArray.get(i));
 			}
-			
 		}
 		
 		return result;
@@ -1283,6 +1339,14 @@ class JParser {
 	
 	Map<String, JsonPattern> getPatternData(){
 		return patternData;
+	}
+	
+	Map<String, ArrayList<String>> getSequenceData2(){
+		return sequenceData2;
+	}
+	
+	Map<String, JsonPattern> getPatternData2(){
+		return patternData2;
 	}
 }
 

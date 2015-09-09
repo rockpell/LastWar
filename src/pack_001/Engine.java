@@ -28,6 +28,10 @@ public class Engine {
 		game_loop = new Looper("restart", 20);
 	}
 	
+	public void initLoop(){
+		game_loop = null;
+	}
+	
 	public void startLoop(){
 		if(game_loop == null){
 			game_loop = new Looper("what", 20);
@@ -188,7 +192,7 @@ class Looper implements Runnable{
 		
 		playTime = engine.getPlayTime();
 		
-		gameLevel = new GameLevel();
+		gameLevel = dm.getGameLevel();
 	}
 	
 	@Override

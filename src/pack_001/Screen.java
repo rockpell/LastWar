@@ -50,6 +50,11 @@ public class Screen extends JFrame{
 	
 //	private boolean gameStart = false;
 	private boolean stopOn = true, beforeStart = false;
+	private boolean pup = false, pdown = false;
+	
+	private int gui_x = screenWidth / 2 - 140;
+	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
+	private int index = 0;
 	
 	private Screen() {
 		 super("Last War");
@@ -72,13 +77,15 @@ public class Screen extends JFrame{
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
-						if(!dm.getPlayer().getOutTrigger()){
-							if(dm.getWallSetCount() < dm.getWallLimit())
-								dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+					if(!stopOn){
+						if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
+							if(!dm.getPlayer().getOutTrigger()){
+								if(dm.getWallSetCount() < dm.getWallLimit())
+									dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+							}
+							dm.getPlayer().setOutTrigger(true);
+							dm.initCoolTime();
 						}
-						dm.getPlayer().setOutTrigger(true);
-						dm.initCoolTime();
 					}
 				}
 				
@@ -116,31 +123,43 @@ public class Screen extends JFrame{
 				
 				if(e.getKeyCode() == KeyEvent.VK_UP){
 					player.move("up");
+					beforeControl(0);
 				} else if(e.getKeyCode() == KeyEvent.VK_DOWN){
 					player.move("down");
+					beforeControl(1);
 				} else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 					player.move("right");
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
-				} else if(e.getKeyCode() == KeyEvent.VK_SPACE){
+				} else if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER){
 					if(!dm.getGameEnd()){
 						if(stopOn){
-							if(!dm.getGameStart()){
-								Engine.getInstance().loadThread();
-								am = dm.getAudio();
-								beforeStart = true;
-							} else {
+							if(!dm.getGameStart()){ // before game
+								if(index == 0){ // story mode
+									Engine.getInstance().loadThread();
+									am = dm.getAudio();
+									beforeStart = true;
+									dm.createGameLevel(0);
+								} else if(index == 1){ // never ending mode
+									Engine.getInstance().loadThread();
+									am = dm.getAudio();
+									beforeStart = true;
+									dm.createGameLevel(1);
+								} else if(index == 2){ // game exit
+									System.exit(0);
+								}
+							} else {  // restart
 								am.play();
 								stopScreenOn();
 								Engine.getInstance().startLoop();
 							}
 							
-						} else {
+						} else { // game stop
 							stopScreenOn();
 							Engine.getInstance().stopLoop();
 							am.stop();
 						}
-					} else {
+					} else { // game replay
 						dm.initData();
 						dm.setGameStart(true);
 						Engine.getInstance().newLoop();
@@ -148,8 +167,24 @@ public class Screen extends JFrame{
 						am.play();
 						stopOn = false;
 						player = dm.getPlayer();
+						beforeStart = true;
 					}
-					
+				} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ // return main menu
+					if(dm.getGameEnd()){
+						dm.initData();
+						stopOn = true;
+						Engine.getInstance().initLoop();
+						player = dm.getPlayer();
+						index = 0;
+						repaint();
+					} else if(stopOn){
+						dm.initData();
+						Engine.getInstance().initLoop();
+						player = dm.getPlayer();
+						index = 0;
+						beforeStart = false;
+						repaint();
+					}
 				}
 				
 			}
@@ -463,6 +498,12 @@ public class Screen extends JFrame{
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
 			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
+			mgc.drawString("Return Main Menu?", screenWidth / 2 - 100, screenHeight / 2 + 50);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+			mgc.drawString("Press the Esc Key", screenWidth / 2 - 100, screenHeight / 2 + 80);
+			
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		} else if(stopOn && !dm.getGameStart() && beforeStart){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
@@ -476,15 +517,74 @@ public class Screen extends JFrame{
 		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
-			mgc.drawString("Last War", screenWidth / 2 - 180, 200);
+			mgc.drawString("Last War", screenWidth / 2 - 180, 160);
 			
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
 			mgc.setColor(Color.red);
-			mgc.drawString("Press the SpaceBar", screenWidth / 2 - 330, 650);
+			mgc.drawString("Story Mode", gui_x, gui_y1);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
+			mgc.setColor(Color.red);
+			mgc.drawString("Never Ending Mode", gui_x, gui_y2);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
+			mgc.setColor(Color.red);
+			mgc.drawString("Exit", gui_x, gui_y3);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
+			mgc.setColor(Color.red);
+			mgc.drawString("Press the SpaceBar Or Enter", screenWidth / 2 - 230, 750);
+			
+			// string
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 45));
+			mgc.setColor(Color.red);
+			
+			switch(index){
+			case 0:
+				mgc.drawString("¢º", gui_x - 60, gui_y1);
+				break;
+			case 1:
+				mgc.drawString("¢º", gui_x - 60, gui_y2);
+				break;
+			case 2:
+				mgc.drawString("¢º", gui_x - 60, gui_y3);
+				break;
+			}
 			
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
 		
+	}
+	
+	private void controlPosition(){
+		if(pup){
+			pup = false;
+			if(index > 0){
+				index -= 1;
+			}
+		}
+		
+		if(pdown){
+			pdown = false;
+			if(index < 2){
+				index += 1;
+			}
+		}
+		
+	}
+	
+	private void beforeControl(int type){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart){
+			if(type == 0){
+				pup = true;
+			} else if(type == 1){
+				pdown = true;
+			}
+		}
+		
+		controlPosition();
+		repaint();
 	}
 	
 	private void afterScreen(){
@@ -495,10 +595,17 @@ public class Screen extends JFrame{
 			mgc.drawString("Game Over", screenWidth / 2 - 180, 220);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
-			
 			mgc.setColor(Color.red);
-			mgc.drawString("REPLAY?", screenWidth / 2 - 330, 560);
-			mgc.drawString("Press the SpaceBar", screenWidth / 2 - 330, 650);
+			mgc.drawString("REPLAY?", screenWidth / 2 - 330, 510);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 40));
+			mgc.drawString("Press the SpaceBar Or Enter", screenWidth / 2 - 330, 590);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
+			mgc.drawString("Return Main Menu?", screenWidth / 2 - 330, 690);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 40));
+			mgc.drawString("Press the Esc Key", screenWidth / 2 - 330, 760);
 		}
 	}
 	
@@ -516,7 +623,6 @@ public class Screen extends JFrame{
         } else {
         	mgc.drawImage(closed_door, t, null);
         }
-		
 	}
 }
 
