@@ -51,6 +51,7 @@ public class Screen extends JFrame{
 //	private boolean gameStart = false;
 	private boolean stopOn = true, beforeStart = false;
 	private boolean pup = false, pdown = false;
+	private boolean story_on = false;
 	
 	private int gui_x = screenWidth / 2 - 140;
 	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
@@ -135,11 +136,16 @@ public class Screen extends JFrame{
 					if(!dm.getGameEnd()){
 						if(stopOn){
 							if(!dm.getGameStart()){ // before game
-								if(index == 0){ // story mode
+								if(story_on){ // story screen after
 									Engine.getInstance().loadThread();
 									am = dm.getAudio();
 									beforeStart = true;
 									dm.createGameLevel(0);
+									story_on = false;
+									return;
+								}
+								if(index == 0){ // story mode
+									story_on = true;
 								} else if(index == 1){ // never ending mode
 									Engine.getInstance().loadThread();
 									am = dm.getAudio();
@@ -169,6 +175,7 @@ public class Screen extends JFrame{
 						player = dm.getPlayer();
 						beforeStart = true;
 					}
+					repaint();
 				} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ // return main menu
 					if(dm.getGameEnd()){
 						dm.initData();
@@ -288,6 +295,7 @@ public class Screen extends JFrame{
 
         stopScreen();
         beforeScreen();
+        storyScreen();
         afterScreen();
         
 		g.drawImage(memoryimage, 0, 0, this);
@@ -514,7 +522,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeScreen(){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
 			mgc.drawString("Last War", screenWidth / 2 - 180, 160);
@@ -551,10 +559,8 @@ public class Screen extends JFrame{
 				mgc.drawString("▶", gui_x - 60, gui_y3);
 				break;
 			}
-			
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		}
-		
 	}
 	
 	private void controlPosition(){
@@ -575,7 +581,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeControl(int type){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on){
 			if(type == 0){
 				pup = true;
 			} else if(type == 1){
@@ -606,6 +612,32 @@ public class Screen extends JFrame{
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 40));
 			mgc.drawString("Press the Esc Key", screenWidth / 2 - 330, 760);
+		}
+	}
+	
+	private void storyScreen(){
+		if(story_on){
+			String[] text = new String[12];
+			text[0] = "벽돌공 브릭슨은 우수한 벽돌공이다.";
+			text[1] = "그는 뛰어난 솜씨를 가졌을 뿐더러 자신의 일에 긍지를 가지고 있기에 많은 사람들은 그를 장인이라 불렀다.";
+			text[2] = "어느날 한 기업에서 그에게 일을 맡기게 되는데 브릭슨은 우연치 않게 기업에서 대대적으로 비리를 저지르는것을 알게 된다.";
+			text[3] = "기업에서는 브릭슨에게 보수를 약속하며 비리와 관련된 일을 함구할 것을 약속하지만";
+			text[4] = "브릭슨은 자신의 일에 높은 긍지를 가지고 있기에 이를 거절한다.";
+			text[5] = "또한 브릭슨은 기업에서 저지른 비리를 폭로하겠다고 선언해버린다.";
+			text[6] = "브릭슨은 많은 사람들에게 장인이라 알려져있기 때문에";
+			text[7] = "브릭슨의 폭로로 인해 기업이 받을 피해는 막대할 것이라 예상되었다.";
+			text[8] = "기업은 브릭슨의 폭로를 막기 위해 브릭슨은 아무도 모르게 처지하려 한다.";
+			text[9] = "브릭슨은 기업에서 보낸 건설 로봇들의 위협을 피해 비리를 폭로하려 하나 상황이 여의치 않다.";
+			text[10] = "고민 끝에 브릭슨은 입구 하나만 존재하는 위험한 방으로 로봇들은 끌어들여";
+			text[11] = "모두 처치한 후 방을 빠져나가 비리를 폭로하기로 결정한다....";
+			
+			mgc.setColor(Color.black);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 20));
+			
+			for(int i = 0; i < text.length; i++){
+				mgc.drawString(text[i], 40, 100 + 40*i);
+			}
+			
 		}
 	}
 	
