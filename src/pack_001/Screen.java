@@ -155,7 +155,7 @@ public class Screen extends JFrame{
 									System.exit(0);
 								}
 							} else {  // restart
-								am.play();
+//								am.play();
 								stopScreenOn();
 								Engine.getInstance().startLoop();
 							}
@@ -287,7 +287,7 @@ public class Screen extends JFrame{
 	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
        
         	mgc.setColor(Color.gray);
-    	    mgc.fillRect(200, screenHeight - 100, screenWidth - 400, 100);
+    	    mgc.fillRect(450, screenHeight - 100, screenWidth - 900, 100);
     	    
             drawArrow();
             drawSkill();
@@ -325,6 +325,7 @@ public class Screen extends JFrame{
             mgc.setColor(Color.black);
     		mgc.draw(out_line1);
     		
+    		mgc.setFont(new Font("default", Font.PLAIN, 12));
             mgc.setColor(Color.white);
             mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
         }
@@ -479,17 +480,19 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawSkill(){
+		int add_x = 130;
+		
 		mgc.setColor(Color.black);
-		mgc.drawRect(298, 722, 52, 52);
+		mgc.drawRect(398 + add_x, 722, 52, 52);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
-		mgc.drawImage(abc.grayImage(), 300, 725, null);
+		mgc.drawImage(abc.grayImage(), 400 + add_x, 725, null);
 
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
-			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 288 + 30, 712);
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 418 + add_x, 712);
 		}
 	}
 	
@@ -637,6 +640,11 @@ public class Screen extends JFrame{
 			for(int i = 0; i < text.length; i++){
 				mgc.drawString(text[i], 40, 100 + 40*i);
 			}
+			
+			mgc.setColor(Color.red);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+			mgc.drawString("Next?", 820, 700);
+			mgc.drawString("Press SpaceBar Or Enter Key", 820, 750);
 			
 		}
 	}

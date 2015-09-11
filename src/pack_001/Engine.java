@@ -2,6 +2,8 @@ package pack_001;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Engine {
 	private static Engine instance;
@@ -33,6 +35,18 @@ public class Engine {
 	}
 	
 	public void startLoop(){
+//		if(game_loop == null){
+//			game_loop = new Looper("what", 20);
+//			dm = DataManagement.getInstance();
+//		}
+//		
+//		th1 = new Thread(game_loop);
+//		th1.start();
+		Timer jobScheduler = new Timer();
+		jobScheduler.schedule(new TempStoper(), 3000);
+	}
+	
+	public void nowStartLoop(){
 		if(game_loop == null){
 			game_loop = new Looper("what", 20);
 			dm = DataManagement.getInstance();
@@ -40,7 +54,6 @@ public class Engine {
 		
 		th1 = new Thread(game_loop);
 		th1.start();
-		
 	}
 	
 	public void stopLoop(){
@@ -237,9 +250,11 @@ class Loader implements Runnable {
 		DataManagement.getInstance().loadImage();
 		Screen.getInstance().loadImage();
 		Engine.getInstance().startLoop();
-		DataManagement.getInstance().getAudio().play();
+//		DataManagement.getInstance().getAudio().play();
 		DataManagement.getInstance().setGameStart(true);
 		Screen.getInstance().stopScreenOn();
+		
+		Screen.getInstance().repaint();
 	}
 }
 
@@ -272,4 +287,18 @@ final class FPScounter {
             frameTimes = 0;  
         }  
     }  
-}  
+}
+
+class TempStoper extends TimerTask {
+	
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Engine.getInstance().nowStartLoop();
+		DataManagement.getInstance().getAudio().play();
+//		DataManagement.getInstance().setGameStart(true);
+//		Screen.getInstance().stopScreenOn();
+	}
+	
+}

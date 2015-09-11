@@ -225,9 +225,9 @@ public class DataManagement {
 		gameStart = false;
 		gameEnd = false;
 		
-		if(gameEnd){
-			Engine.getInstance().startLoop();
-		}
+//		if(gameEnd){
+//			Engine.getInstance().startLoop();
+//		}
 	}
 	
 	public void loadImage() {
