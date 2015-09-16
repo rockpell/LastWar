@@ -17,9 +17,11 @@ public class Engine {
 	
 	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
+	private int temp_time = 0;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
+	private Timer jobScheduler;
 	
 	private Engine(){
 
@@ -42,8 +44,10 @@ public class Engine {
 //		
 //		th1 = new Thread(game_loop);
 //		th1.start();
-		Timer jobScheduler = new Timer();
+		jobScheduler = new Timer();
 		jobScheduler.schedule(new TempStoper(), 3000);
+		jobScheduler.schedule(new TempStoper2(), 1000);
+		Screen.getInstance().setTempStoper(true);
 	}
 	
 	public void nowStartLoop(){
@@ -54,6 +58,18 @@ public class Engine {
 		
 		th1 = new Thread(game_loop);
 		th1.start();
+	}
+	
+	public void addSchedule(TimerTask task, long time){
+		jobScheduler.schedule(task, time);
+	}
+	
+	public void stopSchedule(){
+		jobScheduler.cancel();
+	}
+	
+	public void workTemp(){
+		temp_time += 1;
 	}
 	
 	public void stopLoop(){
@@ -185,6 +201,14 @@ public class Engine {
 	public int getInvokeTime(){
 		return invokeTime;
 	}
+	
+	public int getTempTime(){
+		return temp_time;
+	}
+	
+	public void setTempTime(int val){
+		temp_time = val;
+	}
 }
 
 class Looper implements Runnable{
@@ -291,14 +315,31 @@ final class FPScounter {
 
 class TempStoper extends TimerTask {
 	
-	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		Engine.getInstance().nowStartLoop();
 		DataManagement.getInstance().getAudio().play();
+		
+		Screen.getInstance().setTempStoper(false);
+		Engine.getInstance().setTempTime(0);
+		Engine.getInstance().stopSchedule();
 //		DataManagement.getInstance().setGameStart(true);
 //		Screen.getInstance().stopScreenOn();
 	}
-	
+}
+
+class TempStoper2 extends TimerTask {
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Engine.getInstance().workTemp();
+		Screen.getInstance().repaint();
+		
+		if(Screen.getInstance().getTempStoper()){
+			Engine.getInstance().addSchedule(new TempStoper2(), 1000);
+		}
+		
+	}
 }
