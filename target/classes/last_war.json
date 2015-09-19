@@ -583,14 +583,24 @@
       ],
       "250": []
     },
-    "sequence2": {
+    "pattern6": {
+      "80": [
+        {
+          "x": 100,
+          "y": 99
+        }
+      ],
+      "160": []
+    },
+    "sequence": {
       "1": [
         "pattern1",
         "pattern2"
       ],
       "2": [
         "pattern2",
-        "pattern1"
+        "pattern1",
+        "pattern3"
       ],
       "3": [
         "pattern2",
@@ -599,12 +609,19 @@
       ],
       "4": [
         "pattern1",
-        "pattern5"
+        "pattern5",
+        "pattern6",
+        "pattern1"
+      ],
+      "5": [
+      	"pattern5",
+      	"pattern2",
+      	"pattern4"
       ]
     },
-    "sequence": {
+    "sequence2": {
       "1": [
-        "pattern5"
+        "pattern6"
       ]
     }
   },
@@ -1192,6 +1209,15 @@
       ],
       "250": []
     },
+    "pattern6": {
+      "80": [
+        {
+          "x": 100,
+          "y": 99
+        }
+      ],
+      "160": []
+    },
     "sequence": {
       "1": [
         "pattern1",
@@ -1208,7 +1234,9 @@
       ],
       "4": [
         "pattern1",
-        "pattern5"
+        "pattern5",
+        "pattern4",
+        "pattern6"
       ]
     }
   }

@@ -171,7 +171,6 @@ public class Screen extends JFrame{
 						dm.setGameStart(true);
 						Engine.getInstance().newLoop();
 						Engine.getInstance().startLoop();
-						am.play();
 						stopOn = false;
 						player = dm.getPlayer();
 						beforeStart = true;
@@ -284,8 +283,10 @@ public class Screen extends JFrame{
 		    drawPlayer();
 	        
 	        mgc.setColor(Color.black);
-	        mgc.setFont(new Font("default", Font.PLAIN, 12));
-	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, screenWidth - 100, 50);
+	        mgc.setFont(new Font("default", Font.BOLD, 16));
+	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, 20, screenHeight - 20);
+	        
+	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
        
         	mgc.setColor(Color.gray);
     	    mgc.fillRect(450, screenHeight - 100, screenWidth - 900, 100);
@@ -362,6 +363,7 @@ public class Screen extends JFrame{
 			mgc.draw(out_line1);
 			
 	        mgc.setColor(Color.white);
+	        mgc.setFont(new Font("default", Font.PLAIN, 12));
 	        mgc.drawString(String.valueOf(wa.getHp()) + " / " + String.valueOf(wa.getMaxHp()), wa.getX() + wa.getWidth()/2 - 12, wa.getY() - 6);
 		}
 	}
@@ -473,8 +475,15 @@ public class Screen extends JFrame{
 		        mgc.setColor(Color.black);
 				mgc.draw(out_line1);
 				
+				int enemey_hp_x = 12;
+				
+				if(en.getHp() >= 10){
+					enemey_hp_x = 20;
+				}
+				
 		        mgc.setColor(Color.white);
-		        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - 12, en.getY() - 6);
+		        mgc.setFont(new Font("default", Font.PLAIN, 12));
+		        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - enemey_hp_x, en.getY() - 6);
 			}
 			
 		}
@@ -637,19 +646,20 @@ public class Screen extends JFrame{
 	
 	private void storyScreen(){
 		if(story_on){
-			String[] text = new String[12];
+			String[] text = new String[13];
 			text[0] = "벽돌공 브릭슨은 우수한 벽돌공이다.";
 			text[1] = "그는 뛰어난 솜씨를 가졌을 뿐더러 자신의 일에 긍지를 가지고 있기에 많은 사람들은 그를 장인이라 불렀다.";
-			text[2] = "어느날 한 건설회사에서 그에게 일을 맡기게 되는데 브릭슨은 우연치 않게 건설회사에서 대대적으로 비리를 저지르는것을 알게 된다.";
-			text[3] = "건설회사에서는 브릭슨에게 보수를 약속하며 비리와 관련된 일을 함구할 것을 약속하지만";
-			text[4] = "브릭슨은 자신의 일에 높은 긍지를 가지고 있기에 이를 거절한다.";
-			text[5] = "또한 브릭슨은 건설회사에서 저지른 비리를 폭로하겠다고 선언해버린다.";
-			text[6] = "브릭슨은 많은 사람들에게 장인이라 알려져있기 때문에";
-			text[7] = "브릭슨의 폭로로 인해 건설회사이 받을 피해는 막대할 것이라 예상되었다.";
-			text[8] = "건설회사은 브릭슨의 폭로를 막기 위해 브릭슨은 아무도 모르게 처지하려 한다.";
-			text[9] = "브릭슨은 건설회사에서 보낸 건설 로봇들의 위협을 피해 비리를 폭로하려 하나 상황이 여의치 않다.";
-			text[10] = "고민 끝에 브릭슨은 입구 하나만 존재하는 위험한 방으로 로봇들은 끌어들여";
-			text[11] = "모두 처치한 후 방을 빠져나가 비리를 폭로하기로 결정한다....";
+			text[2] = "어느날 한 건설회사에서 그에게 일을 맡기게 되는데";
+			text[3]	= "브릭슨은 우연치 않게 건설회사에서 대대적으로 비리를 저지르는것을 알게 된다.";
+			text[4] = "건설회사에서는 브릭슨에게 보수를 약속하며 비리와 관련된 일을 함구할 것을 약속하지만";
+			text[5] = "브릭슨은 자신의 일에 높은 긍지를 가지고 있기에 이를 거절한다.";
+			text[6] = "또한 브릭슨은 건설회사에서 저지른 비리를 폭로하겠다고 선언해버린다.";
+			text[7] = "브릭슨은 많은 사람들에게 장인이라 알려져있기 때문에";
+			text[8] = "브릭슨의 폭로로 인해 건설회사이 받을 피해는 막대할 것이라 예상되었다.";
+			text[9] = "건설회사은 브릭슨의 폭로를 막기 위해 브릭슨은 아무도 모르게 처지하려 한다.";
+			text[10] = "브릭슨은 건설회사에서 보낸 건설 로봇들의 위협을 피해 비리를 폭로하려 하나 상황이 여의치 않다.";
+			text[11] = "고민 끝에 브릭슨은 입구 하나만 존재하는 위험한 방으로 로봇들은 끌어들여";
+			text[12] = "모두 처치한 후 방을 빠져나가 비리를 폭로하기로 결정한다....";
 			
 			mgc.setColor(Color.black);
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 20));

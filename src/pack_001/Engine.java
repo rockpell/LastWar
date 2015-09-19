@@ -18,6 +18,7 @@ public class Engine {
 	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
 	private int temp_time = 0;
+	private int fps = 0;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
@@ -209,6 +210,14 @@ public class Engine {
 	public void setTempTime(int val){
 		temp_time = val;
 	}
+	
+	public void setFps(int val){
+		fps = val;
+	}
+	
+	public int getFps(){
+		return fps;
+	}
 }
 
 class Looper implements Runnable{
@@ -305,7 +314,8 @@ final class FPScounter {
         //if the difference is greater than 1 second (or 1000ms) post the results  
         if(frameTimes >= 1000){  
             //post results at the console  
-            System.out.println("FPS : " + Long.toString(frames));  
+//            System.out.println("FPS : " + Long.toString(frames));
+            Engine.getInstance().setFps(frames);
             //reset time differences and number of counted frames  
             frames = 0;  
             frameTimes = 0;  

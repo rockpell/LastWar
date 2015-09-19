@@ -526,15 +526,15 @@ class Enemy1 extends Colider implements Unit {
 		dm.getWarpGate().setOpen();
 	}
 	
-	Enemy1(float x, float y){
-		dm = DataManagement.getInstance();
-		
-		dm.addEnemy(this);
-		dm.getWarpGate().setOpen();
-		
-		setPosition(x, y);
-		setSize(48, 48);
-	}
+//	Enemy1(float x, float y){
+//		dm = DataManagement.getInstance();
+//		
+//		dm.addEnemy(this);
+//		dm.getWarpGate().setOpen();
+//		
+//		setPosition(x, y);
+//		setSize(48, 48);
+//	}
 	
 	public void move(Point2D.Float target){
 		movePoint = target;
@@ -721,7 +721,7 @@ class Enemy1 extends Colider implements Unit {
 		}
 	}
 	
-	private void setHp(int val){
+	protected void setHp(int val){
 		this.maxHp = val;
 		this.hp = val;
 	}
@@ -798,6 +798,18 @@ class Enemy1 extends Colider implements Unit {
 	public boolean isActive(){
 		return is_active;
 	}
+}
+
+class BossEnemy extends Enemy1{
+	
+	BossEnemy(int hp) {
+		super(hp);
+		
+		if(hp == 0){
+			setHp(10);
+		}
+	}
+
 }
 
 class Wall1 extends Colider implements Wall {
@@ -1234,7 +1246,10 @@ class GameLevel {
 					new Enemy1(4);
 				} else if(tempPoint.x == 99 && tempPoint.y == 101){
 					new Enemy1(5);
-				} else {
+				} else if(tempPoint.x == 100 && tempPoint.y == 99){
+					new BossEnemy(0);
+				}
+				else {
 					new Laser1(tempPoint.x, tempPoint.y);
 				}
 				
