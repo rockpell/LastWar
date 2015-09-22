@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -79,16 +81,7 @@ public class Screen extends JFrame{
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					if(!stopOn){
-						if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
-							if(!dm.getPlayer().getOutTrigger()){
-								if(dm.getWallSetCount() < dm.getWallLimit())
-									dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
-							}
-							dm.getPlayer().setOutTrigger(true);
-							dm.initCoolTime();
-						}
-					}
+					dm.getSkill().skillExcute();
 				}
 				
 				if(keyList.size() > 1){
@@ -157,14 +150,18 @@ public class Screen extends JFrame{
 								}
 							} else {  // restart
 //								am.play();
-								stopScreenOn();
-								Engine.getInstance().startLoop();
+								if(!temp_stoper){
+									stopScreenOn();
+									Engine.getInstance().startLoop();
+								}
 							}
 							
 						} else { // game stop
-							stopScreenOn();
-							Engine.getInstance().stopLoop();
-							am.stop();
+							if(!temp_stoper){
+								stopScreenOn();
+								Engine.getInstance().stopLoop();
+								am.stop();
+							}
 						}
 					} else { // game replay
 						dm.initData();
@@ -233,6 +230,11 @@ public class Screen extends JFrame{
 			 
 		 });
 		 
+		 this.addMouseListener(new MouseAdapter(){
+			 public void mouseClicked(MouseEvent arg0) {
+				 dm.getSkill().skillClick(arg0.getPoint().x, arg0.getPoint().y);
+			 }
+		 });
 	}
 	
 	public void loadImage() {
@@ -284,12 +286,15 @@ public class Screen extends JFrame{
 	        
 	        mgc.setColor(Color.black);
 	        mgc.setFont(new Font("default", Font.BOLD, 16));
-	        mgc.drawString("time : " + Engine.getInstance().getPlayTime() / 10, 20, screenHeight - 20);
+	        
+	        mgc.drawString("Time : " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
+	        mgc.drawString("Score :", 800, screenHeight - 50);
+	        mgc.drawString("Money :", 800, screenHeight - 20);
 	        
 	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
        
         	mgc.setColor(Color.gray);
-    	    mgc.fillRect(450, screenHeight - 100, screenWidth - 900, 100);
+    	    mgc.fillRect(50, screenHeight - 100, screenWidth - 900, 100);
     	    
             drawArrow();
             drawSkill();
@@ -490,19 +495,19 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawSkill(){
-		int add_x = 130;
+		Skill skill_temp = dm.getSkill();
 		
 		mgc.setColor(Color.black);
-		mgc.drawRect(398 + add_x, 722, 52, 52);
+		mgc.drawRect(skill_temp.getX() - 2, skill_temp.getY() - 3, skill_temp.getWidth() + 4, skill_temp.getHeight() + 4);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
-		mgc.drawImage(abc.grayImage(), 400 + add_x, 725, null);
+		mgc.drawImage(abc.grayImage(), skill_temp.getX(), skill_temp.getY(), null);
 
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
-			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), 418 + add_x, 712);
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), skill_temp.getX() + 18, skill_temp.getY() - 13);
 		}
 	}
 	
@@ -520,6 +525,10 @@ public class Screen extends JFrame{
 	
 	public boolean getTempStoper(){
 		return temp_stoper;
+	}
+	
+	public boolean getStopOn(){
+		return stopOn;
 	}
 	
 	private void stopScreen(){

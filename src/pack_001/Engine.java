@@ -18,7 +18,7 @@ public class Engine {
 	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
 	private int temp_time = 0;
-	private int fps = 0;
+	private int fps = 50;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
@@ -259,15 +259,28 @@ class Looper implements Runnable{
 					dm.countCoolTime();
 				}
 				
+				FPScounter.StopAndPost();
+				
+				interval = (1000 / engine.getFps()) - FPScounter.getElapsedTime();
+				
+//				System.out.println(interval);
+				
+				if(interval < 5){
+					interval = 20;
+				}
+				
 				Thread.sleep(interval);
 				engine.killThread();
 				
-				FPScounter.StopAndPost();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void setInterval(int val){
+		interval = val;
 	}
 }
 
@@ -295,7 +308,7 @@ final class FPScounter {
     private static int startTime;  
     private static int endTime;  
     private static int frameTimes = 0;  
-    private static short frames = 0;  
+    private static short frames = 0;
   
 //    /** Start counting the fps**/  
     public final static void StartCounter()  {  
@@ -304,13 +317,13 @@ final class FPScounter {
     }  
   
 //    /**stop counting the fps and display it at the console*/  
-    public final static void StopAndPost(){  
+    public final static void StopAndPost(){
         //get the current time  
         endTime = (int) System.currentTimeMillis();  
         //the difference between start and end times  
         frameTimes = frameTimes + endTime - startTime;  
         //count one frame  
-        ++frames;  
+        ++frames;
         //if the difference is greater than 1 second (or 1000ms) post the results  
         if(frameTimes >= 1000){  
             //post results at the console  
@@ -318,9 +331,13 @@ final class FPScounter {
             Engine.getInstance().setFps(frames);
             //reset time differences and number of counted frames  
             frames = 0;  
-            frameTimes = 0;  
+            frameTimes = 0;
         }  
-    }  
+    }
+    
+    public final static int getElapsedTime(){
+    	return endTime - startTime;
+    }
 }
 
 class TempStoper extends TimerTask {

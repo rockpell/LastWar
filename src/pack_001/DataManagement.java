@@ -61,6 +61,7 @@ public class DataManagement {
 	private WarpGate warp_gate;
 	private AudioManagement am;
 	private GameLevel gameLevel;
+	private Skill skill1;
 	
 	public Image mshi;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
@@ -79,6 +80,7 @@ public class DataManagement {
 	
 	private DataManagement(){
 		initData();
+		skill1 = new Skill("wall", 100, 725, 48, 48);
 	}
 	
 	public Player getPlayer(){
@@ -278,6 +280,10 @@ public class DataManagement {
 	public GameLevel getGameLevel(){
 		return gameLevel;
 	}
+	
+	public Skill getSkill(){
+		return skill1;
+	}
 }
 
 class Player extends Colider implements Unit{
@@ -288,7 +294,7 @@ class Player extends Colider implements Unit{
 	private int speed = 5;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
-	private boolean outTrigger = false, wall_able = true;
+	private boolean outTrigger = false, wall_able = false;
 	private boolean damaged = false; // damaged == 피해 입음 상태 표시
 	private int damage_count = 0;
 	
