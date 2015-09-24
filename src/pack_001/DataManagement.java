@@ -61,7 +61,7 @@ public class DataManagement {
 	private WarpGate warp_gate;
 	private AudioManagement am;
 	private GameLevel gameLevel;
-	private Skill skill1;
+	private Skill skill1, skill2, skill3;
 	
 	public Image mshi;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
@@ -75,12 +75,15 @@ public class DataManagement {
 	
 	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입
 	private int coolTime = 15, coolTimeLeft = 0;
+	private int money = 0;
 	
 	private boolean gameStart = false, gameEnd = false;
 	
 	private DataManagement(){
 		initData();
 		skill1 = new Skill("wall", 100, 725, 48, 48);
+		skill2 = new Skill("heal", 160, 725, 48, 48);
+		skill3 = new Skill("hp", 220, 725, 48, 48);
 	}
 	
 	public Player getPlayer(){
@@ -227,9 +230,8 @@ public class DataManagement {
 		gameStart = false;
 		gameEnd = false;
 		
-//		if(gameEnd){
-//			Engine.getInstance().startLoop();
-//		}
+		money = 0;
+		Engine.getInstance().setPlayTime(0);
 	}
 	
 	public void loadImage() {
@@ -281,8 +283,28 @@ public class DataManagement {
 		return gameLevel;
 	}
 	
-	public Skill getSkill(){
-		return skill1;
+	public Skill getSkill(int number){
+		if(number == 0){
+			return skill1;
+		} else if(number == 1){
+			return skill2;
+		} else if(number == 2){
+			return skill3;
+		} else {
+			return null;
+		}
+	}
+	
+	public int getMoney(){
+		return money;
+	}
+	
+	public void addMoney(int value){
+		money += value;
+	}
+	
+	public void subMoney(int value){
+		money -= value;
 	}
 }
 
@@ -501,6 +523,14 @@ class Player extends Colider implements Unit{
 	public int getWidth(){
 		return width;
 	}
+	
+	public void heal(){
+		hp = maxHp;
+	}
+	
+	public void maxHpUp(){
+		maxHp += 1;
+	}
 }
 
 class Enemy1 extends Colider implements Unit {
@@ -714,7 +744,8 @@ class Enemy1 extends Colider implements Unit {
 	@Override
 	public void dead() {
 		// TODO Auto-generated method stub
-		DataManagement.getInstance().removeEnemy(this);
+		dm.removeEnemy(this);
+		dm.addMoney(100);
 	}
 	
 	public void damaged(){

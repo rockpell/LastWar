@@ -81,7 +81,11 @@ public class Screen extends JFrame{
 						e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT){
 					keyList.add(e.getKeyCode());
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					dm.getSkill().skillExcute();
+					dm.getSkill(0).skillExcute();
+				} else if(e.getKeyCode() == KeyEvent.VK_S){
+					dm.getSkill(1).skillExcute();
+				} else if(e.getKeyCode() == KeyEvent.VK_D){
+					dm.getSkill(2).skillExcute();
 				}
 				
 				if(keyList.size() > 1){
@@ -232,7 +236,9 @@ public class Screen extends JFrame{
 		 
 		 this.addMouseListener(new MouseAdapter(){
 			 public void mouseClicked(MouseEvent arg0) {
-				 dm.getSkill().skillClick(arg0.getPoint().x, arg0.getPoint().y);
+				 dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
+				 dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
+				 dm.getSkill(2).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 			 }
 		 });
 	}
@@ -289,7 +295,7 @@ public class Screen extends JFrame{
 	        
 	        mgc.drawString("Time : " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
 	        mgc.drawString("Score :", 800, screenHeight - 50);
-	        mgc.drawString("Money :", 800, screenHeight - 20);
+	        mgc.drawString("Money : " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
 	        
 	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
        
@@ -332,9 +338,19 @@ public class Screen extends JFrame{
             mgc.setColor(Color.black);
     		mgc.draw(out_line1);
     		
+    		int hp_x = 12;
+    		
+    		if(dm.getPlayer().getMaxHp() >= 10){
+    			if(dm.getPlayer().getHp() >= 10){
+    				hp_x = 20;
+    			} else {
+    				hp_x = 16;
+    			}
+    		}
+    		
     		mgc.setFont(new Font("default", Font.PLAIN, 12));
             mgc.setColor(Color.white);
-            mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - 12, player.getPosition().y - 3);
+            mgc.drawString(String.valueOf(player.getHp()) + " / " + String.valueOf(player.getMaxHp()), player.getPosition().x + player.getWidth()/2 - hp_x, player.getPosition().y - 3);
         }
         
 	}
@@ -482,8 +498,13 @@ public class Screen extends JFrame{
 				
 				int enemey_hp_x = 12;
 				
-				if(en.getHp() >= 10){
-					enemey_hp_x = 20;
+				if(en.getMaxHp() >= 10){
+					if(en.getHp() >= 10){
+						enemey_hp_x = 20;
+					} else {
+						enemey_hp_x = 16;
+					}
+					
 				}
 				
 		        mgc.setColor(Color.white);
@@ -495,16 +516,25 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawSkill(){
-		Skill skill_temp = dm.getSkill();
+		Skill skill_temp = dm.getSkill(0);
+		Skill skill_temp2 = dm.getSkill(1);
+		Skill skill_temp3 = dm.getSkill(2);
 		
 		mgc.setColor(Color.black);
 		mgc.drawRect(skill_temp.getX() - 2, skill_temp.getY() - 3, skill_temp.getWidth() + 4, skill_temp.getHeight() + 4);
+		mgc.drawRect(skill_temp2.getX() - 2, skill_temp2.getY() - 3, skill_temp2.getWidth() + 4, skill_temp2.getHeight() + 4);
+		mgc.drawRect(skill_temp3.getX() - 2, skill_temp3.getY() - 3, skill_temp3.getWidth() + 4, skill_temp3.getHeight() + 4);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
 		mgc.drawImage(abc.grayImage(), skill_temp.getX(), skill_temp.getY(), null);
-
+		
+		mgc.setFont(new Font("default", Font.BOLD, 14));
+		mgc.drawString("A", skill_temp.getX() + 18, skill_temp.getY() + 62);
+		mgc.drawString("S", skill_temp2.getX() + 18, skill_temp2.getY() + 62);
+		mgc.drawString("D", skill_temp3.getX() + 18, skill_temp3.getY() + 62);
+		
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), skill_temp.getX() + 18, skill_temp.getY() - 13);

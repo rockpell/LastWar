@@ -257,6 +257,7 @@ class Looper implements Runnable{
 				
 				if(playTime % 20 == 0){
 					dm.countCoolTime();
+					dm.addMoney(1);
 				}
 				
 				FPScounter.StopAndPost();

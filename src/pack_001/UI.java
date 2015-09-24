@@ -35,15 +35,21 @@ class Skill extends UI{
 	public void skillExcute(){
 		DataManagement dm = DataManagement.getInstance();
 		
-		if(!Screen.getInstance().getStopOn()){
-			if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
-				if(!dm.getPlayer().getOutTrigger()){
-					if(dm.getWallSetCount() < dm.getWallLimit())
-						dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+		if(name.equals("wall")){
+			if(!Screen.getInstance().getStopOn()){
+				if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
+					if(!dm.getPlayer().getOutTrigger()){
+						if(dm.getWallSetCount() < dm.getWallLimit())
+							dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+					}
+					dm.getPlayer().setOutTrigger(true);
+					dm.initCoolTime();
 				}
-				dm.getPlayer().setOutTrigger(true);
-				dm.initCoolTime();
 			}
+		} else if(name.equals("heal")){
+			dm.getPlayer().heal();
+		} else if(name.equals("hp")){
+			dm.getPlayer().maxHpUp();
 		}
 	}
 	
