@@ -36,20 +36,50 @@ class Skill extends UI{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(name.equals("wall")){
+			if(dm.getCost(0) > dm.getMoney()){
+				return;
+			}
 			if(!Screen.getInstance().getStopOn()){
 				if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
 					if(!dm.getPlayer().getOutTrigger()){
-						if(dm.getWallSetCount() < dm.getWallLimit())
+						if(dm.getWallSetCount() < dm.getWallLimit()){
 							dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+							dm.subMoney(dm.getCost(0));
+							dm.upCost(0);
+						}
 					}
 					dm.getPlayer().setOutTrigger(true);
 					dm.initCoolTime();
 				}
 			}
 		} else if(name.equals("heal")){
+			if(dm.getCost(1) > dm.getMoney()){
+				return;
+			} else if(dm.getPlayer().getHp() == dm.getPlayer().getMaxHp()){
+				return;
+			}
 			dm.getPlayer().heal();
+			dm.subMoney(dm.getCost(1));
+			dm.upCost(1);
 		} else if(name.equals("hp")){
+			if(dm.getCost(2) > dm.getMoney()){
+				return;
+			}
 			dm.getPlayer().maxHpUp();
+			dm.subMoney(dm.getCost(2));
+			dm.upCost(2);
+		} else if(name.equals("wallhp")){
+			if(dm.getCost(3) > dm.getMoney()){
+				return;
+			}
+			dm.subMoney(dm.getCost(3));
+			dm.upCost(3);
+		} else if(name.equals("wallcool")){
+			if(dm.getCost(4) > dm.getMoney()){
+				return;
+			}
+			dm.subMoney(dm.getCost(4));
+			dm.upCost(4);
 		}
 	}
 	

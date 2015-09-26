@@ -61,7 +61,8 @@ public class DataManagement {
 	private WarpGate warp_gate;
 	private AudioManagement am;
 	private GameLevel gameLevel;
-	private Skill skill1, skill2, skill3;
+//	private Skill skill1, skill2, skill3, skill4, skill5;
+	private Skill[] skill = new Skill[5];
 	
 	public Image mshi;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
@@ -76,14 +77,17 @@ public class DataManagement {
 	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0;
+	private int[] cost = new int[5];
 	
 	private boolean gameStart = false, gameEnd = false;
 	
 	private DataManagement(){
 		initData();
-		skill1 = new Skill("wall", 100, 725, 48, 48);
-		skill2 = new Skill("heal", 160, 725, 48, 48);
-		skill3 = new Skill("hp", 220, 725, 48, 48);
+		skill[0] = new Skill("wall", 100, 725, 48, 48);
+		skill[1] = new Skill("heal", 160, 725, 48, 48);
+		skill[2] = new Skill("hp", 220, 725, 48, 48);
+		skill[3] = new Skill("wallhp", 280, 725, 48, 48);
+		skill[4] = new Skill("wallcool", 340, 725, 48, 48);
 	}
 	
 	public Player getPlayer(){
@@ -232,6 +236,8 @@ public class DataManagement {
 		
 		money = 0;
 		Engine.getInstance().setPlayTime(0);
+		
+		initCost();
 	}
 	
 	public void loadImage() {
@@ -284,15 +290,7 @@ public class DataManagement {
 	}
 	
 	public Skill getSkill(int number){
-		if(number == 0){
-			return skill1;
-		} else if(number == 1){
-			return skill2;
-		} else if(number == 2){
-			return skill3;
-		} else {
-			return null;
-		}
+		return skill[number];
 	}
 	
 	public int getMoney(){
@@ -305,6 +303,51 @@ public class DataManagement {
 	
 	public void subMoney(int value){
 		money -= value;
+	}
+	
+	public int getCost(int value){
+		return cost[value];
+	}
+	
+	public void initCost(){
+		cost[0] = 10;
+		cost[1] = 50;
+		cost[2] = 30;
+		cost[3] = 100;
+		cost[4] = 100;
+	}
+	
+	public void upCost(int value){
+		switch(value){
+		case 1:
+			if(cost[value] < 100){
+				cost[value] += 30;
+			} else {
+				cost[value] += 50;
+			}
+			break;
+		case 2:
+			if(cost[value] < 100){
+				cost[value] += 30;
+			} else {
+				cost[value] += 50;
+			}
+			break;
+		case 3:
+			if(cost[value] < 100){
+				cost[value] += 30;
+			} else {
+				cost[value] += 50;
+			}
+			break;
+		case 4:
+			if(cost[value] < 100){
+				cost[value] += 30;
+			} else {
+				cost[value] += 50;
+			}
+			break;
+		}
 	}
 }
 
@@ -539,6 +582,7 @@ class Enemy1 extends Colider implements Unit {
 	private int width, height;
 	private float speed = 1.5f;
 	private int hp = 5, maxHp = 5;
+	private int money = 100;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	private boolean randMove = true; // randMove == 랜덤 이동(플레이어 인식 못할 경우 랜덤 이동) 
@@ -745,7 +789,7 @@ class Enemy1 extends Colider implements Unit {
 	public void dead() {
 		// TODO Auto-generated method stub
 		dm.removeEnemy(this);
-		dm.addMoney(100);
+		dm.addMoney(money);
 	}
 	
 	public void damaged(){
@@ -761,6 +805,10 @@ class Enemy1 extends Colider implements Unit {
 	protected void setHp(int val){
 		this.maxHp = val;
 		this.hp = val;
+	}
+	
+	protected void setMoeny(int value){
+		this.money = value;
 	}
 	
 	@Override
@@ -841,7 +889,7 @@ class BossEnemy extends Enemy1{
 	
 	BossEnemy(int hp) {
 		super(hp);
-		
+		setMoeny(300);
 		if(hp == 0){
 			setHp(10);
 		}

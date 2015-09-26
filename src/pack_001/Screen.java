@@ -295,12 +295,12 @@ public class Screen extends JFrame{
 	        
 	        mgc.drawString("Time : " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
 	        mgc.drawString("Score :", 800, screenHeight - 50);
-	        mgc.drawString("Money : " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
+	        mgc.drawString("Point : " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
 	        
 	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
        
-        	mgc.setColor(Color.gray);
-    	    mgc.fillRect(50, screenHeight - 100, screenWidth - 900, 100);
+        	mgc.setColor(Color.LIGHT_GRAY);
+    	    mgc.fillRect(50, screenHeight - 100, screenWidth - 800, 100);
     	    
             drawArrow();
             drawSkill();
@@ -519,11 +519,15 @@ public class Screen extends JFrame{
 		Skill skill_temp = dm.getSkill(0);
 		Skill skill_temp2 = dm.getSkill(1);
 		Skill skill_temp3 = dm.getSkill(2);
+		Skill skill_temp4 = dm.getSkill(3);
+		Skill skill_temp5 = dm.getSkill(4);
 		
 		mgc.setColor(Color.black);
 		mgc.drawRect(skill_temp.getX() - 2, skill_temp.getY() - 3, skill_temp.getWidth() + 4, skill_temp.getHeight() + 4);
 		mgc.drawRect(skill_temp2.getX() - 2, skill_temp2.getY() - 3, skill_temp2.getWidth() + 4, skill_temp2.getHeight() + 4);
 		mgc.drawRect(skill_temp3.getX() - 2, skill_temp3.getY() - 3, skill_temp3.getWidth() + 4, skill_temp3.getHeight() + 4);
+		mgc.drawRect(skill_temp4.getX() - 2, skill_temp4.getY() - 3, skill_temp4.getWidth() + 4, skill_temp4.getHeight() + 4);
+		mgc.drawRect(skill_temp5.getX() - 2, skill_temp5.getY() - 3, skill_temp5.getWidth() + 4, skill_temp5.getHeight() + 4);
 		
 		ImageManagement abc = new ImageManagement(brick_wall_001);
 		
@@ -534,6 +538,14 @@ public class Screen extends JFrame{
 		mgc.drawString("A", skill_temp.getX() + 18, skill_temp.getY() + 62);
 		mgc.drawString("S", skill_temp2.getX() + 18, skill_temp2.getY() + 62);
 		mgc.drawString("D", skill_temp3.getX() + 18, skill_temp3.getY() + 62);
+		mgc.drawString("F", skill_temp4.getX() + 18, skill_temp4.getY() + 62);
+		mgc.drawString("G", skill_temp5.getX() + 18, skill_temp5.getY() + 62);
+		
+		mgc.drawString(String.valueOf(dm.getCost(0)), skill_temp.getX(), skill_temp.getY());
+		mgc.drawString(String.valueOf(dm.getCost(1)), skill_temp2.getX(), skill_temp2.getY());
+		mgc.drawString(String.valueOf(dm.getCost(2)), skill_temp3.getX(), skill_temp3.getY());
+		mgc.drawString(String.valueOf(dm.getCost(3)), skill_temp4.getX(), skill_temp4.getY());
+		mgc.drawString(String.valueOf(dm.getCost(4)), skill_temp5.getX(), skill_temp5.getY());
 		
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
