@@ -19,6 +19,7 @@ public class Engine {
 	private int playTime = 0, invokeTime = 0;
 	private int temp_time = 0;
 	private int fps = 51;
+	private int message_time = 0, message_time_max = 50;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
@@ -187,6 +188,31 @@ public class Engine {
 		dm.getWarpGate().work();
 	}
 	
+	public void workMessage(){
+		if(message_time != 0){
+			message_time -= 1;
+			if(message_time <= 0){
+				initMessage();
+			}
+		}
+	}
+	
+	public void initMessage(){
+		message_time = 0;
+	}
+	
+	public void settingMessage(){
+		message_time = message_time_max;
+	}
+	
+	public boolean isMessage(){
+		if(message_time > 0){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public int getPlayTime(){
 		return playTime;
 	}
@@ -259,6 +285,8 @@ class Looper implements Runnable{
 					dm.countCoolTime();
 					dm.addMoney(1);
 				}
+				
+				engine.workMessage();
 				
 				FPScounter.StopAndPost();
 				interval = (1000 / engine.getFps()) - FPScounter.getElapsedTime();

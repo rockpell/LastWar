@@ -64,10 +64,10 @@ public class DataManagement {
 //	private Skill skill1, skill2, skill3, skill4, skill5;
 	private Skill[] skill = new Skill[5];
 	
-	public Image mshi;
+	public Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
 	public Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	public Image brick_wall_001, excavator_001;
+	public Image brick_wall_001, excavator_001, brick_black;
 	public Image closed_door, open_door;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
@@ -78,6 +78,7 @@ public class DataManagement {
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0;
 	private int[] cost = new int[5];
+	private int wall_plus_hp = 0;
 	
 	private boolean gameStart = false, gameEnd = false;
 	
@@ -186,6 +187,10 @@ public class DataManagement {
 		wallLimit = value;
 	}
 	
+	public void minusWallCoolTime(int value){
+		coolTime -= value;
+	}
+	
 	public int getWallSetCount(){
 		return wallSet.size();
 	}
@@ -254,6 +259,11 @@ public class DataManagement {
 		excavator_001 = new ImageIcon("resource/excavator.png").getImage();
 		closed_door = new ImageIcon("resource/closed_door.png").getImage();
 		open_door = new ImageIcon("resource/open_door.png").getImage();
+		hp_potion = new ImageIcon("resource/hp_potion.png").getImage();
+		hp_plus = new ImageIcon("resource/hp_plus.png").getImage();
+		brick_black = new ImageIcon("resource/brick_black.png").getImage();
+		wall_hp = new ImageIcon("resource/wall_hp.png").getImage();
+		wall_time = new ImageIcon("resource/wall_time.png").getImage();
 	}
 	
 	public AudioManagement getAudio(){
@@ -348,6 +358,14 @@ public class DataManagement {
 			}
 			break;
 		}
+	}
+	
+	public int getPlusHp(){
+		return wall_plus_hp;
+	}
+	
+	public void plusHp(){
+		this.wall_plus_hp += 1;
 	}
 }
 
@@ -802,7 +820,7 @@ class Enemy1 extends Colider implements Unit {
 		}
 	}
 	
-	protected void setHp(int val){
+	public void setHp(int val){
 		this.maxHp = val;
 		this.hp = val;
 	}
@@ -909,6 +927,9 @@ class Wall1 extends Colider implements Wall {
 		setPosition(x, y);
 		setSize(48, 48);
 		trigger = true; // 충돌 가능
+		
+		maxHp += DataManagement.getInstance().getPlusHp();
+		hp = maxHp;
 	}
 	
 	@Override
@@ -1300,7 +1321,7 @@ class GameLevel {
 			targetIndex += 1;
 		}
 		
-		patternParser(0);
+		patternParser(mode_type);
 //		System.out.println("nowLevle : " +nowLevel + "  nowSequence : " + nowSequence);
 	}
 	

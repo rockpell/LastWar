@@ -44,10 +44,10 @@ public class Screen extends JFrame{
 	private DataManagement dm;
 	private AudioManagement am;
 	
-	private Image mshi;
+	private Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	private Image brick_wall_001, excavator_001;
+	private Image brick_wall_001, excavator_001, brick_black;
 	private Image closed_door, open_door;
 	
 //	private boolean gameStart = false;
@@ -86,6 +86,10 @@ public class Screen extends JFrame{
 					dm.getSkill(1).skillExcute();
 				} else if(e.getKeyCode() == KeyEvent.VK_D){
 					dm.getSkill(2).skillExcute();
+				} else if(e.getKeyCode() == KeyEvent.VK_F){
+					dm.getSkill(3).skillExcute();
+				} else if(e.getKeyCode() == KeyEvent.VK_G){
+					dm.getSkill(4).skillExcute();
 				}
 				
 				if(keyList.size() > 1){
@@ -239,6 +243,8 @@ public class Screen extends JFrame{
 				 dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(2).skillClick(arg0.getPoint().x, arg0.getPoint().y);
+				 dm.getSkill(3).skillClick(arg0.getPoint().x, arg0.getPoint().y);
+				 dm.getSkill(4).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 			 }
 		 });
 	}
@@ -259,6 +265,11 @@ public class Screen extends JFrame{
 		excavator_001 = dm.excavator_001;
 		closed_door = dm.closed_door;
 		open_door = dm.open_door;
+		hp_potion = dm.hp_potion;
+		hp_plus = dm.hp_plus;
+		brick_black = dm.brick_black;
+		wall_hp = dm.wall_hp;
+		wall_time = dm.wall_time;
     }
 	
 	public void update(Graphics g) {
@@ -364,10 +375,8 @@ public class Screen extends JFrame{
 	        t.translate(wx, wy); // x/y set here
 	        t.scale(1, 1);
 	        
-			mgc.drawImage(brick_wall_001, t, null);
-			
-//			mgc.setColor(Color.red);
-//			mgc.drawString(String.valueOf(wa.getHp()), wx + wa.getSize("width") / 2 - 3, wy - 10);
+//			mgc.drawImage(brick_wall_001, t, null);
+			mgc.drawImage(brick_black, t, null);
 			
 			Rectangle2D out_line1 = new Rectangle2D.Float(wa.getX(), wa.getY() - 18, wa.getWidth(), 15);
 	        Rectangle2D in_line1 = new Rectangle2D.Float(wa.getX(), wa.getY() - 18, wa.getWidth() * ((float)wa.getHp()/(float)wa.getMaxHp()), 15);
@@ -529,10 +538,14 @@ public class Screen extends JFrame{
 		mgc.drawRect(skill_temp4.getX() - 2, skill_temp4.getY() - 3, skill_temp4.getWidth() + 4, skill_temp4.getHeight() + 4);
 		mgc.drawRect(skill_temp5.getX() - 2, skill_temp5.getY() - 3, skill_temp5.getWidth() + 4, skill_temp5.getHeight() + 4);
 		
-		ImageManagement abc = new ImageManagement(brick_wall_001);
+		ImageManagement abc = new ImageManagement(brick_black);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
 		mgc.drawImage(abc.grayImage(), skill_temp.getX(), skill_temp.getY(), null);
+		mgc.drawImage(hp_potion, skill_temp2.getX(), skill_temp2.getY(), null);
+		mgc.drawImage(hp_plus, skill_temp3.getX(), skill_temp3.getY(), null);
+		mgc.drawImage(wall_hp, skill_temp4.getX(), skill_temp4.getY(), null);
+		mgc.drawImage(wall_time, skill_temp5.getX(), skill_temp5.getY(), null);
 		
 		mgc.setFont(new Font("default", Font.BOLD, 14));
 		mgc.drawString("A", skill_temp.getX() + 18, skill_temp.getY() + 62);
@@ -541,15 +554,21 @@ public class Screen extends JFrame{
 		mgc.drawString("F", skill_temp4.getX() + 18, skill_temp4.getY() + 62);
 		mgc.drawString("G", skill_temp5.getX() + 18, skill_temp5.getY() + 62);
 		
-		mgc.drawString(String.valueOf(dm.getCost(0)), skill_temp.getX(), skill_temp.getY());
-		mgc.drawString(String.valueOf(dm.getCost(1)), skill_temp2.getX(), skill_temp2.getY());
-		mgc.drawString(String.valueOf(dm.getCost(2)), skill_temp3.getX(), skill_temp3.getY());
-		mgc.drawString(String.valueOf(dm.getCost(3)), skill_temp4.getX(), skill_temp4.getY());
-		mgc.drawString(String.valueOf(dm.getCost(4)), skill_temp5.getX(), skill_temp5.getY());
+		mgc.drawString(String.valueOf(dm.getCost(0)) + "P", skill_temp.getX(), skill_temp.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(1)) + "P", skill_temp2.getX(), skill_temp2.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(2)) + "P", skill_temp3.getX(), skill_temp3.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(3)) + "P", skill_temp4.getX(), skill_temp4.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(4)) + "P", skill_temp5.getX(), skill_temp5.getY() - 2);
 		
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), skill_temp.getX() + 18, skill_temp.getY() - 13);
+		}
+		
+		if(Engine.getInstance().isMessage()){
+//			mgc.setColor(Color.red);
+			mgc.setFont(new Font("default", Font.BOLD, 20));
+			mgc.drawString("Not enough point", skill_temp5.getX() + 180, skill_temp5.getY() + 28);
 		}
 	}
 	

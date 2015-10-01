@@ -37,6 +37,7 @@ class Skill extends UI{
 		
 		if(name.equals("wall")){
 			if(dm.getCost(0) > dm.getMoney()){
+				Engine.getInstance().settingMessage();
 				return;
 			}
 			if(!Screen.getInstance().getStopOn()){
@@ -54,15 +55,17 @@ class Skill extends UI{
 			}
 		} else if(name.equals("heal")){
 			if(dm.getCost(1) > dm.getMoney()){
+				Engine.getInstance().settingMessage();
 				return;
 			} else if(dm.getPlayer().getHp() == dm.getPlayer().getMaxHp()){
 				return;
-			}
+			} 
 			dm.getPlayer().heal();
 			dm.subMoney(dm.getCost(1));
 			dm.upCost(1);
 		} else if(name.equals("hp")){
 			if(dm.getCost(2) > dm.getMoney()){
+				Engine.getInstance().settingMessage();
 				return;
 			}
 			dm.getPlayer().maxHpUp();
@@ -70,16 +73,20 @@ class Skill extends UI{
 			dm.upCost(2);
 		} else if(name.equals("wallhp")){
 			if(dm.getCost(3) > dm.getMoney()){
+				Engine.getInstance().settingMessage();
 				return;
 			}
 			dm.subMoney(dm.getCost(3));
 			dm.upCost(3);
+			dm.plusHp();
 		} else if(name.equals("wallcool")){
 			if(dm.getCost(4) > dm.getMoney()){
+				Engine.getInstance().settingMessage();
 				return;
 			}
 			dm.subMoney(dm.getCost(4));
 			dm.upCost(4);
+			dm.minusWallCoolTime(1);
 		}
 	}
 	
