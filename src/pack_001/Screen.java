@@ -47,7 +47,7 @@ public class Screen extends JFrame{
 	private Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	private Image brick_wall_001, excavator_001, brick_black;
+	private Image excavator_001, excavator_002, brick_black;
 	private Image closed_door, open_door;
 	
 //	private boolean gameStart = false;
@@ -261,8 +261,9 @@ public class Screen extends JFrame{
 		arrow_left_red = dm.arrow_left_red;
 		arrow_up_red = dm.arrow_up_red;
 		arrow_down_red = dm.arrow_down_red;
-		brick_wall_001 = dm.brick_wall_001;
+//		brick_wall_001 = dm.brick_wall_001;
 		excavator_001 = dm.excavator_001;
+		excavator_002 = dm.excavator_002;
 		closed_door = dm.closed_door;
 		open_door = dm.open_door;
 		hp_potion = dm.hp_potion;
@@ -484,15 +485,21 @@ public class Screen extends JFrame{
 	
 	private void drawEnemy(){
 		for(Enemy1 en : dm.getEnemySet()){
+			int bar_x = 0;
 			AffineTransform t = new AffineTransform();
 	        t.translate(en.getX(), en.getY());
 			
-			mgc.drawImage(excavator_001, t, null);
+	        if(en.getTypeName().equals("enemy1")){
+	        	mgc.drawImage(excavator_001, t, null);
+	        } else if(en.getTypeName().equals("boss")){
+	        	mgc.drawImage(excavator_002, t, null);
+	        	bar_x = 12;
+	        }
 			
 			if(!stopOn && !en.getRandMove()){
 				
-				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45, 15);
-		        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX(), en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
+				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45, 15);
+		        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
 		        
 		        mgc.setColor(Color.gray);
 				mgc.fill(out_line1);
@@ -726,9 +733,9 @@ public class Screen extends JFrame{
 			text[6] = "또한 브릭슨은 건설회사에서 저지른 비리를 폭로하겠다고 선언해버린다.";
 			text[7] = "브릭슨은 많은 사람들에게 장인이라 알려져있기 때문에";
 			text[8] = "브릭슨의 폭로로 인해 건설회사이 받을 피해는 막대할 것이라 예상되었다.";
-			text[9] = "건설회사은 브릭슨의 폭로를 막기 위해 브릭슨은 아무도 모르게 처지하려 한다.";
+			text[9] = "건설회사는 브릭슨의 폭로를 막기 위해 브릭슨을 아무도 모르게 처지하려 한다.";
 			text[10] = "브릭슨은 건설회사에서 보낸 건설 로봇들의 위협을 피해 비리를 폭로하려 하나 상황이 여의치 않다.";
-			text[11] = "고민 끝에 브릭슨은 입구 하나만 존재하는 위험한 방으로 로봇들은 끌어들여";
+			text[11] = "고민 끝에 브릭슨은 입구 하나만 존재하는 위험한 방으로 로봇들을 끌어들여";
 			text[12] = "모두 처치한 후 방을 빠져나가 비리를 폭로하기로 결정한다....";
 			
 			mgc.setColor(Color.black);

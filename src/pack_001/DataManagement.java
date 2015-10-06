@@ -67,7 +67,7 @@ public class DataManagement {
 	public Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
 	public Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	public Image brick_wall_001, excavator_001, brick_black;
+	public Image brick_wall_001, excavator_001, excavator_002, brick_black;
 	public Image closed_door, open_door;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
@@ -256,7 +256,8 @@ public class DataManagement {
 		arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
 		arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
 		brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
-		excavator_001 = new ImageIcon("resource/excavator.png").getImage();
+		excavator_001 = new ImageIcon("resource/excavator_001.png").getImage();
+		excavator_002 = new ImageIcon("resource/excavator_002.png").getImage();
 		closed_door = new ImageIcon("resource/closed_door.png").getImage();
 		open_door = new ImageIcon("resource/open_door.png").getImage();
 		hp_potion = new ImageIcon("resource/hp_potion.png").getImage();
@@ -322,9 +323,9 @@ public class DataManagement {
 	public void initCost(){
 		cost[0] = 10;
 		cost[1] = 50;
-		cost[2] = 30;
-		cost[3] = 100;
-		cost[4] = 100;
+		cost[2] = 100;
+		cost[3] = 200;
+		cost[4] = 200;
 	}
 	
 	public void upCost(int value){
@@ -337,24 +338,24 @@ public class DataManagement {
 			}
 			break;
 		case 2:
-			if(cost[value] < 100){
-				cost[value] += 30;
+			if(cost[value] < 200){
+				cost[value] += 40;
 			} else {
-				cost[value] += 50;
+				cost[value] += 80;
 			}
 			break;
 		case 3:
-			if(cost[value] < 100){
-				cost[value] += 30;
+			if(cost[value] < 210){
+				cost[value] += 40;
 			} else {
-				cost[value] += 50;
+				cost[value] += 80;
 			}
 			break;
 		case 4:
-			if(cost[value] < 100){
-				cost[value] += 30;
+			if(cost[value] < 210){
+				cost[value] += 40;
 			} else {
-				cost[value] += 50;
+				cost[value] += 80;
 			}
 			break;
 		}
@@ -595,6 +596,7 @@ class Player extends Colider implements Unit{
 }
 
 class Enemy1 extends Colider implements Unit {
+	private String type_name = "enemy1"; 
 	private float x, y; 
 	private float dx, dy;
 	private int width, height;
@@ -820,6 +822,14 @@ class Enemy1 extends Colider implements Unit {
 		}
 	}
 	
+	public void addVision(float value){
+		vision += value;
+	}
+	
+	public void addSpeed(float value){
+		speed += value;
+	}
+	
 	public void setHp(int val){
 		this.maxHp = val;
 		this.hp = val;
@@ -857,6 +867,10 @@ class Enemy1 extends Colider implements Unit {
 		this.x = x;
 		this.y = y;
 		movePoint = new Point2D.Float(x, y);
+	}
+	
+	public void setTypeName(String name){
+		type_name = name;
 	}
 	
 	public float getX(){
@@ -901,6 +915,10 @@ class Enemy1 extends Colider implements Unit {
 	public boolean isActive(){
 		return is_active;
 	}
+	
+	public String getTypeName(){
+		return type_name;
+	}
 }
 
 class BossEnemy extends Enemy1{
@@ -908,6 +926,10 @@ class BossEnemy extends Enemy1{
 	BossEnemy(int hp) {
 		super(hp);
 		setMoeny(300);
+		addVision(120);
+		addSpeed(-0.3f);
+		setTypeName("boss");
+		setSize(72, 72);
 		if(hp == 0){
 			setHp(10);
 		}
@@ -1311,14 +1333,14 @@ class GameLevel {
 			ArrayList<String> tempList = sequenceData.get(""+nowSequence);
 			patternChange = false;
 			
+			patternName = tempList.get(targetIndex);
+			System.out.println("patternName : " + patternName);
+			targetIndex += 1;
+			
 			if(tempList.size() <= targetIndex){
 				targetIndex = 0;
 				levelUp = true;
 			}
-			
-			patternName = tempList.get(targetIndex);
-			
-			targetIndex += 1;
 		}
 		
 		patternParser(mode_type);
