@@ -102,6 +102,11 @@ public class Engine {
 		Set<Enemy1> enemySet2 = new HashSet<Enemy1>(dm.getEnemySet());
 		Player player = dm.getPlayer();
 		
+		Set<AlarmText> atl = new HashSet<AlarmText>(dm.getAlarmList());
+		for(AlarmText at : atl){
+			at.work();
+		}
+		
 		for(Laser1 c : coliderSet2){
 			
 			for(Wall1 w : wallSet2){
@@ -223,6 +228,10 @@ public class Engine {
 	
 	public void refreshInvoke(){
 		invokeTime = playTime;
+	}
+	
+	public void initInvokeTime(){
+		invokeTime = 0;
 	}
 	
 	public int getInvokeTime(){

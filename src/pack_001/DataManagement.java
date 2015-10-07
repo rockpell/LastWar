@@ -1,17 +1,14 @@
 package pack_001;
 
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,19 +16,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -39,8 +29,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import sun.audio.*;
 
 public class DataManagement {
 	private static DataManagement instance = DataManagement.getInstance();
@@ -56,6 +44,7 @@ public class DataManagement {
 	private final Set<Wall1> wallSet = new HashSet<Wall1>();
 	private final Set<Laser1> coliderSet = new HashSet<Laser1>();
 	private final Set<Enemy1> enemySet = new HashSet<Enemy1>();
+	private final Set<AlarmText> alarm_list = new HashSet<AlarmText>();
 	private JParser gameScenario;
 	private Player player;
 	private WarpGate warp_gate;
@@ -230,6 +219,8 @@ public class DataManagement {
 		warp_gate = new WarpGate();
 		warp_gate.setOpen();
 		
+		wall_plus_hp = 0;
+		
 		if(gameLevel != null)
 			gameLevel.init();
 		
@@ -241,6 +232,7 @@ public class DataManagement {
 		
 		money = 0;
 		Engine.getInstance().setPlayTime(0);
+		Engine.getInstance().initInvokeTime();
 		
 		initCost();
 	}
@@ -368,6 +360,19 @@ public class DataManagement {
 	public void plusHp(){
 		this.wall_plus_hp += 1;
 	}
+	
+	public synchronized void addAlaram(AlarmText data){
+		alarm_list.add(data);
+	}
+	
+	public synchronized void removeAlarm(AlarmText data){
+		alarm_list.remove(data);
+	}
+	
+	public Set<AlarmText> getAlarmList(){
+		return alarm_list;
+	}
+	
 }
 
 class Player extends Colider implements Unit{
@@ -810,6 +815,9 @@ class Enemy1 extends Colider implements Unit {
 		// TODO Auto-generated method stub
 		dm.removeEnemy(this);
 		dm.addMoney(money);
+		AlarmText at = new AlarmText(this.x, this.y);
+		at.setText("P", money);
+		dm.addAlaram(at);
 	}
 	
 	public void damaged(){

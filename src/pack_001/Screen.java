@@ -299,9 +299,9 @@ public class Screen extends JFrame{
 		    drawWall();
 		    drawLaser(mgc);
 		    drawEnemy();
-		    
 		    drawPlayer();
-	        
+		    drawAlarmText();
+		    
 	        mgc.setColor(Color.black);
 	        mgc.setFont(new Font("default", Font.BOLD, 16));
 	        
@@ -322,6 +322,7 @@ public class Screen extends JFrame{
         beforeScreen();
         storyScreen();
         afterScreen();
+        
         
 		g.drawImage(memoryimage, 0, 0, this);
 		
@@ -579,6 +580,14 @@ public class Screen extends JFrame{
 		}
 	}
 	
+	private void drawAlarmText(){
+		mgc.setColor(Color.black);
+		mgc.setFont(new Font("default", Font.PLAIN, 12));
+		for(AlarmText at : dm.getAlarmList()){
+			mgc.drawString(at.getText(), at.getFX(), at.getFY());
+		}
+	}
+	
 	public void stopScreenOn(){
 		stopOn = !stopOn;
 	}
@@ -768,6 +777,7 @@ public class Screen extends JFrame{
         	mgc.drawImage(closed_door, t, null);
         }
 	}
+	
 }
 
 class ImageManagement{
