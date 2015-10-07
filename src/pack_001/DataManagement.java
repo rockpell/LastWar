@@ -919,10 +919,13 @@ class Enemy1 extends Colider implements Unit {
 	public String getTypeName(){
 		return type_name;
 	}
+	
+	public int getMoney(){
+		return money;
+	}
 }
 
 class BossEnemy extends Enemy1{
-	
 	BossEnemy(int hp) {
 		super(hp);
 		setMoeny(300);
@@ -934,7 +937,6 @@ class BossEnemy extends Enemy1{
 			setHp(10);
 		}
 	}
-
 }
 
 class Wall1 extends Colider implements Wall {
@@ -1276,7 +1278,7 @@ class GameLevel {
 	private Map<String, ArrayList<String>> sequenceData;
 	
 	private int nowLevel = 0, nowSequence = 0;
-	private int targetIndex = 1;
+	private int targetIndex = 0;
 	public int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
 	private String patternName = null;
@@ -1309,14 +1311,17 @@ class GameLevel {
 	
 	public void levelStart(){
 		if(levelUp){
-			nowLevel += 1;
+//			nowLevel += 1;
+			if(nowSequence != 0) patternChange = true;
+			
 			nowSequence += 1;
 			levelUp = false;
-			engine.refreshInvoke();
+			
 			System.out.println("nowSequence : "+nowSequence);
 			if(nowSequence > sequenceData.size()){
 				if(mode_type == 0){
 					dm.getPlayer().dead();
+					return;
 				} else {
 					nowSequence = 1;
 				}
@@ -1325,26 +1330,27 @@ class GameLevel {
 
 		if(refresh){
 			refresh = false;
-			engine.refreshInvoke();
 			patternChange = true;
 		}
 		
 		if(patternChange){
 			ArrayList<String> tempList = sequenceData.get(""+nowSequence);
 			patternChange = false;
+			targetIndex += 1;
+
+			if(tempList.size() <= targetIndex){
+				targetIndex = -1;
+				levelUp = true;
+				return;
+			}
 			
 			patternName = tempList.get(targetIndex);
 			System.out.println("patternName : " + patternName);
-			targetIndex += 1;
 			
-			if(tempList.size() <= targetIndex){
-				targetIndex = 0;
-				levelUp = true;
-			}
+			engine.refreshInvoke();
 		}
 		
 		patternParser(mode_type);
-//		System.out.println("nowLevle : " +nowLevel + "  nowSequence : " + nowSequence);
 	}
 	
 	private void patternParser(int type){
