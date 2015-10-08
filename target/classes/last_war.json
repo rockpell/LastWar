@@ -811,31 +811,34 @@
         "pattern3"
       ],
       "2": [
+      	"pattern5",
         "pattern2",
         "pattern3",
         "pattern4",
         "pattern1",
       ],
       "3": [
-        "pattern5",
         "pattern2",
-        "pattern6",
+        "pattern3",
         "pattern7",
+        "pattern8",
+        "pattern4",
       	"pattern1"
       ],
       "4": [
-      	"pattern5",
       	"pattern3",
-      	"pattern2",
-      	"pattern4",
+      	"pattern6",
+      	"pattern8",
       	"pattern7",
+      	"pattern2",
       	"pattern3",
-      	"pattern1"
+      	"pattern1",
+      	"pattern5"
       ]
     },
     "sequence": {
       "1": [
-        "pattern3",
+        "pattern6",
         "pattern5",
         "pattern1"
       ],

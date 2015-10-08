@@ -53,7 +53,7 @@ public class Screen extends JFrame{
 //	private boolean gameStart = false;
 	private boolean stopOn = true, beforeStart = false;
 	private boolean pup = false, pdown = false;
-	private boolean story_on = false;
+	private boolean story_on = false, story_end = false;
 	private boolean temp_stoper = false;
 	
 	private int gui_x = screenWidth / 2 - 140;
@@ -171,7 +171,7 @@ public class Screen extends JFrame{
 								am.stop();
 							}
 						}
-					} else { // game replay
+					} else { // game end after replay
 						dm.initData();
 						dm.setGameStart(true);
 						Engine.getInstance().newLoop();
@@ -179,6 +179,7 @@ public class Screen extends JFrame{
 						stopOn = false;
 						player = dm.getPlayer();
 						beforeStart = true;
+						setStoryEnd(false);
 					}
 					repaint();
 				} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ // return main menu
@@ -186,6 +187,7 @@ public class Screen extends JFrame{
 						dm.initData();
 						stopOn = true;
 						Engine.getInstance().initLoop();
+						setStoryEnd(false);
 						player = dm.getPlayer();
 						index = 0;
 						repaint();
@@ -322,6 +324,7 @@ public class Screen extends JFrame{
         beforeScreen();
         storyScreen();
         afterScreen();
+        stroyEndingScreen();
         
         
 		g.drawImage(memoryimage, 0, 0, this);
@@ -608,6 +611,10 @@ public class Screen extends JFrame{
 		return stopOn;
 	}
 	
+	public void setStoryEnd(boolean value){
+		story_end = value;
+	}
+	
 	private void stopScreen(){
 		if(stopOn && dm.getGameStart()){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
@@ -709,7 +716,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void afterScreen(){
-		if(dm.getGameEnd()){
+		if(dm.getGameEnd() && !story_end){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 80));
 			
 			mgc.setColor(Color.red);
@@ -759,6 +766,30 @@ public class Screen extends JFrame{
 			mgc.drawString("Next?", 820, 700);
 			mgc.drawString("Press SpaceBar Or Enter Key", 820, 750);
 			
+		}
+	}
+	
+	private void stroyEndingScreen(){
+		if(story_end){
+			String[] text = new String[9];
+			
+			text[0] = "브릭슨은 탈출에 성공하였다.";
+			text[1] = "탈출에 성공한 브릭슨은 건설회사의 비리를 폭로하는데 성공하여 건설회사는 처벌을 받게 되었다.";
+			text[2] = "그러나 막대한 비리를 저지른 것에 비해 너무나도 작은 벌금을 내게 된다.";
+			text[3] = "브릭슨과 그를 지지하는 사람들은 부당한 처사이며";
+			text[4] = "건설회사를 해체 혹은 막대한 벌금과 책임자를 감옥에 보낼 것을 요구하지만";
+			text[5] = "정부는 그들의 요청을 들어주지 않는다.";
+			text[6] = "이후 브릭슨은 건설회사가 처벌을 받도록 노력하나 시간이 갈수록 많은 사람들의 관심이 없어져가며";
+			text[7] = "건설회사의 비리는 지나간 일이 되버리고 만다.";
+			text[8] = "이에 환멸을 느낀 브릭슨은 몇 년후에 외국으로 떠난다.";
+			
+			
+			mgc.setColor(Color.black);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 20));
+			
+			for(int i = 0; i < text.length; i++){
+				mgc.drawString(text[i], 40, 150 + 40 * i);
+			}
 		}
 	}
 	

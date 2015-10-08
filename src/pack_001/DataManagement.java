@@ -495,7 +495,6 @@ class Player extends Colider implements Unit{
 		Engine.getInstance().stopLoop();
 		
 		System.out.println("dead");
-		
 	}
 
 	@Override
@@ -945,6 +944,17 @@ class BossEnemy extends Enemy1{
 			setHp(10);
 		}
 	}
+	
+	public void dead(){
+		if(DataManagement.getInstance().getGameLevel().getMode() == 0){
+			Screen.getInstance().setStoryEnd(true);
+			DataManagement.getInstance().getPlayer().dead();
+		} else {
+			super.dead();
+		}
+		System.out.println("boss dead");
+		
+	}
 }
 
 class Wall1 extends Colider implements Wall {
@@ -1287,7 +1297,7 @@ class GameLevel {
 	
 	private int nowLevel = 0, nowSequence = 0;
 	private int targetIndex = 0;
-	public int mode_type = 0;
+	private int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
 	private String patternName = null;
 	
@@ -1328,6 +1338,7 @@ class GameLevel {
 			System.out.println("nowSequence : "+nowSequence);
 			if(nowSequence > sequenceData.size()){
 				if(mode_type == 0){
+					Screen.getInstance().setStoryEnd(true);
 					dm.getPlayer().dead();
 					return;
 				} else {
@@ -1399,6 +1410,9 @@ class GameLevel {
 		}
 	}
 	
+	public int getMode(){
+		return mode_type;
+	}
 }
 
 class JParser {
