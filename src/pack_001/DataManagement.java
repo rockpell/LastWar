@@ -1338,7 +1338,7 @@ class GameLevel {
 			System.out.println("nowSequence : "+nowSequence);
 			if(nowSequence > sequenceData.size()){
 				if(mode_type == 0){
-					Screen.getInstance().setStoryEnd(true);
+//					Screen.getInstance().setStoryEnd(true);
 					dm.getPlayer().dead();
 					return;
 				} else {

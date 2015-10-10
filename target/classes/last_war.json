@@ -803,7 +803,7 @@
     	],
     	"210":[]
     },
-    "sequence2": {
+    "sequence": {
       "1": [
         "pattern1",
         "pattern2",
@@ -836,7 +836,7 @@
       	"pattern5"
       ]
     },
-    "sequence": {
+    "sequence2": {
       "1": [
         "pattern6",
         "pattern5",
