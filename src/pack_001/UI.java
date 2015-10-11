@@ -125,6 +125,10 @@ class AlarmText extends UI{
 		this.text = String.valueOf(value) + text;
 	}
 	
+	public void setText(String text){
+		this.text = text;
+	}
+	
 	public void work(){
 		time += 1;
 		fy -= 0.3f;

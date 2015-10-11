@@ -614,6 +614,7 @@ class Enemy1 extends Colider implements Unit {
 	private boolean is_active = false; // 유닛 활성화 여부
 	private Point2D.Float movePoint = null;
 	private int rand_number = 0, direction = 0, damage_count = 0, active_count = 0;
+	private int alive_time = 0, level = 0;
 	private float vision = 200.0f;
 	
 	private DataManagement dm;
@@ -712,8 +713,22 @@ class Enemy1 extends Colider implements Unit {
 		
 	}
 	
+	private void levelManage(){
+		if(alive_time % 300 == 0){
+			vision += 10.0f;
+			speed += 0.1f;
+			level += 1;
+			
+			AlarmText at = new AlarmText(this.x, this.y);
+			at.setText("Level Up");
+			dm.addAlaram(at);
+		}
+	}
+	
 	@Override
 	public void work() {
+		alive_time += 1;
+		levelManage();
 		
 		if(!is_active){
 			active_count += 1;
