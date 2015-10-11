@@ -314,7 +314,7 @@ public class DataManagement {
 	
 	public void initCost(){
 		cost[0] = 10;
-		cost[1] = 50;
+		cost[1] = 40;
 		cost[2] = 100;
 		cost[3] = 200;
 		cost[4] = 200;
@@ -323,7 +323,7 @@ public class DataManagement {
 	public void upCost(int value){
 		switch(value){
 		case 1:
-			if(cost[value] < 100){
+			if(cost[value] < 90){
 				cost[value] += 30;
 			} else {
 				cost[value] += 50;

@@ -20,6 +20,7 @@ public class Engine {
 	private int temp_time = 0;
 	private int fps = 51;
 	private int message_time = 0, message_time_max = 50;
+	private String message_text;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
@@ -210,12 +211,38 @@ public class Engine {
 		message_time = message_time_max;
 	}
 	
+	public void settingMessage(String text){
+		switch(text){
+		case "cool":
+			message_text = "Cooldown Time";
+			break;
+		case "point":
+			message_text = "Not enough point";
+			break;
+		case "heal":
+			message_text = "Full hp";
+			break;
+		case "heal_ok":
+			message_text = "Hp heal";
+			break;
+		case "hp_ok":
+			message_text = "Hp Max Up";
+			break;
+		}
+		
+		message_time = message_time_max;
+	}
+	
 	public boolean isMessage(){
 		if(message_time > 0){
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public String getMessage(){
+		return message_text;
 	}
 	
 	public int getPlayTime(){

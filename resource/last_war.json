@@ -1081,7 +1081,7 @@
     	],
     	"180":[]
     },
-    "sequence2": {
+    "sequence": {
       "1": [
         "pattern1",
         "pattern2",
@@ -1101,23 +1101,30 @@
         "pattern7",
         "pattern8",
         "pattern4",
-      	"pattern1"
+      	"pattern1",
+      	"pattern9",
+      	"pattern10"
       ],
       "4": [
       	"pattern3",
-      	"pattern6",
       	"pattern8",
       	"pattern7",
+      	"pattern6",
       	"pattern2",
       	"pattern3",
       	"pattern1",
       	"pattern5"
       ],
       "5":[
-      	"pattern1"
+      	"pattern1",
+      	"pattern3",
+      	"pattern7",
+      	"pattern8",
+      	"pattern2",
+      	"pattern4"
       ]
     },
-    "sequence": {
+    "sequence2": {
       "1": [
         "pattern9",
         "pattern10",

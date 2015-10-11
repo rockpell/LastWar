@@ -37,7 +37,7 @@ class Skill extends UI{
 		
 		if(name.equals("wall")){
 			if(dm.getCost(0) > dm.getMoney()){
-				Engine.getInstance().settingMessage();
+				Engine.getInstance().settingMessage("point");
 				return;
 			}
 			if(!Screen.getInstance().getStopOn()){
@@ -46,34 +46,39 @@ class Skill extends UI{
 						if(dm.getWallSetCount() < dm.getWallLimit()){
 							dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
 							dm.subMoney(dm.getCost(0));
-							dm.upCost(0);
 						}
 					}
 					dm.getPlayer().setOutTrigger(true);
 					dm.initCoolTime();
+				} else if(dm.getCoolTimeLeft() != 0){
+					Engine.getInstance().settingMessage("cool");
 				}
 			}
 		} else if(name.equals("heal")){
 			if(dm.getCost(1) > dm.getMoney()){
-				Engine.getInstance().settingMessage();
+//				Engine.getInstance().settingMessage();
+				Engine.getInstance().settingMessage("point");
 				return;
 			} else if(dm.getPlayer().getHp() == dm.getPlayer().getMaxHp()){
+				Engine.getInstance().settingMessage("heal");
 				return;
-			} 
+			}
 			dm.getPlayer().heal();
 			dm.subMoney(dm.getCost(1));
 			dm.upCost(1);
+			Engine.getInstance().settingMessage("heal_ok");
 		} else if(name.equals("hp")){
 			if(dm.getCost(2) > dm.getMoney()){
-				Engine.getInstance().settingMessage();
+				Engine.getInstance().settingMessage("point");
 				return;
 			}
 			dm.getPlayer().maxHpUp();
 			dm.subMoney(dm.getCost(2));
 			dm.upCost(2);
+			Engine.getInstance().settingMessage("hp_ok");
 		} else if(name.equals("wallhp")){
 			if(dm.getCost(3) > dm.getMoney()){
-				Engine.getInstance().settingMessage();
+				Engine.getInstance().settingMessage("point");
 				return;
 			}
 			dm.subMoney(dm.getCost(3));
@@ -81,7 +86,7 @@ class Skill extends UI{
 			dm.plusHp();
 		} else if(name.equals("wallcool")){
 			if(dm.getCost(4) > dm.getMoney()){
-				Engine.getInstance().settingMessage();
+				Engine.getInstance().settingMessage("point");
 				return;
 			}
 			dm.subMoney(dm.getCost(4));
