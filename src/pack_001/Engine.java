@@ -20,7 +20,7 @@ public class Engine {
 	private int temp_time = 0;
 	private int fps = 51;
 	private int message_time = 0, message_time_max = 50;
-	private String message_text;
+	private String message_text, message_text2;
 	private boolean stopOn = false;
 	private Looper game_loop;
 	private Thread th1;
@@ -228,21 +228,40 @@ public class Engine {
 		case "hp_ok":
 			message_text = "Hp Max Up";
 			break;
+		case "wall_hp_ok":
+			message_text = "Wall Max Hp Up";
+			break;
+		case "wall_cool_ok":
+			message_text = "Wall Cooldown reduce";
+			break;
 		}
 		
 		message_time = message_time_max;
+	}
+	
+	public void settingMessage2(int value){
+		message_text2 = "Cost " + String.valueOf(value) + " Up";
 	}
 	
 	public boolean isMessage(){
 		if(message_time > 0){
 			return true;
 		} else {
+			initMessage2();
 			return false;
 		}
 	}
 	
 	public String getMessage(){
 		return message_text;
+	}
+	
+	public String getMessage2(){
+		return message_text2;
+	}
+	
+	public void initMessage2(){
+		message_text2 = null;
 	}
 	
 	public int getPlayTime(){

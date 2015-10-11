@@ -63,7 +63,6 @@ public class DataManagement {
 	public final int rowNumber = 11, colNumber = 21;
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
-	private int wallLimit = 5; // 갯수 제한이 아닌 벽 생성 스킬에 쿨타임 도입
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0;
 	private int[] cost = new int[5];
@@ -167,15 +166,7 @@ public class DataManagement {
 		}
 		return null;
 	}
-	
-	public int getWallLimit(){
-		return wallLimit;
-	}
-	
-	public void setWallLimit(int value){
-		wallLimit = value;
-	}
-	
+		
 	public void minusWallCoolTime(int value){
 		coolTime -= value;
 	}

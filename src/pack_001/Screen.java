@@ -579,7 +579,9 @@ public class Screen extends JFrame{
 		if(Engine.getInstance().isMessage()){
 //			mgc.setColor(Color.red);
 			mgc.setFont(new Font("default", Font.BOLD, 20));
-			mgc.drawString(Engine.getInstance().getMessage(), skill_temp5.getX() + 180, skill_temp5.getY() + 28);
+			mgc.drawString(Engine.getInstance().getMessage(), skill_temp5.getX() + 180, skill_temp5.getY() + 10);
+			if(Engine.getInstance().getMessage2() != null)
+				mgc.drawString(Engine.getInstance().getMessage2(), skill_temp5.getX() + 180, skill_temp5.getY() + 38);
 		}
 	}
 	
