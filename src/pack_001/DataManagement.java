@@ -936,6 +936,10 @@ class Enemy1 extends Colider implements Unit {
 	public int getMoney(){
 		return money;
 	}
+	
+	public int getLevel(){
+		return level;
+	}
 }
 
 class BossEnemy extends Enemy1{

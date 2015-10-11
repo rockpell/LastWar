@@ -1081,7 +1081,7 @@
     	],
     	"180":[]
     },
-    "sequence": {
+    "sequence2": {
       "1": [
         "pattern1",
         "pattern2",
@@ -1124,12 +1124,12 @@
       	"pattern4"
       ]
     },
-    "sequence2": {
+    "sequence": {
       "1": [
-        "pattern9",
-        "pattern10",
         "pattern3",
-        "pattern1"
+        "pattern1",
+        "pattern9",
+        "pattern10"
       ]
     }
   },

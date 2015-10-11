@@ -530,6 +530,10 @@ public class Screen extends JFrame{
 		        mgc.setColor(Color.white);
 		        mgc.setFont(new Font("default", Font.PLAIN, 12));
 		        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - enemey_hp_x, en.getY() - 6);
+		        
+		        mgc.setColor(Color.black);
+		        mgc.setFont(new Font("default", Font.PLAIN, 12));
+		        mgc.drawString("Lv "+String.valueOf(en.getLevel()), en.getX(), en.getY() - 20);
 			}
 			
 		}
