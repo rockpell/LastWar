@@ -1379,20 +1379,16 @@ class GameLevel {
 			engine.refreshInvoke();
 		}
 		
-		patternParser(mode_type);
+		patternParser();
 	}
 	
-	private void patternParser(int type){
+	private void patternParser(){
 		Map<String, ArrayList<Point>> patternMap = null;
 		int time = engine.getPlayTime();
 		int itime = engine.getInvokeTime();
 		String timeText = "" + (time - itime);
 		
-		if(type == 0){
-			patternMap = dm.getScenario().getPatternData().get(patternName).getMap();
-		} else if(type == 1){
-			patternMap = dm.getScenario().getPatternData2().get(patternName).getMap();
-		}
+		patternMap = dm.getScenario().getPatternData().get(patternName).getMap();
 		
 		if(patternMap.containsKey(timeText)){
 			ArrayList<Point> tempList = patternMap.get(timeText);
@@ -1431,7 +1427,6 @@ class JParser {
 	private Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
 	
 	private Map<String, ArrayList<String>> sequenceData2 = new HashMap<String, ArrayList<String>>();
-	private Map<String, JsonPattern> patternData2 = new HashMap<String, JsonPattern>();
 
 	JParser(){
 		File abc = new File("resource/last_war.json");
@@ -1449,35 +1444,12 @@ class JParser {
 				JSONObject temp = (JSONObject)jsonObject.get(name);
 				Set<String> keys2 = temp.keySet();
 				
-				if(name.equals("story")){
-					for(String jso : keys2){
-						JSONObject jsonTemp = (JSONObject)temp.get(jso);
-						System.out.println(jso);
-						System.out.println(temp.get(jso));
-						
-						if(jso.equals("sequence")){
-//							JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-							seqenceToMap(sequenceData, jsonTemp);
-							
-						} else if(jso.contains("pattern")){
-//							JSONObject jsonTemp2 = (JSONObject)jsonObject.get(jso);
-							
-							patternData.put(jso, new JsonPattern(jsonTemp));
-							
-						}
-					}
-				} else if(name.equals("never")){
-					for(String jso : keys2){
-						JSONObject jsonTemp = (JSONObject)temp.get(jso);
-						System.out.println(jso);
-						System.out.println(temp.get(jso));
-						
-						if(jso.equals("sequence")){
-							seqenceToMap(sequenceData2, jsonTemp);
-						} else if(jso.contains("pattern")){
-							patternData2.put(jso, new JsonPattern(jsonTemp));
-						}
-					}
+				if(name.equals("sequence")){
+					seqenceToMap(sequenceData, temp);
+				} else if(name.equals("sequence2")){
+					seqenceToMap(sequenceData2, temp);
+				} else if(name.contains("pattern")){
+					patternData.put(name, new JsonPattern(temp));
 				}
 			}
 			
@@ -1524,10 +1496,6 @@ class JParser {
 	
 	Map<String, ArrayList<String>> getSequenceData2(){
 		return sequenceData2;
-	}
-	
-	Map<String, JsonPattern> getPatternData2(){
-		return patternData2;
 	}
 }
 
