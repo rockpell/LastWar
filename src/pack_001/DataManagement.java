@@ -60,8 +60,8 @@ public class DataManagement {
 	public Image closed_door, open_door;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
-	public final int rowNumber = 11, colNumber = 21;
-	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 90, colStartY1 = 50, colStartY2 = screenHeight - 150;
+	public final int rowNumber = 11, colNumber = 22;
+	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 60, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0;
@@ -998,7 +998,6 @@ class Wall1 extends Colider implements Wall {
 	
 	public void damage(){
 		hp -= 1;
-		System.out.println("wall damaged  :  " + hp);
 	}
 
 	@Override
@@ -1095,7 +1094,7 @@ class Laser1 extends Colider implements Laser{
 	private float x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
 //	private int indexX, indexY;
-	private boolean wallColide = false;
+	private boolean wallColide = false, is_active = false;
 	private Wall1 targetWall;
 	
 	private DataManagement dm;
@@ -1106,21 +1105,19 @@ class Laser1 extends Colider implements Laser{
 		
 		if(dm.addColider(this)){
 			linkLar = dm.findArrow(x, y);
-			linkLar.setExist(true);
 		}
-		
 		setPosition(linkLar.getIndexX(), linkLar.getIndexY());
-		
-//		indexX = x;
-//		indexY = y;
-		
-//		setSize(width, height); // setPosition에서 size도 입력
 		setBox(0, 0, width, height);
 	}
 	
 	
 	public void work(){
 		count++;
+		if(count > countLimit / 10){
+			is_active = true;
+			linkLar.setExist(true);
+		}
+		
 		if(count > countLimit && !trigger){
 			trigger = true;
 		} else if(count > deadLimit){
@@ -1205,6 +1202,10 @@ class Laser1 extends Colider implements Laser{
 	
 	public String getName(){
 		return name;
+	}
+	
+	public boolean getIsActive(){
+		return is_active;
 	}
 	
 	public float calLaserSize(String text){
@@ -1306,7 +1307,7 @@ class GameLevel {
 	private Map<String, ArrayList<String>> sequenceData;
 	
 	private int nowLevel = 0, nowSequence = 0;
-	private int targetIndex = 0;
+	private int targetIndex = 0, all_index = 0;
 	private int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
 	private String patternName = null;
@@ -1339,7 +1340,6 @@ class GameLevel {
 	
 	public void levelStart(){
 		if(levelUp){
-//			nowLevel += 1;
 			if(nowSequence != 0) patternChange = true;
 			
 			nowSequence += 1;
@@ -1348,7 +1348,6 @@ class GameLevel {
 			System.out.println("nowSequence : "+nowSequence);
 			if(nowSequence > sequenceData.size()){
 				if(mode_type == 0){
-//					Screen.getInstance().setStoryEnd(true);
 					dm.getPlayer().dead();
 					return;
 				} else {
@@ -1366,7 +1365,8 @@ class GameLevel {
 			ArrayList<String> tempList = sequenceData.get(""+nowSequence);
 			patternChange = false;
 			targetIndex += 1;
-
+			all_index += 1;
+			
 			if(tempList.size() <= targetIndex){
 				targetIndex = -1;
 				levelUp = true;
@@ -1375,7 +1375,6 @@ class GameLevel {
 			
 			patternName = tempList.get(targetIndex);
 			System.out.println("patternName : " + patternName);
-			
 			engine.refreshInvoke();
 		}
 		
@@ -1419,6 +1418,10 @@ class GameLevel {
 	public int getMode(){
 		return mode_type;
 	}
+	
+	public int getAllIndex(){
+		return all_index;
+	}
 }
 
 class JParser {
@@ -1427,7 +1430,9 @@ class JParser {
 	private Map<String, JsonPattern> patternData = new HashMap<String, JsonPattern>();
 	
 	private Map<String, ArrayList<String>> sequenceData2 = new HashMap<String, ArrayList<String>>();
-
+	
+	private int patterns = 0;
+	
 	JParser(){
 		File abc = new File("resource/last_war.json");
 		
@@ -1444,9 +1449,10 @@ class JParser {
 				JSONObject temp = (JSONObject)jsonObject.get(name);
 				Set<String> keys2 = temp.keySet();
 				
-				if(name.equals("sequence")){
+				if(name.equals("story")){
 					seqenceToMap(sequenceData, temp);
-				} else if(name.equals("sequence2")){
+					sumPattern();
+				} else if(name.equals("never")){
 					seqenceToMap(sequenceData2, temp);
 				} else if(name.contains("pattern")){
 					patternData.put(name, new JsonPattern(temp));
@@ -1462,7 +1468,7 @@ class JParser {
 		}
 	}
 	
-	void seqenceToMap(Map<String, ArrayList<String>> map, Object target){
+	private void seqenceToMap(Map<String, ArrayList<String>> map, Object target){
 		if(target instanceof JSONObject){
 			JSONObject tempObject = (JSONObject)target;
 			Set<String> keys = tempObject.keySet();
@@ -1473,7 +1479,7 @@ class JParser {
 		}
 	}
 	
-	ArrayList<String> seqenceToArray(Object target){
+	private ArrayList<String> seqenceToArray(Object target){
 		ArrayList<String> result = new ArrayList<String>();
 		
 		if(target instanceof JSONArray){
@@ -1486,16 +1492,29 @@ class JParser {
 		return result;
 	}
 	
-	Map<String, ArrayList<String>> getSequenceData(){
+	private void sumPattern(){
+		int temp = 0;
+		
+		for(int i = 1; i <= sequenceData.size(); i++){
+			temp += sequenceData.get(String.valueOf(i)).size();
+		}
+		patterns = temp;
+	}
+	
+	public Map<String, ArrayList<String>> getSequenceData(){
 		return sequenceData;
 	}
 	
-	Map<String, JsonPattern> getPatternData(){
+	public Map<String, JsonPattern> getPatternData(){
 		return patternData;
 	}
 	
-	Map<String, ArrayList<String>> getSequenceData2(){
+	public Map<String, ArrayList<String>> getSequenceData2(){
 		return sequenceData2;
+	}
+	
+	public int getPatterns(){
+		return patterns;
 	}
 }
 

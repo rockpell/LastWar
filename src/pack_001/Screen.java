@@ -172,6 +172,9 @@ public class Screen extends JFrame{
 							}
 						}
 					} else { // game end after replay
+						if(story_end){
+							return;
+						}
 						dm.initData();
 						dm.setGameStart(true);
 						Engine.getInstance().newLoop();
@@ -405,7 +408,6 @@ public class Screen extends JFrame{
 	
 	private void drawArrow(){
 		for(LaserArrow lar : dm.getArrowSet()){
-			
 			switch(lar.getIndexX()){
 			case 0:
 				if(lar.isExist()){
@@ -436,18 +438,19 @@ public class Screen extends JFrame{
 				} else {
 					mgc.drawImage(arrow_up, dm.colStartX + lar.getIndexY()*50, dm.colStartY2, null);
 				}
-				
 			}
-			
 		}
 		
 	}
 	
 	private void drawLaser(Graphics2D g){
 		for(Laser1 la : dm.getColiderSet()){
+			if(!la.getIsActive()){
+				continue;
+			}
+			
 			if(!la.getTrigger()){
 				g.setColor(Color.red);
-				
 				if(la.getName().contains("row")){
 					float temp = la.calLaserSize("height");
 					float temp2 = 1;
@@ -463,8 +466,6 @@ public class Screen extends JFrame{
 					laH = temp2;
 					
 					g.fill(new Rectangle2D.Float(laX, laY, laW, laH));
-					
-
 				} else {
 					float temp = la.calLaserSize("width");
 					float temp2 = 1;
@@ -484,6 +485,7 @@ public class Screen extends JFrame{
 			    	g.fill(new Rectangle2D.Float(la.getPosition("x") - la.getSize("width")/2, la.getPosition("y"), la.getSize("width"), la.getSize("height")) );
 				}
 			}
+			
 		}
 	}
 	
@@ -586,6 +588,12 @@ public class Screen extends JFrame{
 			mgc.drawString(Engine.getInstance().getMessage(), skill_temp5.getX() + 180, skill_temp5.getY() + 10);
 			if(Engine.getInstance().getMessage2() != null)
 				mgc.drawString(Engine.getInstance().getMessage2(), skill_temp5.getX() + 180, skill_temp5.getY() + 38);
+		}
+		
+		if(dm.getGameLevel().getMode() == 0){
+			String ntext = "left wave : " + String.valueOf(dm.getScenario().getPatterns() - dm.getGameLevel().getAllIndex());
+			mgc.setFont(new Font("default", Font.BOLD, 20));
+			mgc.drawString(ntext, skill_temp5.getX() + 180, skill_temp5.getY() + 60);
 		}
 	}
 	
@@ -771,7 +779,6 @@ public class Screen extends JFrame{
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
 			mgc.drawString("Next?", 820, 700);
 			mgc.drawString("Press SpaceBar Or Enter Key", 820, 750);
-			
 		}
 	}
 	
@@ -796,6 +803,12 @@ public class Screen extends JFrame{
 			for(int i = 0; i < text.length; i++){
 				mgc.drawString(text[i], 40, 150 + 40 * i);
 			}
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
+			mgc.drawString("Return Main Menu?", screenWidth / 2 - 330, 690);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 40));
+			mgc.drawString("Press the Esc Key", screenWidth / 2 - 330, 760);
 		}
 	}
 	
