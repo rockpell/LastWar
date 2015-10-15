@@ -64,7 +64,7 @@ public class DataManagement {
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 60, colStartY1 = 50, colStartY2 = screenHeight - 150;
 	
 	private int coolTime = 15, coolTimeLeft = 0;
-	private int money = 0;
+	private int money = 0, score = 0;
 	private int[] cost = new int[5];
 	private int wall_plus_hp = 0;
 	
@@ -222,6 +222,8 @@ public class DataManagement {
 		gameEnd = false;
 		
 		money = 0;
+		score = 0;
+		
 		Engine.getInstance().setPlayTime(0);
 		Engine.getInstance().initInvokeTime();
 		
@@ -364,6 +366,13 @@ public class DataManagement {
 		return alarm_list;
 	}
 	
+	public int getScore(){
+		return score;
+	}
+	
+	public void addScore(int value){
+		score += value;
+	}
 }
 
 class Player extends Colider implements Unit{
@@ -587,6 +596,10 @@ class Player extends Colider implements Unit{
 	
 	public void maxHpUp(){
 		maxHp += 1;
+	}
+	
+	public int getDamageCount(){
+		return damage_count;
 	}
 }
 
@@ -823,6 +836,7 @@ class Enemy1 extends Colider implements Unit {
 		AlarmText at = new AlarmText(this.x, this.y);
 		at.setText("P", money);
 		dm.addAlaram(at);
+		dm.addScore(money);
 	}
 	
 	public void damaged(){
@@ -940,6 +954,10 @@ class Enemy1 extends Colider implements Unit {
 	public int getLevel(){
 		return level;
 	}
+	
+	public int getDamageCount(){
+		return damage_count;
+	}
 }
 
 class BossEnemy extends Enemy1{
@@ -972,7 +990,7 @@ class Wall1 extends Colider implements Wall {
 	private float x, y;
 	private int width, height;
 //	private int count;
-	private int hp = 5, maxHp = 5;
+	private int hp = 4, maxHp = 4;
 	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
 	Wall1(float x, float y){

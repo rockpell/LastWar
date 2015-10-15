@@ -1,5 +1,6 @@
 package pack_001;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -245,6 +246,9 @@ public class Screen extends JFrame{
 		 
 		 this.addMouseListener(new MouseAdapter(){
 			 public void mouseClicked(MouseEvent arg0) {
+				 if(!stopOn){
+					 
+				 }
 				 dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(2).skillClick(arg0.getPoint().x, arg0.getPoint().y);
@@ -311,7 +315,7 @@ public class Screen extends JFrame{
 	        mgc.setFont(new Font("default", Font.BOLD, 16));
 	        
 	        mgc.drawString("Time : " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
-	        mgc.drawString("Score :", 800, screenHeight - 50);
+	        mgc.drawString("Score :" + String.valueOf(dm.getScore()), 800, screenHeight - 50);
 	        mgc.drawString("Point : " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
 	        
 	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
@@ -340,8 +344,11 @@ public class Screen extends JFrame{
         t.translate(point.x, point.y); // x/y set here
         t.scale(1, 1); // scale = 1 
         
-        mgc.drawImage(mshi, t, null);
+        float opacity = 1 - (float)(dm.getPlayer().getDamageCount() % 10)/10;
+        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
         
+        mgc.drawImage(mshi, t, null);
+        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
         if(!stopOn){
         	Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
             Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45 * ((float)player.getHp()/(float)player.getMaxHp()), 15);
@@ -494,7 +501,10 @@ public class Screen extends JFrame{
 			int bar_x = 0;
 			AffineTransform t = new AffineTransform();
 	        t.translate(en.getX(), en.getY());
-			
+	        
+	        float opacity = 1 - (float)(en.getDamageCount() % 10)/10;
+	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+	        
 	        if(en.getTypeName().equals("enemy1")){
 	        	mgc.drawImage(excavator_001, t, null);
 	        } else if(en.getTypeName().equals("boss")){
@@ -502,6 +512,8 @@ public class Screen extends JFrame{
 	        	bar_x = 12;
 	        }
 			
+	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+	        
 			if(!stopOn && !en.getRandMove()){
 				
 				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45, 15);

@@ -339,6 +339,7 @@ class Looper implements Runnable{
 				if(playTime % 20 == 0){
 					dm.countCoolTime();
 					dm.addMoney(1);
+					dm.addScore(1);
 				}
 				
 				engine.workMessage();

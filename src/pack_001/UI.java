@@ -35,24 +35,28 @@ class Skill extends UI{
 	public void skillExcute(){
 		DataManagement dm = DataManagement.getInstance();
 		Engine.getInstance().initMessage2();
+		if(Screen.getInstance().getStopOn()){
+			System.out.println("stop");
+			return;
+		}
 		
 		if(name.equals("wall")){
 			if(dm.getCost(0) > dm.getMoney()){
 				Engine.getInstance().settingMessage("point");
 				return;
 			}
-			if(!Screen.getInstance().getStopOn()){
-				if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
-					if(!dm.getPlayer().getOutTrigger()){
-						dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
-						dm.subMoney(dm.getCost(0));
-					}
-					dm.getPlayer().setOutTrigger(true);
-					dm.initCoolTime();
-				} else if(dm.getCoolTimeLeft() != 0){
-					Engine.getInstance().settingMessage("cool");
+			
+			if(dm.getCoolTimeLeft() == 0 && dm.getPlayer().isWallAble()){
+				if(!dm.getPlayer().getOutTrigger()){
+					dm.addWall(dm.getPlayer().getPosition().x, dm.getPlayer().getPosition().y);
+					dm.subMoney(dm.getCost(0));
 				}
+				dm.getPlayer().setOutTrigger(true);
+				dm.initCoolTime();
+			} else if(dm.getCoolTimeLeft() != 0){
+				Engine.getInstance().settingMessage("cool");
 			}
+			
 		} else if(name.equals("heal")){
 			if(dm.getCost(1) > dm.getMoney()){
 				Engine.getInstance().settingMessage("point");
