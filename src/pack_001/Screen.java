@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -247,7 +248,8 @@ public class Screen extends JFrame{
 		 this.addMouseListener(new MouseAdapter(){
 			 public void mouseClicked(MouseEvent arg0) {
 				 if(!stopOn){
-					 
+					 System.out.println("stop");
+					 return;
 				 }
 				 dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
@@ -514,41 +516,52 @@ public class Screen extends JFrame{
 			
 	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 	        
-			if(!stopOn && !en.getRandMove()){
-				
-				Rectangle2D out_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45, 15);
-		        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
-		        
-		        mgc.setColor(Color.gray);
-				mgc.fill(out_line1);
-				
-				if(!(en.getHp() <= 0)){
-					mgc.setColor(Color.red);
-					mgc.fill(in_line1);
-				}
-				
-		        mgc.setColor(Color.black);
-				mgc.draw(out_line1);
-				
-				int enemey_hp_x = 12;
-				
-				if(en.getMaxHp() >= 10){
-					if(en.getHp() >= 10){
-						enemey_hp_x = 20;
-					} else {
-						enemey_hp_x = 16;
+	        if(!stopOn){
+	        	mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.03f));
+	        	
+	        	float dia = en.getVision() * 2;
+	        	mgc.setColor(Color.LIGHT_GRAY);
+	        	Ellipse2D.Double circle = new Ellipse2D.Double(en.getX() + en.getWidth()/2 - dia/2, en.getY() + en.getHeight()/2 - dia/2, dia, dia);
+	        	mgc.fill(circle);
+	        	
+	        	mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+	        	
+	        	if(!en.getRandMove()){
+					
+					Rectangle2D out_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45, 15);
+			        Rectangle2D in_line1 = new Rectangle2D.Float(en.getX() + bar_x, en.getY() - 18, 45 * ((float)en.getHp()/(float)en.getMaxHp()), 15);
+			        
+			        mgc.setColor(Color.gray);
+					mgc.fill(out_line1);
+					
+					if(!(en.getHp() <= 0)){
+						mgc.setColor(Color.red);
+						mgc.fill(in_line1);
 					}
 					
+			        mgc.setColor(Color.black);
+					mgc.draw(out_line1);
+					
+					int enemey_hp_x = 12;
+					
+					if(en.getMaxHp() >= 10){
+						if(en.getHp() >= 10){
+							enemey_hp_x = 20;
+						} else {
+							enemey_hp_x = 16;
+						}
+						
+					}
+					
+			        mgc.setColor(Color.white);
+			        mgc.setFont(new Font("default", Font.PLAIN, 12));
+			        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - enemey_hp_x, en.getY() - 6);
+			        
+			        mgc.setColor(Color.black);
+			        mgc.setFont(new Font("default", Font.PLAIN, 12));
+			        mgc.drawString("Lv "+String.valueOf(en.getLevel()), en.getX(), en.getY() - 20);
 				}
-				
-		        mgc.setColor(Color.white);
-		        mgc.setFont(new Font("default", Font.PLAIN, 12));
-		        mgc.drawString(String.valueOf(en.getHp()) + " / " + String.valueOf(en.getMaxHp()), en.getX() + en.getWidth() / 2 - enemey_hp_x, en.getY() - 6);
-		        
-		        mgc.setColor(Color.black);
-		        mgc.setFont(new Font("default", Font.PLAIN, 12));
-		        mgc.drawString("Lv "+String.valueOf(en.getLevel()), en.getX(), en.getY() - 20);
-			}
+	        }
 			
 		}
 	}
@@ -747,6 +760,9 @@ public class Screen extends JFrame{
 			
 			mgc.setColor(Color.red);
 			mgc.drawString("Game Over", screenWidth / 2 - 180, 220);
+			
+			mgc.setColor(Color.red);
+			mgc.drawString("Score : " + String.valueOf(dm.getScore()), screenWidth / 2 - 330, 390);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
 			mgc.setColor(Color.red);

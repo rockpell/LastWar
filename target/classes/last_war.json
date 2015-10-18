@@ -1780,7 +1780,8 @@
   },
   "never": {
     "1": [
-      "pattern12"
+      "pattern3",
+      "pattern1"
     ]
   },
   "test": {

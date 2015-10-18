@@ -307,37 +307,37 @@ public class DataManagement {
 	
 	public void initCost(){
 		cost[0] = 10;
-		cost[1] = 40;
-		cost[2] = 100;
-		cost[3] = 200;
+		cost[1] = 50;
+		cost[2] = 180;
+		cost[3] = 100;
 		cost[4] = 200;
 	}
 	
 	public void upCost(int value){
 		switch(value){
 		case 1:
-			if(cost[value] < 90){
+			if(cost[value] < 90){ // heal
 				cost[value] += 30;
 			} else {
 				cost[value] += 50;
 			}
 			break;
 		case 2:
-			if(cost[value] < 200){
+			if(cost[value] < 200){ // hp max up
 				cost[value] += 40;
 			} else {
 				cost[value] += 80;
 			}
 			break;
 		case 3:
-			if(cost[value] < 210){
+			if(cost[value] < 210){ // wall hp max up
 				cost[value] += 40;
 			} else {
 				cost[value] += 80;
 			}
 			break;
 		case 4:
-			if(cost[value] < 210){
+			if(cost[value] < 210){ // wall cooldown decrease
 				cost[value] += 40;
 			} else {
 				cost[value] += 80;
@@ -704,8 +704,8 @@ class Enemy1 extends Colider implements Unit {
 	
 	private void calDistance(){
 		Point2D.Float target = DataManagement.getInstance().getPlayer().getPosition();
-		float x1 = (float) Math.pow((this.x - target.x), 2);
-		float x2 = (float) Math.pow((this.y - target.y), 2);
+		float x1 = (float) Math.pow((this.x + (this.width / 2) - target.x), 2);
+		float x2 = (float) Math.pow((this.y + (this.height / 2) - target.y), 2);
 		
 		if(Math.sqrt(x1 + x2) < vision){
 			randMove = false;
@@ -853,6 +853,10 @@ class Enemy1 extends Colider implements Unit {
 		vision += value;
 	}
 	
+	public float getVision(){
+		return vision;
+	}
+
 	public void addSpeed(float value){
 		speed += value;
 	}
@@ -990,7 +994,7 @@ class Wall1 extends Colider implements Wall {
 	private float x, y;
 	private int width, height;
 //	private int count;
-	private int hp = 4, maxHp = 4;
+	private int hp = 1, maxHp = 1;
 	private boolean outTrigger = false, outTriggerMoment = false; // 물체 내부에서 나간 후에 충돌 처리
 	
 	Wall1(float x, float y){
