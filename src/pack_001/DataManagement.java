@@ -56,8 +56,9 @@ public class DataManagement {
 	public Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	public Image arrow_right, arrow_left, arrow_up, arrow_down;
 	public Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
-	public Image brick_wall_001, excavator_001, excavator_002, brick_black;
+	public Image excavator_001, excavator_002, brick_black;
 	public Image closed_door, open_door;
+	public Image t_skill, t_02, t_03, t_05;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
 	public final int rowNumber = 11, colNumber = 22;
@@ -240,7 +241,6 @@ public class DataManagement {
 		arrow_left_red = new ImageIcon("resource/arrow_left_red.png").getImage();
 		arrow_up_red = new ImageIcon("resource/arrow_up_red.png").getImage();
 		arrow_down_red = new ImageIcon("resource/arrow_down_red.png").getImage();
-		brick_wall_001 = new ImageIcon("resource/brick_001.png").getImage();
 		excavator_001 = new ImageIcon("resource/excavator_001.png").getImage();
 		excavator_002 = new ImageIcon("resource/excavator_002.png").getImage();
 		closed_door = new ImageIcon("resource/closed_door.png").getImage();
@@ -250,6 +250,16 @@ public class DataManagement {
 		brick_black = new ImageIcon("resource/brick_black.png").getImage();
 		wall_hp = new ImageIcon("resource/wall_hp.png").getImage();
 		wall_time = new ImageIcon("resource/wall_time.png").getImage();
+	}
+	
+	public void tloadImage(){
+		mshi = new ImageIcon("resource/people.png").getImage();
+		brick_black = new ImageIcon("resource/brick_black.png").getImage();
+		excavator_001 = new ImageIcon("resource/excavator_001.png").getImage();
+		t_skill = new ImageIcon("resource/t_skill.png").getImage();
+		t_02 = new ImageIcon("resource/t_02.png").getImage();
+		t_03 = new ImageIcon("resource/t_03.png").getImage();
+		t_05 = new ImageIcon("resource/t_05.png").getImage();
 	}
 	
 	public AudioManagement getAudio(){

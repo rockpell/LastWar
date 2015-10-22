@@ -35,7 +35,7 @@ class Skill extends UI{
 	public void skillExcute(){
 		DataManagement dm = DataManagement.getInstance();
 		Engine.getInstance().initMessage2();
-		if(Screen.getInstance().getStopOn()){
+		if(Screen.getInstance().getStopOn() || Screen.getInstance().getTempStoper()){
 			System.out.println("stop");
 			return;
 		}

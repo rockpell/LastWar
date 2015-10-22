@@ -51,16 +51,17 @@ public class Screen extends JFrame{
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	private Image excavator_001, excavator_002, brick_black;
 	private Image closed_door, open_door;
+	private Image t_skill, t_02, t_03, t_05;
 	
 //	private boolean gameStart = false;
 	private boolean stopOn = true, beforeStart = false;
 	private boolean pup = false, pdown = false; // game before control screen value
-	private boolean story_on = false, story_end = false;
+	private boolean story_on = false, story_end = false, tutorial_on = false;;
 	private boolean temp_stoper = false;
 	
 	private int gui_x = screenWidth / 2 - 140;
 	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
-	private int index = 0;
+	private int index = 0, tindex = 0;
 	
 	private Screen() {
 		 super("Last War");
@@ -137,7 +138,10 @@ public class Screen extends JFrame{
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER){
-					if(!dm.getGameEnd()){
+					System.out.println("tindex : " + tindex);
+					if(tutorial_on){
+						tindex += 1;
+					} else if(!dm.getGameEnd()){
 						if(stopOn){
 							if(!dm.getGameStart()){ // before game
 								if(story_on){ // story screen after
@@ -157,6 +161,10 @@ public class Screen extends JFrame{
 									dm.createGameLevel(1);
 								} else if(index == 2){ // game exit
 									System.exit(0);
+								} else if(index == -1){
+									tutorial_on = true;
+									tindex = 0;
+									tloadImage();
 								}
 							} else {  // restart
 //								am.play();
@@ -196,12 +204,16 @@ public class Screen extends JFrame{
 						player = dm.getPlayer();
 						index = 0;
 						repaint();
-					} else if(stopOn){
+					} else if(stopOn && !tutorial_on){
 						dm.initData();
 						Engine.getInstance().initLoop();
 						player = dm.getPlayer();
 						index = 0;
 						beforeStart = false;
+						repaint();
+					} else if(tutorial_on){
+						tutorial_on = false;
+						tindex = 0;
 						repaint();
 					}
 				}
@@ -247,10 +259,6 @@ public class Screen extends JFrame{
 		 
 		 this.addMouseListener(new MouseAdapter(){
 			 public void mouseClicked(MouseEvent arg0) {
-				 if(!stopOn){
-					 System.out.println("stop");
-					 return;
-				 }
 				 dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
 				 dm.getSkill(2).skillClick(arg0.getPoint().x, arg0.getPoint().y);
@@ -283,6 +291,17 @@ public class Screen extends JFrame{
 		wall_hp = dm.wall_hp;
 		wall_time = dm.wall_time;
     }
+	
+	public void tloadImage(){
+		dm.tloadImage();
+		mshi = dm.mshi;
+		brick_black = dm.brick_black;
+		excavator_001 = dm.excavator_001;
+		t_skill = dm.t_skill;
+		t_02 = dm.t_02;
+		t_03 = dm.t_03;
+		t_05 = dm.t_05;
+	}
 	
 	public void update(Graphics g) {
 		player = dm.getPlayer();
@@ -334,6 +353,7 @@ public class Screen extends JFrame{
         storyScreen();
         afterScreen();
         stroyEndingScreen();
+        tutorialScreen();
         
         
 		g.drawImage(memoryimage, 0, 0, this);
@@ -517,7 +537,7 @@ public class Screen extends JFrame{
 	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 	        
 	        if(!stopOn){
-	        	mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.03f));
+	        	mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f));
 	        	
 	        	float dia = en.getVision() * 2;
 	        	mgc.setColor(Color.LIGHT_GRAY);
@@ -656,14 +676,17 @@ public class Screen extends JFrame{
 	
 	private void stopScreen(){
 		if(stopOn && dm.getGameStart()){
+			mgc.setColor(Color.LIGHT_GRAY);
+			mgc.fillRect(screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 200);
+			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 			mgc.setColor(Color.red);
-			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2);
+			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2 - 20);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
-			mgc.drawString("Return Main Menu?", screenWidth / 2 - 100, screenHeight / 2 + 50);
+			mgc.drawString("Return Main Menu?", screenWidth / 2 - 135, screenHeight / 2 + 30);
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
-			mgc.drawString("Press the Esc Key", screenWidth / 2 - 100, screenHeight / 2 + 80);
+			mgc.drawString("Press the Esc Key", screenWidth / 2 - 110, screenHeight / 2 + 60);
 			
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
 		} else if(stopOn && !dm.getGameStart() && beforeStart){
@@ -683,10 +706,14 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeScreen(){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on && !tutorial_on){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
 			mgc.drawString("Last War", screenWidth / 2 - 180, 160);
+			
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
+			mgc.setColor(Color.red);
+			mgc.drawString("Tutorial", gui_x, gui_y1 - 70);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
 			mgc.setColor(Color.red);
@@ -710,6 +737,9 @@ public class Screen extends JFrame{
 			mgc.setColor(Color.red);
 			
 			switch(index){
+			case -1:
+				mgc.drawString("▶", gui_x - 60, gui_y1 - 70);
+				break;
 			case 0:
 				mgc.drawString("▶", gui_x - 60, gui_y1);
 				break;
@@ -727,7 +757,7 @@ public class Screen extends JFrame{
 	private void controlPosition(){
 		if(pup){
 			pup = false;
-			if(index > 0){
+			if(index > -1){
 				index -= 1;
 			}
 		}
@@ -837,6 +867,112 @@ public class Screen extends JFrame{
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 40));
 			mgc.drawString("Press the Esc Key", screenWidth / 2 - 330, 760);
+		}
+	}
+	
+	private void tutorialScreen(){
+		if(tutorial_on){
+			mgc.setColor(Color.red);
+			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+			mgc.drawString("Next?", 770, 700);
+			mgc.drawString("Press SpaceBar Or Enter Key", 770, 750);
+			
+			mgc.drawString("Return Menu?", 550, 700);
+			mgc.drawString("Press Esc Key", 550, 750);
+			
+			switch(tindex){
+			case 0:
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
+				mgc.drawString("기본 조작 설명", 100, 100);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("캐릭터 이동 : 키보드 방향키", 100, 200);
+				mgc.drawString("스킬 사용 및 스킬 강화 : A, S, D, F, G", 100, 300);
+				mgc.drawString("게임 일시 정지 : Space Bar", 100, 400);
+				mgc.drawString("게임 메뉴로 다시 돌아가기 : Space Bar를 누른 후 esc", 100, 500);
+				break;
+			case 1:
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
+				mgc.drawString("스킬 설명", 80, 100);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				
+				mgc.drawString("벽돌 설치 : 벽돌 설치 후 밖으로 나가면 다시 들어갈 수 없음.", 150, 160);
+				mgc.drawString("벽돌로 레이저 방어 가능하나 적 AI는 어느정도 뚫고 공격함", 280, 195);
+				mgc.drawLine(150, 200, 150, 530);
+				
+				mgc.drawString("체력 회복 : 플레이어의 모든 체력을 회복한다. 사용할 때 마다 비용 증가", 225, 250);
+				mgc.drawLine(215, 270, 215, 530);
+				
+				mgc.drawString("최대 체력 증가 : 플레이어의 최대 체력을 증가시킨다. 사용할 때 마다 비용 증가", 265, 310);
+				mgc.drawLine(270, 330, 270, 530);
+				
+				mgc.drawString("벽돌 최대 체력 증가 : 새로 생성된 벽돌에만 적용. 사용할 때 마다 비용 증가", 320, 380);
+				mgc.drawLine(325, 400, 325, 530);
+				
+				mgc.drawString("벽돌 재사용 대기시간 감소 : 사용할 때 마다 비용 증가", 375, 450);
+				mgc.drawLine(380, 470, 380, 530);
+				
+				mgc.drawImage(t_skill, 80, 550, null);
+				break;
+			case 2:
+				mgc.drawImage(t_02, 80, 80, null);
+				
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("레이저는 빨강색으로 변한 화살표에서 나온다.", 100, 600);
+				break;
+			case 3:
+				mgc.drawImage(t_03, 80, 80, null);
+				
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("레이저가 파랑색으로 변하면 플레이어와 벽돌 적 AI에게 피해를 준다.", 100, 600);
+				break;
+			case 4:
+				mgc.drawImage(t_05, 80, 80, null);
+				
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("적 AI는 일정 범위 안에 들어온 플레이어를 따라다니며 ", 100, 600);
+				mgc.drawString("플레이어가 범위 밖에 있다면 레이저에게 피해를 받지 않는다. ", 100, 630);
+				break;
+			case 5:
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
+				mgc.drawString("피해 관련 설명", 80, 100);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("피해를 한번 받으면 일정 시간 동안 레이저에 부딪혀도 피해를 받지 않는다.", 80, 200);
+				mgc.drawString("파란색 레이저에 부딪힌 경우만 피해를 받는다.", 80, 270);
+				mgc.drawString("적 AI는 레이저와 달리 벽돌 안에 있는 플레이어를 공격한다.", 80, 340);
+				mgc.drawString("단 아래 이미지와 같이 벽돌 안에 있는 상태에서 적 AI와 거리를 둔다면 공격 받지 않는다.", 80, 410);
+				
+				mgc.drawImage(brick_black, 200, 500, null);
+				mgc.drawImage(mshi, 175, 500, null);
+				
+				mgc.drawImage(excavator_001, 250, 500, null);
+				break;
+			case 6:
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
+				mgc.drawString("모드 설명", 80, 100);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("스토리 모드 : 플레이어의 죽음 외에 게임의 끝이 존재한다.", 80, 200);
+				mgc.drawString("다른 적 AI보다 거대한 AI를 지정된 웨이브 안에 처치하면 게임이 끝난다.", 237, 250);
+				mgc.drawString("지정된 웨이브가 모두 종료되면 플레이어는 사망하게 된다.", 237, 300);
+				
+				mgc.drawString("네버엔딩 모드 : 게임의 끝이 존재하지 않는다.", 80, 400);
+				break;
+			default :
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 50));
+				mgc.drawString("End", screenWidth / 2 - 40, screenHeight / 2 - 100);
+				break;
+			}
 		}
 	}
 	
