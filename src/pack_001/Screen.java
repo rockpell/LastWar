@@ -51,7 +51,7 @@ public class Screen extends JFrame{
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	private Image excavator_001, excavator_002, brick_black;
 	private Image closed_door, open_door;
-	private Image t_skill, t_02, t_03, t_05;
+	private Image t_skill, t_02, t_03, t_05, t_06;
 	
 //	private boolean gameStart = false;
 	private boolean stopOn = true, beforeStart = false;
@@ -138,7 +138,6 @@ public class Screen extends JFrame{
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER){
-					System.out.println("tindex : " + tindex);
 					if(tutorial_on){
 						tindex += 1;
 					} else if(!dm.getGameEnd()){
@@ -301,6 +300,7 @@ public class Screen extends JFrame{
 		t_02 = dm.t_02;
 		t_03 = dm.t_03;
 		t_05 = dm.t_05;
+		t_06 = dm.t_06;
 	}
 	
 	public void update(Graphics g) {
@@ -676,11 +676,11 @@ public class Screen extends JFrame{
 	
 	private void stopScreen(){
 		if(stopOn && dm.getGameStart()){
-			mgc.setColor(Color.LIGHT_GRAY);
+			mgc.setColor(Color.black);
 			mgc.fillRect(screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 200);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
-			mgc.setColor(Color.red);
+			mgc.setColor(Color.white);
 			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2 - 20);
 			
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -942,6 +942,17 @@ public class Screen extends JFrame{
 			case 5:
 				mgc.setColor(Color.black);
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
+				mgc.drawString("적 AI", 80, 100);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("생성되고 일정 시간이 지나면 레벨업을 한다.", 80, 200);
+				mgc.drawString("레벨업을 하면 이동속도가 증가하고 플레이어를 감지 할수 있는 범위가 넓어진다.", 80, 270);
+				
+				mgc.drawImage(t_06, 80, 400, null);
+				break;
+			case 6:
+				mgc.setColor(Color.black);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
 				mgc.drawString("피해 관련 설명", 80, 100);
 				
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
@@ -955,7 +966,7 @@ public class Screen extends JFrame{
 				
 				mgc.drawImage(excavator_001, 250, 500, null);
 				break;
-			case 6:
+			case 7:
 				mgc.setColor(Color.black);
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
 				mgc.drawString("모드 설명", 80, 100);

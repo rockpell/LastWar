@@ -58,7 +58,7 @@ public class DataManagement {
 	public Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
 	public Image excavator_001, excavator_002, brick_black;
 	public Image closed_door, open_door;
-	public Image t_skill, t_02, t_03, t_05;
+	public Image t_skill, t_02, t_03, t_05, t_06;
 	
 	public final int screenWidth = 1200, screenHeight = 800;
 	public final int rowNumber = 11, colNumber = 22;
@@ -232,7 +232,7 @@ public class DataManagement {
 	}
 	
 	public void loadImage() {
-		mshi = new ImageIcon("resource/people.png").getImage();
+		mshi = new ImageIcon("resource/people_001.png").getImage();
 		arrow_right = new ImageIcon("resource/arrow_right.png").getImage();
 		arrow_left = new ImageIcon("resource/arrow_left.png").getImage();
 		arrow_up = new ImageIcon("resource/arrow_up.png").getImage();
@@ -260,6 +260,7 @@ public class DataManagement {
 		t_02 = new ImageIcon("resource/t_02.png").getImage();
 		t_03 = new ImageIcon("resource/t_03.png").getImage();
 		t_05 = new ImageIcon("resource/t_05.png").getImage();
+		t_06 = new ImageIcon("resource/t_06.png").getImage();
 	}
 	
 	public AudioManagement getAudio(){
@@ -620,7 +621,7 @@ class Enemy1 extends Colider implements Unit {
 	private int width, height;
 	private float speed = 1.5f;
 	private int hp = 5, maxHp = 5;
-	private int money = 100;
+	private int money = 80;
 	private int swidth = 1100, sheight = 600;
 	private boolean isMoveUp = false, isMoveDown = false, isMoveLeft = false, isMoveRight = false;
 	private boolean randMove = true; // randMove == 랜덤 이동(플레이어 인식 못할 경우 랜덤 이동) 
@@ -977,7 +978,7 @@ class Enemy1 extends Colider implements Unit {
 class BossEnemy extends Enemy1{
 	BossEnemy(int hp) {
 		super(hp);
-		setMoeny(300);
+		setMoeny(200);
 		addVision(120);
 		addSpeed(-0.3f);
 		setTypeName("boss");
