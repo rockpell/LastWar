@@ -24,5 +24,5 @@ Java
 ## 사용 IDE
 Eclipse
 
-## 인게임
+## 인게임 화면
 ![screenshot](./screenshot.jpg)
