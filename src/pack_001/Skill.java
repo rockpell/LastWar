@@ -43,7 +43,7 @@ final class WallSkill extends Skill{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(dm.getCost(0) > dm.getMoney()){
-			Engine.getInstance().settingMessage("point");
+			Screen.getInstance().setMessageText("point");
 			return;
 		}
 		
@@ -55,7 +55,7 @@ final class WallSkill extends Skill{
 			dm.getPlayer().setOutTrigger(true);
 			dm.initCoolTime();
 		} else if(dm.getCoolTimeLeft() != 0){
-			Engine.getInstance().settingMessage("cool");
+			Screen.getInstance().setMessageText("cool");
 		}
 	}
 }
@@ -72,10 +72,10 @@ final class HealSkill extends Skill{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(dm.getCost(1) > dm.getMoney()){
-			Engine.getInstance().settingMessage("point");
+			Screen.getInstance().setMessageText("point");
 			return;
 		} else if(dm.getPlayer().getHp() == dm.getPlayer().getMaxHp()){
-			Engine.getInstance().settingMessage("heal");
+			Screen.getInstance().setMessageText("heal");
 			return;
 		}
 		
@@ -84,8 +84,8 @@ final class HealSkill extends Skill{
 		dm.getPlayer().heal();
 		dm.subMoney(cost1);
 		dm.upCost(1);
-		Engine.getInstance().settingMessage("heal_ok");
-		Engine.getInstance().settingMessage2(dm.getCost(1) - cost1);
+		Screen.getInstance().setMessageText("heal_ok");
+		Screen.getInstance().setCostMessageText(dm.getCost(1) - cost1);
 	}
 }
 
@@ -101,7 +101,7 @@ final class HpSkill extends Skill{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(dm.getCost(2) > dm.getMoney()){
-		Engine.getInstance().settingMessage("point");
+			Screen.getInstance().setMessageText("point");
 			return;
 		}
 		
@@ -110,8 +110,8 @@ final class HpSkill extends Skill{
 		dm.getPlayer().maxHpUp();
 		dm.subMoney(cost1);
 		dm.upCost(2);
-		Engine.getInstance().settingMessage("hp_ok");
-		Engine.getInstance().settingMessage2(dm.getCost(2) - cost1);
+		Screen.getInstance().setMessageText("hp_ok");
+		Screen.getInstance().setCostMessageText(dm.getCost(2) - cost1);
 	}
 }
 
@@ -126,7 +126,7 @@ final class WallHpSkill extends Skill{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(dm.getCost(3) > dm.getMoney()){
-			Engine.getInstance().settingMessage("point");
+			Screen.getInstance().setMessageText("point");
 			return;
 		}
 		
@@ -135,8 +135,8 @@ final class WallHpSkill extends Skill{
 		dm.subMoney(cost1);
 		dm.upCost(3);
 		dm.plusHp();
-		Engine.getInstance().settingMessage("wall_hp_ok");
-		Engine.getInstance().settingMessage2(dm.getCost(3) - cost1);
+		Screen.getInstance().setMessageText("wall_hp_ok");
+		Screen.getInstance().setCostMessageText(dm.getCost(3) - cost1);
 	}
 }
 
@@ -151,7 +151,7 @@ final class WallCoolSkill extends Skill{
 		DataManagement dm = DataManagement.getInstance();
 		
 		if(dm.getCost(4) > dm.getMoney()){
-			Engine.getInstance().settingMessage("point");
+			Screen.getInstance().setMessageText("point");
 			return;
 		}
 		
@@ -160,7 +160,7 @@ final class WallCoolSkill extends Skill{
 		dm.subMoney(cost1);
 		dm.upCost(4);
 		dm.minusWallCoolTime(1);
-		Engine.getInstance().settingMessage("wall_cool_ok");
-		Engine.getInstance().settingMessage2(dm.getCost(4) - cost1);
+		Screen.getInstance().setMessageText("wall_cool_ok");
+		Screen.getInstance().setCostMessageText(dm.getCost(4) - cost1);
 	}
 }

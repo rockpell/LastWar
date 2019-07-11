@@ -14,7 +14,6 @@ final class AudioManagement{
 	URL url;
 	
 	AudioManagement(){
-//		url = this.getClass().getClassLoader().getResource("game_music/perfect_crime.wav");
 		url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
 			
 	}
@@ -47,7 +46,7 @@ final class AudioManagement{
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(0f);
             
-            clip.loop(clip.LOOP_CONTINUOUSLY);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,32 +1,9 @@
 package pack_001;
 
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
 import javax.swing.ImageIcon;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class DataManagement {
 	private static DataManagement instance = DataManagement.getInstance();

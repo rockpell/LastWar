@@ -16,16 +16,16 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class Screen extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Screen instance;
 	public static Screen getInstance(){
 		if(instance == null){
@@ -61,6 +61,9 @@ public class Screen extends JFrame{
 	private int gui_x = screenWidth / 2 - 140;
 	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
 	private int selectIndex = 0, tutorialPage = 0;
+	
+	private int messageTextDuration = 0, messageTextMaxDuration = 50;
+	private String messageText, costMessageText;
 	
 	private Screen() {
 		 super("Last War");
@@ -363,17 +366,18 @@ public class Screen extends JFrame{
 	        mgc.setColor(Color.black);
 	        mgc.setFont(new Font("default", Font.BOLD, 16));
 	        
-	        mgc.drawString("Time : " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
-	        mgc.drawString("Score :" + String.valueOf(dm.getScore()), 800, screenHeight - 50);
-	        mgc.drawString("Point : " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
+	        mgc.drawString("Time:  " + Engine.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
+	        mgc.drawString("Score: " + String.valueOf(dm.getScore()), 800, screenHeight - 50);
+	        mgc.drawString("Point: " + String.valueOf(dm.getMoney()), 800, screenHeight - 20);
 	        
-	        mgc.drawString("fps : " + Engine.getInstance().getFps(), 20, 60);
+	        mgc.drawString("fps: " + Engine.getInstance().getFps(), 20, 60);
        
         	mgc.setColor(Color.LIGHT_GRAY);
     	    mgc.fillRect(50, screenHeight - 100, screenWidth - 800, 100);
     	    
             drawArrow();
             drawSkill();
+            drawSkillMessageText();
         }
 
         stopScreen();
@@ -385,7 +389,6 @@ public class Screen extends JFrame{
         
         
 		g.drawImage(memoryimage, 0, 0, this);
-		
 	}
 	
 	private void drawPlayer(){
@@ -440,7 +443,6 @@ public class Screen extends JFrame{
 	        t.translate(wx, wy); // x/y set here
 	        t.scale(1, 1);
 	        
-//			mgc.drawImage(brick_wall_001, t, null);
 			mgc.drawImage(brick_black, t, null);
 			
 			Rectangle2D out_line1 = new Rectangle2D.Float(wa.getX(), wa.getY() - 18, wa.getWidth(), 15);
@@ -615,58 +617,67 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawSkill(){
-		Skill skill_temp = dm.getSkill(0);
-		Skill skill_temp2 = dm.getSkill(1);
-		Skill skill_temp3 = dm.getSkill(2);
-		Skill skill_temp4 = dm.getSkill(3);
-		Skill skill_temp5 = dm.getSkill(4);
+		Skill skill1 = dm.getSkill(0);
+		Skill skill2 = dm.getSkill(1);
+		Skill skill3 = dm.getSkill(2);
+		Skill skill4 = dm.getSkill(3);
+		Skill skill5 = dm.getSkill(4);
 		
 		mgc.setColor(Color.black);
-		mgc.drawRect(skill_temp.getX() - 2, skill_temp.getY() - 3, skill_temp.getWidth() + 4, skill_temp.getHeight() + 4);
-		mgc.drawRect(skill_temp2.getX() - 2, skill_temp2.getY() - 3, skill_temp2.getWidth() + 4, skill_temp2.getHeight() + 4);
-		mgc.drawRect(skill_temp3.getX() - 2, skill_temp3.getY() - 3, skill_temp3.getWidth() + 4, skill_temp3.getHeight() + 4);
-		mgc.drawRect(skill_temp4.getX() - 2, skill_temp4.getY() - 3, skill_temp4.getWidth() + 4, skill_temp4.getHeight() + 4);
-		mgc.drawRect(skill_temp5.getX() - 2, skill_temp5.getY() - 3, skill_temp5.getWidth() + 4, skill_temp5.getHeight() + 4);
+		mgc.drawRect(skill1.getX() - 2, skill1.getY() - 3, skill1.getWidth() + 4, skill1.getHeight() + 4);
+		mgc.drawRect(skill2.getX() - 2, skill2.getY() - 3, skill2.getWidth() + 4, skill2.getHeight() + 4);
+		mgc.drawRect(skill3.getX() - 2, skill3.getY() - 3, skill3.getWidth() + 4, skill3.getHeight() + 4);
+		mgc.drawRect(skill4.getX() - 2, skill4.getY() - 3, skill4.getWidth() + 4, skill4.getHeight() + 4);
+		mgc.drawRect(skill5.getX() - 2, skill5.getY() - 3, skill5.getWidth() + 4, skill5.getHeight() + 4);
 		
 		ImageManagement abc = new ImageManagement(brick_black);
 		
 //		mgc.drawImage(brick_wall_001, 200, 725, null); // draw wall icon
-		mgc.drawImage(abc.grayImage(), skill_temp.getX(), skill_temp.getY(), null);
-		mgc.drawImage(hp_potion, skill_temp2.getX(), skill_temp2.getY(), null);
-		mgc.drawImage(hp_plus, skill_temp3.getX(), skill_temp3.getY(), null);
-		mgc.drawImage(wall_hp, skill_temp4.getX(), skill_temp4.getY(), null);
-		mgc.drawImage(wall_time, skill_temp5.getX(), skill_temp5.getY(), null);
+		mgc.drawImage(abc.grayImage(), skill1.getX(), skill1.getY(), null);
+		mgc.drawImage(hp_potion, skill2.getX(), skill2.getY(), null);
+		mgc.drawImage(hp_plus, skill3.getX(), skill3.getY(), null);
+		mgc.drawImage(wall_hp, skill4.getX(), skill4.getY(), null);
+		mgc.drawImage(wall_time, skill5.getX(), skill5.getY(), null);
 		
 		mgc.setFont(new Font("default", Font.BOLD, 14));
-		mgc.drawString("A", skill_temp.getX() + 18, skill_temp.getY() + 62);
-		mgc.drawString("S", skill_temp2.getX() + 18, skill_temp2.getY() + 62);
-		mgc.drawString("D", skill_temp3.getX() + 18, skill_temp3.getY() + 62);
-		mgc.drawString("F", skill_temp4.getX() + 18, skill_temp4.getY() + 62);
-		mgc.drawString("G", skill_temp5.getX() + 18, skill_temp5.getY() + 62);
+		mgc.drawString("A", skill1.getX() + 18, skill1.getY() + 62);
+		mgc.drawString("S", skill2.getX() + 18, skill2.getY() + 62);
+		mgc.drawString("D", skill3.getX() + 18, skill3.getY() + 62);
+		mgc.drawString("F", skill4.getX() + 18, skill4.getY() + 62);
+		mgc.drawString("G", skill5.getX() + 18, skill5.getY() + 62);
 		
-		mgc.drawString(String.valueOf(dm.getCost(0)) + "P", skill_temp.getX(), skill_temp.getY() - 2);
-		mgc.drawString(String.valueOf(dm.getCost(1)) + "P", skill_temp2.getX(), skill_temp2.getY() - 2);
-		mgc.drawString(String.valueOf(dm.getCost(2)) + "P", skill_temp3.getX(), skill_temp3.getY() - 2);
-		mgc.drawString(String.valueOf(dm.getCost(3)) + "P", skill_temp4.getX(), skill_temp4.getY() - 2);
-		mgc.drawString(String.valueOf(dm.getCost(4)) + "P", skill_temp5.getX(), skill_temp5.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(0)) + "P", skill1.getX(), skill1.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(1)) + "P", skill2.getX(), skill2.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(2)) + "P", skill3.getX(), skill3.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(3)) + "P", skill4.getX(), skill4.getY() - 2);
+		mgc.drawString(String.valueOf(dm.getCost(4)) + "P", skill5.getX(), skill5.getY() - 2);
 		
 		if(dm.getCoolTimeLeft() != 0){
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
-			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), skill_temp.getX() + 18, skill_temp.getY() - 13);
+			mgc.drawString(String.valueOf(dm.getCoolTimeLeft()), skill1.getX() + 18, skill1.getY() - 13);
 		}
+	}
+	
+	private void drawSkillMessageText()
+	{
+		Skill skill5 = dm.getSkill(4);
 		
-		if(Engine.getInstance().isMessage()){
+		if(isAppearMessage()){
 //			mgc.setColor(Color.red);
 			mgc.setFont(new Font("default", Font.BOLD, 20));
-			mgc.drawString(Engine.getInstance().getMessage(), skill_temp5.getX() + 180, skill_temp5.getY() + 10);
-			if(Engine.getInstance().getMessage2() != null)
-				mgc.drawString(Engine.getInstance().getMessage2(), skill_temp5.getX() + 180, skill_temp5.getY() + 38);
+			mgc.drawString(getMessageText(), skill5.getX() + 180, skill5.getY() + 10);
+			if(getCostMessageText() != null)
+				mgc.drawString(getCostMessageText(), skill5.getX() + 180, skill5.getY() + 38);
+		}
+		else
+		{
+			initCostMessageText();
 		}
 		
 		if(dm.getGameLevel().getMode() == 0){
 			String ntext = "left wave : " + String.valueOf(dm.getScenario().getPatterns() - dm.getGameLevel().getAllIndex());
 			mgc.setFont(new Font("default", Font.BOLD, 20));
-			mgc.drawString(ntext, skill_temp5.getX() + 180, skill_temp5.getY() + 60);
+			mgc.drawString(ntext, skill5.getX() + 180, skill5.getY() + 60);
 		}
 	}
 	
@@ -717,7 +728,6 @@ public class Screen extends JFrame{
 				mgc.setFont(new Font("default", Font.PLAIN, 12));
 			}
 		}
-		
 		
 		if(Engine.getInstance().getIsCountDown()){
 			int number_time = 3 - Engine.getInstance().getCountdownTime();
@@ -1026,4 +1036,71 @@ public class Screen extends JFrame{
         }
 	}
 	
+	public void initMessage(){
+		messageTextDuration = 0;
+	}
+		
+	public void setMessageText(String text){
+		switch(text){
+		case "cool":
+			messageText = "Cooldown Time";
+			break;
+		case "point":
+			messageText = "Not enough point";
+			break;
+		case "heal":
+			messageText = "Full hp";
+			break;
+		case "heal_ok":
+			messageText = "Hp heal";
+			break;
+		case "hp_ok":
+			messageText = "Hp Max Up";
+			break;
+		case "wall_hp_ok":
+			messageText = "Wall Max Hp Up";
+			break;
+		case "wall_cool_ok":
+			messageText = "Wall Cooldown reduce";
+			break;
+		}
+		
+		messageTextDuration = messageTextMaxDuration;
+	}
+	
+	public void setCostMessageText(int value){
+		costMessageText = "Cost " + String.valueOf(value) + " Up";
+	}
+	
+	public String getCostMessageText(){
+		return costMessageText;
+	}
+	
+	public boolean initCostMessageText()
+	{
+		costMessageText = null;
+		return true;
+	}
+	
+	public boolean isAppearMessage(){
+		if(messageTextDuration > 0){
+			return true;
+		}
+		return false;
+	}
+	
+	public String getMessageText(){
+		return messageText;
+	}
+	
+	public int getMessageTextDuration() 
+	{
+		return messageTextDuration;
+	}
+	
+	public boolean addMessageTextDuration(int value)
+	{
+		messageTextDuration += value;
+		return true;
+	}
 }

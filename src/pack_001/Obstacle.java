@@ -1,11 +1,5 @@
 package pack_001;
 
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
-
-
 public interface Obstacle {
 	
 	public void dead();

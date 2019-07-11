@@ -6,7 +6,7 @@ public class mainClass {
 
 	public static void main(String[] args){
 //		Screen abc = Screen.getInstance();
-		Engine engine = Engine.getInstance();
+		Engine.getInstance();
 		
 		EventQueue.invokeLater(new Runnable() {
             @Override

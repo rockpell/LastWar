@@ -10,7 +10,7 @@ final class GameLevel {
 	
 	private Map<String, ArrayList<String>> sequenceData;
 	
-	private int nowLevel = 0, nowSequence = 0;
+	private int nowSequence = 0;
 	private int targetIndex = 0, all_index = 0;
 	private int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
