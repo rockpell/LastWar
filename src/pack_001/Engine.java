@@ -15,51 +15,46 @@ public class Engine {
 		return instance;
 	}
 	
-	private DataManagement dm;
 	private int playTime = 0, invokeTime = 0;
 	private int temp_time = 0;
 	private int fps = 51;
 	private int message_time = 0, message_time_max = 50;
 	private String message_text, message_text2;
-	private boolean stopOn = false;
-	private Looper game_loop;
+	private boolean isStop = false;
+	private boolean temp_stoper = false;
+	
+	private GameLoop gameLoop;
 	private Thread th1;
 	private Timer jobScheduler;
+	private DataManagement dm;
 	
 	private Engine(){
 
 	}
 	
 	public void newLoop(){
-		game_loop = null;
-		game_loop = new Looper("restart", 20);
+		gameLoop = null;
+		gameLoop = new GameLoop(20);
 	}
 	
 	public void initLoop(){
-		game_loop = null;
+		gameLoop = null;
 	}
 	
 	public void startLoop(){
-//		if(game_loop == null){
-//			game_loop = new Looper("what", 20);
-//			dm = DataManagement.getInstance();
-//		}
-//		
-//		th1 = new Thread(game_loop);
-//		th1.start();
 		jobScheduler = new Timer();
 		jobScheduler.schedule(new TempStoper(), 3000);
 		jobScheduler.schedule(new TempStoper2(), 1000);
-		Screen.getInstance().setTempStoper(true);
+		setTempStoper(true);
 	}
 	
 	public void nowStartLoop(){
-		if(game_loop == null){
-			game_loop = new Looper("what", 20);
+		if(gameLoop == null){
+			gameLoop = new GameLoop(20);
 			dm = DataManagement.getInstance();
 		}
 		
-		th1 = new Thread(game_loop);
+		th1 = new Thread(gameLoop);
 		th1.start();
 	}
 	
@@ -76,7 +71,7 @@ public class Engine {
 	}
 	
 	public void stopLoop(){
-		stopOn = true;
+		isStop = true;
 	}
 	
 	public void loadThread(){
@@ -85,22 +80,18 @@ public class Engine {
 	}
 	
 	public void killThread(){
-		if(stopOn){
+		if(isStop){
 			th1.interrupt();
-//			th1.stop();
-			stopOn = false;
+			isStop = false;
 			Screen.getInstance().repaint();
 		}
 		
 	}
 	
 	public void loopColider(){
-		if(dm.getColiderSet().size() > 0){
-//			System.out.println("coliderSet.size() : " + coliderSet.size());
-		}
-		Set<Laser1> coliderSet2 = new HashSet<Laser1>(dm.getColiderSet());
-		Set<Wall1> wallSet2 = new HashSet<Wall1>(dm.getWallSet());
-		Set<Enemy1> enemySet2 = new HashSet<Enemy1>(dm.getEnemySet());
+		Set<Laser> coliderSet2 = new HashSet<Laser>(dm.getColiderSet());
+		Set<Wall> wallSet2 = new HashSet<Wall>(dm.getWallSet());
+		Set<Enemy> enemySet2 = new HashSet<Enemy>(dm.getEnemySet());
 		Player player = dm.getPlayer();
 		
 		Set<AlarmText> atl = new HashSet<AlarmText>(dm.getAlarmList());
@@ -108,9 +99,9 @@ public class Engine {
 			at.work();
 		}
 		
-		for(Laser1 c : coliderSet2){
+		for(Laser c : coliderSet2){
 			
-			for(Wall1 w : wallSet2){
+			for(Wall w : wallSet2){
 				if(w.collision(c.getBounds())){
 //					System.out.println(w.getBounds().x + "    :    " + w.getBounds().y);
 					if(!c.getWallColide()){ // 레이저는 벽과 한 번만 충돌 가능
@@ -131,7 +122,7 @@ public class Engine {
 		
 		boolean colideCheck = false;
 		
-		for(Wall1 w : wallSet2){
+		for(Wall w : wallSet2){
 			if(w.getTrigger()){
 				if(player.collision(w.getBounds())){
 //					System.out.println("colide wall");
@@ -155,9 +146,9 @@ public class Engine {
 			player.setOutTrigger(false);
 		}
 		
-		for(Enemy1 en : enemySet2){
+		for(Enemy en : enemySet2){
 			
-			for(Wall1 wa : wallSet2){
+			for(Wall wa : wallSet2){
 				if(wa.getTrigger()){
 					if(en.collision(wa.getBounds())){
 						en.checkMoveable(wa.getBounds());
@@ -165,7 +156,7 @@ public class Engine {
 				}
 			}
 			
-			for(Laser1 la : coliderSet2){
+			for(Laser la : coliderSet2){
 				if(la.getTrigger()){
 					if(en.getDamageable()){
 						if(en.collision(la.getBounds())){
@@ -299,129 +290,14 @@ public class Engine {
 	public int getFps(){
 		return fps;
 	}
-}
-
-class Looper implements Runnable{
-	private String name;
-	private int interval = 0, playTime = 0;
 	
-	private Screen sc;
-	private Engine engine;
-	private DataManagement dm;
-	private GameLevel gameLevel;
-	
-	Looper(String name, int interval){
-		this.name = name;
-		this.interval = interval;
-		sc = Screen.getInstance();
-		engine = Engine.getInstance();
-		dm = DataManagement.getInstance();
-		
-		playTime = engine.getPlayTime();
-		
-		gameLevel = dm.getGameLevel();
+	public void setTempStoper(boolean val){
+		temp_stoper = val;
 	}
 	
-	@Override
-	public void run() {
-		while(!Thread.currentThread().isInterrupted()){
-			try {
-				FPScounter.StartCounter();
-				
-				sc.repaint();
-				
-				engine.loopColider();
-				dm.getPlayer().work();
-				
-				engine.setPlayTime(playTime += 1);
-				gameLevel.levelStart();
-				
-				if(playTime % 20 == 0){
-					dm.countCoolTime();
-					dm.addMoney(1);
-					dm.addScore(1);
-				}
-				
-				engine.workMessage();
-				
-				FPScounter.StopAndPost();
-				interval = (1000 / engine.getFps()) - FPScounter.getElapsedTime();
-				
-//				System.out.println(interval);
-				
-				if(interval < 5){
-					interval = 20;
-				}
-				
-				Thread.sleep(interval);
-				engine.killThread();
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public boolean getTempStoper(){
+		return temp_stoper;
 	}
-	
-	public void setInterval(int val){
-		interval = val;
-	}
-}
-
-class Loader implements Runnable {
-	
-	Loader(){
-		
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		DataManagement.getInstance().loadImage();
-		Screen.getInstance().loadImage();
-		Engine.getInstance().startLoop();
-//		DataManagement.getInstance().getAudio().play();
-		DataManagement.getInstance().setGameStart(true);
-		Screen.getInstance().stopScreenOn();
-		
-		Screen.getInstance().repaint();
-	}
-}
-
-final class FPScounter {  
-    private static int startTime;  
-    private static int endTime;  
-    private static int frameTimes = 0;  
-    private static short frames = 0;
-  
-//    /** Start counting the fps**/  
-    public final static void StartCounter()  {  
-        //get the current time  
-        startTime = (int) System.currentTimeMillis();  
-    }  
-  
-//    /**stop counting the fps and display it at the console*/  
-    public final static void StopAndPost(){
-        //get the current time  
-        endTime = (int) System.currentTimeMillis();  
-        //the difference between start and end times  
-        frameTimes = frameTimes + endTime - startTime;  
-        //count one frame  
-        ++frames;
-        //if the difference is greater than 1 second (or 1000ms) post the results  
-        if(frameTimes >= 1000){  
-            //post results at the console  
-            System.out.println("FPS : " + Long.toString(frames));
-            Engine.getInstance().setFps(frames);
-            //reset time differences and number of counted frames  
-            frames = 0;  
-            frameTimes = 0;
-        }
-    }
-    
-    public final static int getElapsedTime(){
-    	return endTime - startTime;
-    }
 }
 
 class TempStoper extends TimerTask {
@@ -432,11 +308,10 @@ class TempStoper extends TimerTask {
 		Engine.getInstance().nowStartLoop();
 		DataManagement.getInstance().getAudio().play();
 		
-		Screen.getInstance().setTempStoper(false);
+		Engine.getInstance().setTempStoper(false);
 		Engine.getInstance().setTempTime(0);
 		Engine.getInstance().stopSchedule();
-//		DataManagement.getInstance().setGameStart(true);
-//		Screen.getInstance().stopScreenOn();
+		System.out.println("TempStoper1");
 	}
 }
 
@@ -448,9 +323,9 @@ class TempStoper2 extends TimerTask {
 		Engine.getInstance().workTemp();
 		Screen.getInstance().repaint();
 		
-		if(Screen.getInstance().getTempStoper()){
+		if(Engine.getInstance().getTempStoper()){
 			Engine.getInstance().addSchedule(new TempStoper2(), 1000);
 		}
-		
+		System.out.println("TempStoper2");
 	}
 }

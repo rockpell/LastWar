@@ -54,14 +54,13 @@ public class Screen extends JFrame{
 	private Image t_skill, t_02, t_03, t_05, t_06;
 	
 //	private boolean gameStart = false;
-	private boolean stopOn = true, beforeStart = false;
+	private boolean isPause = true, isbeforeStart = false;
 	private boolean pup = false, pdown = false; // game before control screen value
-	private boolean story_on = false, story_end = false, tutorial_on = false;;
-	private boolean temp_stoper = false;
+	private boolean isStroyStart = false, isStroyEnd = false, isTutorialStart = false;;
 	
 	private int gui_x = screenWidth / 2 - 140;
 	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
-	private int index = 0, tindex = 0;
+	private int selectIndex = 0, tutorialPage = 0;
 	
 	private Screen() {
 		 super("Last War");
@@ -138,81 +137,110 @@ public class Screen extends JFrame{
 				} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 					player.move("left");
 				} else if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER){
-					if(tutorial_on){
-						tindex += 1;
-					} else if(!dm.getGameEnd()){
-						if(stopOn){
-							if(!dm.getGameStart()){ // before game
-								if(story_on){ // story screen after
+					if(isTutorialStart)
+					{
+						tutorialPage += 1;
+					} 
+					else if(!dm.getGameEnd())
+					{
+						if(isPause)
+						{
+							if(!dm.getGameStart())
+							{ // before game
+								if(isStroyStart)
+								{ // story screen after
 									Engine.getInstance().loadThread();
 									am = dm.getAudio();
-									beforeStart = true;
+									isbeforeStart = true;
 									dm.createGameLevel(0);
-									story_on = false;
+									isStroyStart = false;
 									return;
 								}
-								if(index == 0){ // story mode
-									story_on = true;
-								} else if(index == 1){ // never ending mode
+								if(selectIndex == 0)
+								{ // story mode
+									isStroyStart = true;
+								} 
+								else if(selectIndex == 1)
+								{ // never ending mode
 									Engine.getInstance().loadThread();
 									am = dm.getAudio();
-									beforeStart = true;
+									isbeforeStart = true;
 									dm.createGameLevel(1);
-								} else if(index == 2){ // game exit
+								} 
+								else if(selectIndex == 2)
+								{ // game exit
 									System.exit(0);
-								} else if(index == -1){
-									tutorial_on = true;
-									tindex = 0;
+								} 
+								else if(selectIndex == -1)
+								{ // show tutorial image
+									isTutorialStart = true;
+									tutorialPage = 0;
 									tloadImage();
 								}
-							} else {  // restart
+							}
+							else 
+							{  // restart
 //								am.play();
-								if(!temp_stoper){
-									stopScreenOn();
+								if(!Engine.getInstance().getTempStoper())
+								{
+									pauseScreenOn();
 									Engine.getInstance().startLoop();
 								}
 							}
 							
-						} else { // game stop
-							if(!temp_stoper){
-								stopScreenOn();
+						}
+						else 
+						{ // game stop
+							if(!Engine.getInstance().getTempStoper())
+							{
+								pauseScreenOn();
 								Engine.getInstance().stopLoop();
 								am.stop();
 							}
 						}
-					} else { // game end after replay
-						if(story_end){
+					}
+					else 
+					{ // game end after replay
+						if(isStroyEnd)
+						{
 							return;
 						}
 						dm.initData();
 						dm.setGameStart(true);
 						Engine.getInstance().newLoop();
 						Engine.getInstance().startLoop();
-						stopOn = false;
+						isPause = false;
 						player = dm.getPlayer();
-						beforeStart = true;
+						isbeforeStart = true;
 						setStoryEnd(false);
 					}
 					repaint();
-				} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ // return main menu
-					if(dm.getGameEnd()){
+				} 
+				else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				{ // return main menu
+					if(dm.getGameEnd())
+					{
 						dm.initData();
-						stopOn = true;
+						isPause = true;
 						Engine.getInstance().initLoop();
 						setStoryEnd(false);
 						player = dm.getPlayer();
-						index = 0;
+						selectIndex = 0;
 						repaint();
-					} else if(stopOn && !tutorial_on){
+					} 
+					else if(isPause && !isTutorialStart)
+					{
 						dm.initData();
 						Engine.getInstance().initLoop();
 						player = dm.getPlayer();
-						index = 0;
-						beforeStart = false;
+						selectIndex = 0;
+						isbeforeStart = false;
 						repaint();
-					} else if(tutorial_on){
-						tutorial_on = false;
-						tindex = 0;
+					} 
+					else if(isTutorialStart)
+					{
+						isTutorialStart = false;
+						tutorialPage = 0;
 						repaint();
 					}
 				}
@@ -371,7 +399,7 @@ public class Screen extends JFrame{
         
         mgc.drawImage(mshi, t, null);
         mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-        if(!stopOn){
+        if(!isPause){
         	Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
             Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45 * ((float)player.getHp()/(float)player.getMaxHp()), 15);
             
@@ -404,7 +432,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawWall(){
-		for(Wall1 wa : dm.getWallSet()){
+		for(Wall wa : dm.getWallSet()){
 			float wx = wa.getPosition("x");
 			float wy = wa.getPosition("y");
 			
@@ -473,7 +501,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawLaser(Graphics2D g){
-		for(Laser1 la : dm.getColiderSet()){
+		for(Laser la : dm.getColiderSet()){
 			if(!la.getIsActive()){
 				continue;
 			}
@@ -519,7 +547,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void drawEnemy(){
-		for(Enemy1 en : dm.getEnemySet()){
+		for(Enemy en : dm.getEnemySet()){
 			int bar_x = 0;
 			AffineTransform t = new AffineTransform();
 	        t.translate(en.getX(), en.getY());
@@ -527,16 +555,16 @@ public class Screen extends JFrame{
 	        float opacity = 1 - (float)(en.getDamageCount() % 10)/10;
 	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 	        
-	        if(en.getTypeName().equals("enemy1")){
+	        if(en instanceof Enemy) {
 	        	mgc.drawImage(excavator_001, t, null);
-	        } else if(en.getTypeName().equals("boss")){
+	        } else if(en instanceof BossEnemy) {
 	        	mgc.drawImage(excavator_002, t, null);
 	        	bar_x = 12;
 	        }
 			
 	        mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 	        
-	        if(!stopOn){
+	        if(!isPause){
 	        	mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f));
 	        	
 	        	float dia = en.getVision() * 2;
@@ -650,53 +678,48 @@ public class Screen extends JFrame{
 		}
 	}
 	
-	public void stopScreenOn(){
-		stopOn = !stopOn;
+	public void pauseScreenOn(){
+		isPause = !isPause;
 	}
 	
 	public void beforeStartOn(){
-		beforeStart = !beforeStart;
+		isbeforeStart = !isbeforeStart;
 	}
 	
-	public void setTempStoper(boolean val){
-		temp_stoper = val;
-	}
-	
-	public boolean getTempStoper(){
-		return temp_stoper;
-	}
-	
-	public boolean getStopOn(){
-		return stopOn;
+	public boolean getIsPause(){
+		return isPause;
 	}
 	
 	public void setStoryEnd(boolean value){
-		story_end = value;
+		isStroyEnd = value;
 	}
 	
 	private void stopScreen(){
-		if(stopOn && dm.getGameStart()){
-			mgc.setColor(Color.black);
-			mgc.fillRect(screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 200);
-			
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
-			mgc.setColor(Color.white);
-			mgc.drawString("STOP", screenWidth / 2 - 100, screenHeight / 2 - 20);
-			
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
-			mgc.drawString("Return Main Menu?", screenWidth / 2 - 135, screenHeight / 2 + 30);
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
-			mgc.drawString("Press the Esc Key", screenWidth / 2 - 110, screenHeight / 2 + 60);
-			
-			mgc.setFont(new Font("default", Font.PLAIN, 12));
-		} else if(stopOn && !dm.getGameStart() && beforeStart){
-			mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
-			mgc.setColor(Color.red);
-			mgc.drawString("LOADING", screenWidth / 2 - 160, screenHeight / 2);
-			mgc.setFont(new Font("default", Font.PLAIN, 12));
+		if(isPause) {
+			if(dm.getGameStart()){
+				mgc.setColor(Color.black);
+				mgc.fillRect(screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 200);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+				mgc.setColor(Color.white);
+				mgc.drawString("PAUSE", screenWidth / 2 - 115, screenHeight / 2 - 20);
+				
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 30));
+				mgc.drawString("Return Main Menu?", screenWidth / 2 - 135, screenHeight / 2 + 30);
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
+				mgc.drawString("Press the Esc Key", screenWidth / 2 - 110, screenHeight / 2 + 60);
+				
+				mgc.setFont(new Font("default", Font.PLAIN, 12));
+			} else if(!dm.getGameStart() && isbeforeStart){
+				mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
+				mgc.setColor(Color.red);
+				mgc.drawString("LOADING", screenWidth / 2 - 160, screenHeight / 2);
+				mgc.setFont(new Font("default", Font.PLAIN, 12));
+			}
 		}
 		
-		if(temp_stoper){
+		
+		if(Engine.getInstance().getTempStoper()){
 			int number_time = 3 - Engine.getInstance().getTempTime();
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 150));
 			mgc.setColor(Color.red);
@@ -706,7 +729,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeScreen(){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on && !tutorial_on){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart && !isTutorialStart){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
 			mgc.drawString("Last War", screenWidth / 2 - 180, 160);
@@ -736,7 +759,7 @@ public class Screen extends JFrame{
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 45));
 			mgc.setColor(Color.red);
 			
-			switch(index){
+			switch(selectIndex){
 			case -1:
 				mgc.drawString("▶", gui_x - 60, gui_y1 - 70);
 				break;
@@ -757,22 +780,22 @@ public class Screen extends JFrame{
 	private void controlPosition(){
 		if(pup){
 			pup = false;
-			if(index > -1){
-				index -= 1;
+			if(selectIndex > -1){
+				selectIndex -= 1;
 			}
 		}
 		
 		if(pdown){
 			pdown = false;
-			if(index < 2){
-				index += 1;
+			if(selectIndex < 2){
+				selectIndex += 1;
 			}
 		}
 		
 	}
 	
 	private void beforeControl(int type){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !beforeStart && !story_on){
+		if(!dm.getGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart){
 			if(type == 0){
 				pup = true;
 			} else if(type == 1){
@@ -785,7 +808,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void afterScreen(){
-		if(dm.getGameEnd() && !story_end){
+		if(dm.getGameEnd() && !isStroyEnd){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 80));
 			
 			mgc.setColor(Color.red);
@@ -810,7 +833,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void storyScreen(){
-		if(story_on){
+		if(isStroyStart){
 			String[] text = new String[13];
 			text[0] = "벽돌공 브릭슨은 우수한 벽돌공이다.";
 			text[1] = "그는 뛰어난 솜씨를 가졌을 뿐더러 자신의 일에 긍지를 가지고 있기에 많은 사람들은 그를 장인이라 불렀다.";
@@ -841,7 +864,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void stroyEndingScreen(){
-		if(story_end){
+		if(isStroyEnd){
 			String[] text = new String[9];
 			
 			text[0] = "브릭슨은 탈출에 성공하였다.";
@@ -871,7 +894,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void tutorialScreen(){
-		if(tutorial_on){
+		if(isTutorialStart){
 			mgc.setColor(Color.red);
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
 			mgc.drawString("Next?", 770, 700);
@@ -880,7 +903,7 @@ public class Screen extends JFrame{
 			mgc.drawString("Return Menu?", 550, 700);
 			mgc.drawString("Press Esc Key", 550, 750);
 			
-			switch(tindex){
+			switch(tutorialPage){
 			case 0:
 				mgc.setColor(Color.black);
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 35));
@@ -1003,68 +1026,4 @@ public class Screen extends JFrame{
         }
 	}
 	
-}
-
-class ImageManagement{
-	private DataManagement dm;
-	BufferedImage image;
-	private int width;
-    private int height;
-    private float progress = 0.1f;
-    
-    ImageManagement(BufferedImage target){
-    	image = target;
-    	width = image.getWidth();
-        height = image.getHeight();
-        
-    }
-    
-    public ImageManagement(Image target) {
-    	BufferedImage bimage = new BufferedImage(target.getWidth(null), target.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(target, 0, 0, null);
-        bGr.dispose();
-        
-        this.image = bimage;
-        this.width = image.getWidth();
-        this.height = image.getHeight();
-        
-        dm = DataManagement.getInstance();
-    }
-    
-    public BufferedImage grayImage(){
-    	
-    	setProgress((float)(dm.getMaxCoolTime() - dm.getCoolTimeLeft()) / (float)dm.getMaxCoolTime());
-    	double centre_width = Math.ceil(width / 2), centre_height = Math.ceil(height / 2);
-    	
-    	for(int i=0; i < height; i++){
-            for(int j=0; j < width; j++){
-            	double angle = Math.atan2((double)i - centre_height, (double)j - centre_width) * (180 / Math.PI) + 90;
-            	
-            	if(angle < 0){
-            		angle += 360; //change angles to go from 0 to 360
-                }
-            	
-            	if(angle >= progress*360.0){
-	            	Color c = new Color(image.getRGB(j, i));
-	            	int red = (int)(c.getRed() * 0.199);
-	            	int green = (int)(c.getGreen() * 0.287);
-	            	int blue = (int)(c.getBlue() *0.014);
-	              	Color newColor = new Color(red+green+blue, red+green+blue, red+green+blue);
-//	              	Color newColor = new Color(0,0,0);
-	               
-	            	image.setRGB(j, i, newColor.getRGB());
-            	} else {
-            		
-            	}
-            }
-        }
-    	return image;
-    }
-    
-    public void setProgress(float result){
-    	progress = result;
-    }
 }
