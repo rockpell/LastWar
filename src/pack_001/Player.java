@@ -16,10 +16,8 @@ final class Player extends Colider implements Unit{
 	private boolean damaged = false; // damaged == 피해 입음 상태 표시
 	private int damage_count = 0;
 	
-	Engine engine;
-	
 	public Player(){
-		engine = Engine.getInstance();
+
 	}
 	
 	public void move(String dir){
@@ -121,7 +119,7 @@ final class Player extends Colider implements Unit{
 		
 		Screen.getInstance().beforeStartOn();
 		
-		Engine.getInstance().stopLoop();
+		GameManager.getInstance().stopLoop();
 		
 		System.out.println("dead");
 	}

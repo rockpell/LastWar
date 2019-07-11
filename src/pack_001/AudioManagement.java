@@ -9,11 +9,11 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
-final class AudioManagement{
+final class AudioManager{
 	Clip clip;
 	URL url;
 	
-	AudioManagement(){
+	AudioManager(){
 		url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
 			
 	}

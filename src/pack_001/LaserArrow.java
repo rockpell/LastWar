@@ -1,39 +1,46 @@
 package pack_001;
 
-final class LaserArrow {
+final class LaserArrow
+{
 	private int indexX, indexY;
 	private boolean exist = false;
-	
-	LaserArrow(int x, int y){
+
+	LaserArrow(int x, int y)
+	{
 		indexX = x;
 		indexY = y;
 	}
-	
-	public int getIndexX(){
+
+	public int getIndexX()
+	{
 		return indexX;
 	}
-	
-	public int getIndexY(){
+
+	public int getIndexY()
+	{
 		return indexY;
 	}
-	
+
 	@Override
-	public boolean equals(Object obj){
-		if(!(obj instanceof LaserArrow))
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof LaserArrow))
 			return false;
-		if(obj == this)
+		if (obj == this)
 			return true;
-		
-		LaserArrow lar = (LaserArrow)obj;
-		
-		return(indexX == lar.indexX && indexY == lar.indexY);
+
+		LaserArrow lar = (LaserArrow) obj;
+
+		return (indexX == lar.indexX && indexY == lar.indexY);
 	}
-	
-	public boolean isExist(){
+
+	public boolean isExist()
+	{
 		return exist;
 	}
-	
-	public void setExist(boolean mod){
+
+	public void setExist(boolean mod)
+	{
 		exist = mod;
 	}
 }

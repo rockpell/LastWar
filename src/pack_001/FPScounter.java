@@ -24,7 +24,7 @@ final class FPScounter {
         if(frameTimes >= 1000){  
             //post results at the console  
             System.out.println("FPS : " + Long.toString(frames));
-            Engine.getInstance().setFps(frames);
+            GameManager.getInstance().setFps(frames);
             //reset time differences and number of counted frames  
             frames = 0;  
             frameTimes = 0;

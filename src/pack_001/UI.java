@@ -1,22 +1,27 @@
 package pack_001;
 
-public class UI {
+public class UI
+{
 	protected int x, y;
 	protected int width, height;
-	
-	public int getX(){
+
+	public int getX()
+	{
 		return x;
 	}
-	
-	public int getY(){
+
+	public int getY()
+	{
 		return y;
 	}
-	
-	public int getWidth(){
+
+	public int getWidth()
+	{
 		return width;
 	}
-	
-	public int getHeight(){
+
+	public int getHeight()
+	{
 		return height;
 	}
 }
