@@ -79,7 +79,7 @@ final class GameLevel {
 			
 			patternName = tempList.get(targetIndex);
 			System.out.println("patternName : " + patternName);
-			engine.refreshInvoke();
+			engine.refreshLevelStartTime();
 		}
 		
 		patternParse();
@@ -88,7 +88,7 @@ final class GameLevel {
 	private void patternParse(){
 		Map<String, ArrayList<Point>> patternMap = null;
 		int time = engine.getPlayTime();
-		int itime = engine.getInvokeTime();
+		int itime = engine.getLevelStartTime();
 		String timeText = "" + (time - itime);
 		
 		patternMap = dm.getScenario().getPatternData().get(patternName).getMap();

@@ -116,7 +116,7 @@ final class Player extends Colider implements Unit{
 	public void dead() {
 		DataManagement dm = DataManagement.getInstance();
 		dm.getAudio().stop();
-		dm.setGameStart(false);
+		dm.setIsGameStart(false);
 		dm.setGameEnd(true);
 		
 		Screen.getInstance().beforeStartOn();

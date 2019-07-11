@@ -145,7 +145,7 @@ public class Screen extends JFrame{
 					{
 						if(isPause)
 						{
-							if(!dm.getGameStart())
+							if(!dm.getIsGameStart())
 							{ // before game
 								if(isStroyStart)
 								{ // story screen after
@@ -181,7 +181,7 @@ public class Screen extends JFrame{
 							else 
 							{  // restart
 //								am.play();
-								if(!Engine.getInstance().getTempStoper())
+								if(!Engine.getInstance().getIsCountDown())
 								{
 									pauseScreenOn();
 									Engine.getInstance().startLoop();
@@ -191,7 +191,7 @@ public class Screen extends JFrame{
 						}
 						else 
 						{ // game stop
-							if(!Engine.getInstance().getTempStoper())
+							if(!Engine.getInstance().getIsCountDown())
 							{
 								pauseScreenOn();
 								Engine.getInstance().stopLoop();
@@ -206,7 +206,7 @@ public class Screen extends JFrame{
 							return;
 						}
 						dm.initData();
-						dm.setGameStart(true);
+						dm.setIsGameStart(true);
 						Engine.getInstance().newLoop();
 						Engine.getInstance().startLoop();
 						isPause = false;
@@ -352,7 +352,7 @@ public class Screen extends JFrame{
 		mgc.setBackground(Color.white);
 		mgc.clearRect(0, 0, screenWidth, screenHeight);
 	    
-		if(dm.getGameStart()){
+		if(dm.getIsGameStart()){
 			warpGate();
 		    drawWall();
 		    drawLaser(mgc);
@@ -696,7 +696,7 @@ public class Screen extends JFrame{
 	
 	private void stopScreen(){
 		if(isPause) {
-			if(dm.getGameStart()){
+			if(dm.getIsGameStart()){
 				mgc.setColor(Color.black);
 				mgc.fillRect(screenWidth / 2 - 150, screenHeight / 2 - 100, 300, 200);
 				
@@ -710,7 +710,7 @@ public class Screen extends JFrame{
 				mgc.drawString("Press the Esc Key", screenWidth / 2 - 110, screenHeight / 2 + 60);
 				
 				mgc.setFont(new Font("default", Font.PLAIN, 12));
-			} else if(!dm.getGameStart() && isbeforeStart){
+			} else if(!dm.getIsGameStart() && isbeforeStart){
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 				mgc.setColor(Color.red);
 				mgc.drawString("LOADING", screenWidth / 2 - 160, screenHeight / 2);
@@ -719,8 +719,8 @@ public class Screen extends JFrame{
 		}
 		
 		
-		if(Engine.getInstance().getTempStoper()){
-			int number_time = 3 - Engine.getInstance().getTempTime();
+		if(Engine.getInstance().getIsCountDown()){
+			int number_time = 3 - Engine.getInstance().getCountdownTime();
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 150));
 			mgc.setColor(Color.red);
 			mgc.drawString(String.valueOf(number_time), screenWidth / 2 - 40, screenHeight / 2);
@@ -729,7 +729,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeScreen(){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart && !isTutorialStart){
+		if(!dm.getIsGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart && !isTutorialStart){
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
 			mgc.drawString("Last War", screenWidth / 2 - 180, 160);
@@ -795,7 +795,7 @@ public class Screen extends JFrame{
 	}
 	
 	private void beforeControl(int type){
-		if(!dm.getGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart){
+		if(!dm.getIsGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart){
 			if(type == 0){
 				pup = true;
 			} else if(type == 1){

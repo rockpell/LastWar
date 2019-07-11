@@ -15,13 +15,13 @@ public class Engine {
 		return instance;
 	}
 	
-	private int playTime = 0, invokeTime = 0;
-	private int temp_time = 0;
+	private int playTime = 0, levelStartTime = 0;
+	private int countdownTime = 0;
 	private int fps = 51;
 	private int message_time = 0, message_time_max = 50;
 	private String message_text, message_text2;
 	private boolean isStop = false;
-	private boolean temp_stoper = false;
+	private boolean isCountdown = false;
 	
 	private GameLoop gameLoop;
 	private Thread th1;
@@ -43,9 +43,19 @@ public class Engine {
 	
 	public void startLoop(){
 		jobScheduler = new Timer();
-		jobScheduler.schedule(new TempStoper(), 3000);
-		jobScheduler.schedule(new TempStoper2(), 1000);
-		setTempStoper(true);
+//		jobScheduler.schedule(new GameStarter(), 3000);
+		jobScheduler.schedule(new StartCountdown(1000), 1000);
+		setIsCountdown(true);
+	}
+	
+	public void gameStart()
+	{
+		nowStartLoop();
+		DataManagement.getInstance().getAudio().play();
+		setIsCountdown(false);
+		setTempTime(0);
+		stopSchedule();
+		System.out.println("GameStarter");
 	}
 	
 	public void nowStartLoop(){
@@ -64,10 +74,6 @@ public class Engine {
 	
 	public void stopSchedule(){
 		jobScheduler.cancel();
-	}
-	
-	public void workTemp(){
-		temp_time += 1;
 	}
 	
 	public void stopLoop(){
@@ -259,73 +265,43 @@ public class Engine {
 		return playTime;
 	}
 	
-	public void setPlayTime(int number){
-		playTime = number;
+	public void setPlayTime(int value){
+		playTime = value;
 	}
 	
-	public void refreshInvoke(){
-		invokeTime = playTime;
+	public void refreshLevelStartTime(){
+		levelStartTime = playTime;
 	}
 	
-	public void initInvokeTime(){
-		invokeTime = 0;
+	public int getLevelStartTime(){
+		return levelStartTime;
 	}
 	
-	public int getInvokeTime(){
-		return invokeTime;
+	public void workCountdown(){
+		countdownTime += 1;
 	}
 	
-	public int getTempTime(){
-		return temp_time;
+	public int getCountdownTime(){
+		return countdownTime;
 	}
 	
-	public void setTempTime(int val){
-		temp_time = val;
+	public void setTempTime(int value){
+		countdownTime = value;
 	}
 	
-	public void setFps(int val){
-		fps = val;
+	public void setFps(int value){
+		fps = value;
 	}
 	
 	public int getFps(){
 		return fps;
 	}
 	
-	public void setTempStoper(boolean val){
-		temp_stoper = val;
+	public void setIsCountdown(boolean value){
+		isCountdown = value;
 	}
 	
-	public boolean getTempStoper(){
-		return temp_stoper;
-	}
-}
-
-class TempStoper extends TimerTask {
-	
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		Engine.getInstance().nowStartLoop();
-		DataManagement.getInstance().getAudio().play();
-		
-		Engine.getInstance().setTempStoper(false);
-		Engine.getInstance().setTempTime(0);
-		Engine.getInstance().stopSchedule();
-		System.out.println("TempStoper1");
-	}
-}
-
-class TempStoper2 extends TimerTask {
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		Engine.getInstance().workTemp();
-		Screen.getInstance().repaint();
-		
-		if(Engine.getInstance().getTempStoper()){
-			Engine.getInstance().addSchedule(new TempStoper2(), 1000);
-		}
-		System.out.println("TempStoper2");
+	public boolean getIsCountDown(){
+		return isCountdown;
 	}
 }

@@ -8,7 +8,7 @@ final class Loader implements Runnable {
 		DataManagement.getInstance().loadImage();
 		Screen.getInstance().loadImage();
 		Engine.getInstance().startLoop();
-		DataManagement.getInstance().setGameStart(true);
+		DataManagement.getInstance().setIsGameStart(true);
 		Screen.getInstance().pauseScreenOn();
 		
 		Screen.getInstance().repaint();

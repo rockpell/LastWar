@@ -9,7 +9,7 @@ class Skill extends UI{
 	}
 
 	public void skillExcute() {
-		if(Screen.getInstance().getIsPause() || Engine.getInstance().getTempStoper()){
+		if(Screen.getInstance().getIsPause() || Engine.getInstance().getIsCountDown()){
 			return;
 		}
 	}

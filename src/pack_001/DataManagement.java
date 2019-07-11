@@ -66,7 +66,7 @@ public class DataManagement {
 	private int[] cost = new int[5];
 	private int wall_plus_hp = 0;
 	
-	private boolean gameStart = false, gameEnd = false;
+	private boolean isGameStart = false, gameEnd = false;
 	
 	private DataManagement(){
 		initData();
@@ -216,14 +216,14 @@ public class DataManagement {
 		coolTime = 15;
 		coolTimeLeft = 0;
 		
-		gameStart = false;
+		isGameStart = false;
 		gameEnd = false;
 		
 		money = 0;
 		score = 0;
 		
 		Engine.getInstance().setPlayTime(0);
-		Engine.getInstance().initInvokeTime();
+		Engine.getInstance().refreshLevelStartTime();
 		
 		initCost();
 	}
@@ -268,12 +268,12 @@ public class DataManagement {
 		return audioManagement;
 	}
 	
-	public boolean getGameStart(){
-		return gameStart;
+	public boolean getIsGameStart(){
+		return isGameStart;
 	}
 	
-	public void setGameStart(boolean val){
-		gameStart = val;
+	public void setIsGameStart(boolean val){
+		isGameStart = val;
 	}
 	
 	public boolean getGameEnd(){
