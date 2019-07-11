@@ -16,6 +16,10 @@ public class mainClass
 			public void run()
 			{
 				Screen ex = Screen.getInstance();
+				
+				ex.addKeyListener(InputManager.getInstance().keyBind());
+				ex.addMouseListener(InputManager.getInstance().mouseBind());
+				
 				ex.setVisible(true);
 			}
 		});

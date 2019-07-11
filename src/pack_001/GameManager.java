@@ -7,7 +7,8 @@ final public class GameManager
 {
 	private static GameManager instance;
 
-	public static GameManager getInstance() {
+	public static GameManager getInstance()
+	{
 		if (instance == null)
 		{
 			instance = new GameManager();
@@ -21,6 +22,9 @@ final public class GameManager
 	private boolean isStop = false;
 	private boolean isCountdown = false;
 
+	public boolean isStroyStart = false, isStroyEnd = false, isTutorialStart = false;
+	public boolean isPause = true, isBeforeStart = false;
+
 	private GameLoop gameLoop;
 	private Thread th1;
 	private Timer jobScheduler;
@@ -30,22 +34,26 @@ final public class GameManager
 
 	}
 
-	public void newLoop() {
+	public void newLoop()
+	{
 		gameLoop = null;
 		gameLoop = new GameLoop(20);
 	}
 
-	public void initLoop() {
+	public void initLoop()
+	{
 		gameLoop = null;
 	}
 
-	public void startLoop() {
+	public void startLoop()
+	{
 		jobScheduler = new Timer();
 		jobScheduler.schedule(new StartCountdown(1000), 1000);
 		setIsCountdown(true);
 	}
 
-	public void gameStart() {
+	public void gameStart()
+	{
 		nowStartLoop();
 		DataManagement.getInstance().getAudio().play();
 		setIsCountdown(false);
@@ -53,7 +61,8 @@ final public class GameManager
 		stopSchedule();
 	}
 
-	public void nowStartLoop() {
+	public void nowStartLoop()
+	{
 		if (gameLoop == null)
 		{
 			gameLoop = new GameLoop(20);
@@ -63,24 +72,29 @@ final public class GameManager
 		th1.start();
 	}
 
-	public void addSchedule(TimerTask task, long time) {
+	public void addSchedule(TimerTask task, long time)
+	{
 		jobScheduler.schedule(task, time);
 	}
 
-	public void stopSchedule() {
+	public void stopSchedule()
+	{
 		jobScheduler.cancel();
 	}
 
-	public void stopLoop() {
+	public void stopLoop()
+	{
 		isStop = true;
 	}
 
-	public void loadThread() {
+	public void loadThread()
+	{
 		Thread _lth1 = new Thread(new Loader());
 		_lth1.start();
 	}
 
-	public void killThread() {
+	public void killThread()
+	{
 		if (isStop)
 		{
 			th1.interrupt();
@@ -89,47 +103,118 @@ final public class GameManager
 		}
 	}
 
-	public int getPlayTime() {
+	public int getPlayTime()
+	{
 		return playTime;
 	}
 
-	public void setPlayTime(int value) {
+	public void setPlayTime(int value)
+	{
 		playTime = value;
 	}
 
-	public void refreshLevelStartTime() {
+	public void refreshLevelStartTime()
+	{
 		levelStartTime = playTime;
 	}
 
-	public int getLevelStartTime() {
+	public int getLevelStartTime()
+	{
 		return levelStartTime;
 	}
 
-	public void workCountdown() {
+	public void workCountdown()
+	{
 		countdownTime += 1;
 	}
 
-	public int getCountdownTime() {
+	public int getCountdownTime()
+	{
 		return countdownTime;
 	}
 
-	public void setTempTime(int value) {
+	public void setTempTime(int value)
+	{
 		countdownTime = value;
 	}
 
-	public void setFps(int value) {
+	public void setFps(int value)
+	{
 		fps = value;
 	}
 
-	public int getFps() {
+	public int getFps()
+	{
 		return fps;
 	}
 
-	public void setIsCountdown(boolean value) {
+	public void setIsCountdown(boolean value)
+	{
 		isCountdown = value;
 	}
 
-	public boolean getIsCountDown() {
+	public boolean getIsCountDown()
+	{
 		return isCountdown;
+	}
+
+	public void pauseScreenOn()
+	{
+		isPause = !isPause;
+	}
+
+	public void beforeStartOn()
+	{
+		isBeforeStart = !isBeforeStart;
+	}
+
+	public void setIsBeforeStart(boolean value) {
+		isBeforeStart = value;
+	}
+	
+	public boolean getIsBeforeStart()
+	{
+		return isBeforeStart;
+	}
+
+	public void setIsPause(boolean value) {
+		isPause = value;
+	}
+	
+	public boolean getIsPause()
+	{
+		return isPause;
+	}
+
+	public void setIsStoryEnd(boolean value)
+	{
+		isStroyEnd = value;
+	}
+
+	public boolean getIsStroyEnd()
+	{
+		return isStroyEnd;
+	}
+	
+	public void setIsStroyEnd(boolean value) {
+		isStroyEnd = value;
+	}
+
+	public void setIsTutorialStart(boolean value) {
+		isTutorialStart = value;
+	}
+	
+	public boolean getIsTutorialStart()
+	{
+		return isTutorialStart;
+	}
+
+	public void setIsStroyStart(boolean value) {
+		isStroyStart = value;
+	}
+	
+	public boolean getIsStroyStart()
+	{
+		return isStroyStart;
 	}
 }

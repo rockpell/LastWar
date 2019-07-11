@@ -12,7 +12,7 @@ class Skill extends UI
 
 	public void skillExcute()
 	{
-		if (Screen.getInstance().getIsPause() || GameManager.getInstance().getIsCountDown())
+		if (GameManager.getInstance().getIsPause() || GameManager.getInstance().getIsCountDown())
 		{
 			return;
 		}

@@ -43,8 +43,8 @@ final public class Screen extends JFrame
 
 	private Player player;
 	private DataManagement dm;
-	private AudioManager audioManager;
-
+	private GameManager gameManager;
+	
 	private Image mshi, hp_potion, hp_plus, wall_hp, wall_time;
 	private Image arrow_right, arrow_left, arrow_up, arrow_down;
 	private Image arrow_right_red, arrow_left_red, arrow_up_red, arrow_down_red;
@@ -52,13 +52,8 @@ final public class Screen extends JFrame
 	private Image closed_door, open_door;
 	private Image t_skill, t_02, t_03, t_05, t_06;
 
-	private boolean isPause = true, isbeforeStart = false;
-	private boolean pup = false, pdown = false; // game before control screen value
-	private boolean isStroyStart = false, isStroyEnd = false, isTutorialStart = false;;
-
 	private int gui_x = screenWidth / 2 - 140;
 	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
-	private int selectIndex = 0, tutorialPage = 0;
 
 	private int messageTextDuration = 0, messageTextMaxDuration = 50;
 	private String messageText, costMessageText;
@@ -68,6 +63,7 @@ final public class Screen extends JFrame
 		super("Last War");
 
 		dm = DataManagement.getInstance();
+		gameManager = GameManager.getInstance();
 		player = dm.getPlayer();
 
 		setSize(screenWidth, screenHeight);
@@ -75,257 +71,6 @@ final public class Screen extends JFrame
 		this.setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-
-		this.addKeyListener(new KeyListener()
-		{
-			private final Set<Integer> keyList = new HashSet<Integer>();
-
-			@Override
-			public synchronized void keyPressed(KeyEvent e)
-			{
-				if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT)
-				{
-					keyList.add(e.getKeyCode());
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_A)
-				{
-					dm.getSkill(0).skillExcute();
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_S)
-				{
-					dm.getSkill(1).skillExcute();
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_D)
-				{
-					dm.getSkill(2).skillExcute();
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_F)
-				{
-					dm.getSkill(3).skillExcute();
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_G)
-				{
-					dm.getSkill(4).skillExcute();
-				}
-
-				if (keyList.size() > 1)
-				{
-					String keyValue = "";
-					int temp = 0;
-					for (int it : keyList)
-					{
-						switch (it)
-						{
-						case KeyEvent.VK_UP:
-							keyValue += "up";
-							temp++;
-							break;
-						case KeyEvent.VK_DOWN:
-							keyValue += "down";
-							temp++;
-							break;
-						case KeyEvent.VK_RIGHT:
-							keyValue += "right";
-							temp++;
-							break;
-						case KeyEvent.VK_LEFT:
-							keyValue += "left";
-							temp++;
-							break;
-						}
-					}
-
-					if (temp > 1)
-					{
-						player.move(keyValue);
-						return;
-					}
-				}
-
-				if (e.getKeyCode() == KeyEvent.VK_UP)
-				{
-					player.move("up");
-					beforeControl(0);
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-				{
-					player.move("down");
-					beforeControl(1);
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-				{
-					player.move("right");
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_LEFT)
-				{
-					player.move("left");
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
-				{
-					if (isTutorialStart)
-					{
-						tutorialPage += 1;
-					}
-					else if (!dm.getGameEnd())
-					{
-						if (isPause)
-						{
-							if (!dm.getIsGameStart())
-							{ // before game
-								if (isStroyStart)
-								{ // story screen after
-									GameManager.getInstance().loadThread();
-									audioManager = dm.getAudio();
-									isbeforeStart = true;
-									dm.createGameLevel(0);
-									isStroyStart = false;
-									return;
-								}
-								if (selectIndex == 0)
-								{ // story mode
-									isStroyStart = true;
-								}
-								else if (selectIndex == 1)
-								{ // never ending mode
-									GameManager.getInstance().loadThread();
-									audioManager = dm.getAudio();
-									isbeforeStart = true;
-									dm.createGameLevel(1);
-								}
-								else if (selectIndex == 2)
-								{ // game exit
-									System.exit(0);
-								}
-								else if (selectIndex == -1)
-								{ // show tutorial image
-									isTutorialStart = true;
-									tutorialPage = 0;
-									tloadImage();
-								}
-							}
-							else
-							{ // restart
-								// am.play();
-								if (!GameManager.getInstance().getIsCountDown())
-								{
-									pauseScreenOn();
-									GameManager.getInstance().startLoop();
-								}
-							}
-
-						}
-						else
-						{ // game stop
-							if (!GameManager.getInstance().getIsCountDown())
-							{
-								pauseScreenOn();
-								GameManager.getInstance().stopLoop();
-								audioManager.stop();
-							}
-						}
-					}
-					else
-					{ // game end after replay
-						if (isStroyEnd)
-						{
-							return;
-						}
-						dm.initData();
-						dm.setIsGameStart(true);
-						GameManager.getInstance().newLoop();
-						GameManager.getInstance().startLoop();
-						isPause = false;
-						player = dm.getPlayer();
-						isbeforeStart = true;
-						setStoryEnd(false);
-					}
-					repaint();
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-				{ // return main menu
-					if (dm.getGameEnd())
-					{
-						dm.initData();
-						isPause = true;
-						GameManager.getInstance().initLoop();
-						setStoryEnd(false);
-						player = dm.getPlayer();
-						selectIndex = 0;
-						repaint();
-					}
-					else if (isPause && !isTutorialStart)
-					{
-						dm.initData();
-						GameManager.getInstance().initLoop();
-						player = dm.getPlayer();
-						selectIndex = 0;
-						isbeforeStart = false;
-						repaint();
-					}
-					else if (isTutorialStart)
-					{
-						isTutorialStart = false;
-						tutorialPage = 0;
-						repaint();
-					}
-				}
-
-			}
-
-			@Override
-			public synchronized void keyReleased(KeyEvent e)
-			{
-				// TODO Auto-generated method stub
-
-				keyList.remove(e.getKeyCode());
-
-				for (int it : keyList)
-				{
-					switch (it)
-					{
-					case KeyEvent.VK_UP:
-						player.move("up");
-						break;
-					case KeyEvent.VK_DOWN:
-						player.move("down");
-						break;
-					case KeyEvent.VK_RIGHT:
-						player.move("right");
-						break;
-					case KeyEvent.VK_LEFT:
-						player.move("left");
-						break;
-					}
-					return;
-				}
-
-				if (keyList.size() == 0)
-				{
-					player.move("stop");
-				}
-			}
-
-			@Override
-			public synchronized void keyTyped(KeyEvent e)
-			{ // not working arrow key
-				// TODO Auto-generated method stub
-				// System.out.println(e.getKeyChar());
-			}
-
-		});
-
-		this.addMouseListener(new MouseAdapter()
-		{
-			public void mouseClicked(MouseEvent arg0)
-			{
-				dm.getSkill(0).skillClick(arg0.getPoint().x, arg0.getPoint().y);
-				dm.getSkill(1).skillClick(arg0.getPoint().x, arg0.getPoint().y);
-				dm.getSkill(2).skillClick(arg0.getPoint().x, arg0.getPoint().y);
-				dm.getSkill(3).skillClick(arg0.getPoint().x, arg0.getPoint().y);
-				dm.getSkill(4).skillClick(arg0.getPoint().x, arg0.getPoint().y);
-			}
-		});
 	}
 
 	public void loadImage()
@@ -427,6 +172,7 @@ final public class Screen extends JFrame
 
 	private void drawPlayer()
 	{
+		player = dm.getPlayer();
 		Point2D.Float point = player.getPosition();
 		AffineTransform t = new AffineTransform();
 		t.translate(point.x, point.y); // x/y set here
@@ -437,7 +183,7 @@ final public class Screen extends JFrame
 
 		mgc.drawImage(mshi, t, null);
 		mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-		if (!isPause)
+		if (!gameManager.getIsPause())
 		{
 			Rectangle2D out_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15, 45, 15);
 			Rectangle2D in_line1 = new Rectangle2D.Float(player.getPosition().x, player.getPosition().y - 15,
@@ -651,7 +397,7 @@ final public class Screen extends JFrame
 
 			mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 
-			if (!isPause)
+			if (!gameManager.getIsPause())
 			{
 				mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.06f));
 
@@ -790,29 +536,9 @@ final public class Screen extends JFrame
 		}
 	}
 
-	public void pauseScreenOn()
-	{
-		isPause = !isPause;
-	}
-
-	public void beforeStartOn()
-	{
-		isbeforeStart = !isbeforeStart;
-	}
-
-	public boolean getIsPause()
-	{
-		return isPause;
-	}
-
-	public void setStoryEnd(boolean value)
-	{
-		isStroyEnd = value;
-	}
-
 	private void stopScreen()
 	{
-		if (isPause)
+		if (gameManager.getIsPause())
 		{
 			if (dm.getIsGameStart())
 			{
@@ -830,7 +556,7 @@ final public class Screen extends JFrame
 
 				mgc.setFont(new Font("default", Font.PLAIN, 12));
 			}
-			else if (!dm.getIsGameStart() && isbeforeStart)
+			else if (!dm.getIsGameStart() && gameManager.getIsBeforeStart())
 			{
 				mgc.setFont(new Font("TimesRoman", Font.BOLD, 70));
 				mgc.setColor(Color.red);
@@ -851,7 +577,8 @@ final public class Screen extends JFrame
 
 	private void beforeScreen()
 	{
-		if (!dm.getIsGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart && !isTutorialStart)
+		if (!dm.getIsGameStart() && !dm.getGameEnd() && !gameManager.getIsBeforeStart() 
+				&& !gameManager.getIsStroyStart() && !gameManager.getIsTutorialStart())
 		{
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 85));
 			mgc.setColor(Color.black);
@@ -882,7 +609,7 @@ final public class Screen extends JFrame
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 45));
 			mgc.setColor(Color.red);
 
-			switch (selectIndex)
+			switch (InputManager.getInstance().getSelectIndex())
 			{
 			case -1:
 				mgc.drawString("▶", gui_x - 60, gui_y1 - 70);
@@ -901,49 +628,9 @@ final public class Screen extends JFrame
 		}
 	}
 
-	private void controlPosition()
-	{
-		if (pup)
-		{
-			pup = false;
-			if (selectIndex > -1)
-			{
-				selectIndex -= 1;
-			}
-		}
-
-		if (pdown)
-		{
-			pdown = false;
-			if (selectIndex < 2)
-			{
-				selectIndex += 1;
-			}
-		}
-
-	}
-
-	private void beforeControl(int type)
-	{
-		if (!dm.getIsGameStart() && !dm.getGameEnd() && !isbeforeStart && !isStroyStart)
-		{
-			if (type == 0)
-			{
-				pup = true;
-			}
-			else if (type == 1)
-			{
-				pdown = true;
-			}
-		}
-
-		controlPosition();
-		repaint();
-	}
-
 	private void afterScreen()
 	{
-		if (dm.getGameEnd() && !isStroyEnd)
+		if (dm.getGameEnd() && !gameManager.getIsStroyEnd())
 		{
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 80));
 
@@ -970,7 +657,7 @@ final public class Screen extends JFrame
 
 	private void storyScreen()
 	{
-		if (isStroyStart)
+		if (gameManager.getIsStroyStart())
 		{
 			String[] text = new String[13];
 			text[0] = "벽돌공 브릭슨은 우수한 벽돌공이다.";
@@ -1004,7 +691,7 @@ final public class Screen extends JFrame
 
 	private void stroyEndingScreen()
 	{
-		if (isStroyEnd)
+		if (gameManager.getIsStroyEnd())
 		{
 			String[] text = new String[9];
 
@@ -1016,7 +703,7 @@ final public class Screen extends JFrame
 			text[5] = "정부는 그들의 요청을 들어주지 않는다.";
 			text[6] = "이후 브릭슨은 건설회사가 처벌을 받도록 노력하나 시간이 갈수록 많은 사람들의 관심이 없어져가며";
 			text[7] = "건설회사의 비리는 지나간 일이 되버리고 만다.";
-			text[8] = "이에 환멸을 느낀 브릭슨은 몇 년후에 외국으로 떠난다.";
+			text[8] = "이에 환멸을 느낀 브릭슨은 외국으로 떠난다.";
 
 			mgc.setColor(Color.black);
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 20));
@@ -1036,7 +723,7 @@ final public class Screen extends JFrame
 
 	private void tutorialScreen()
 	{
-		if (isTutorialStart)
+		if (gameManager.getIsTutorialStart())
 		{
 			mgc.setColor(Color.red);
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 25));
@@ -1046,7 +733,7 @@ final public class Screen extends JFrame
 			mgc.drawString("Return Menu?", 550, 700);
 			mgc.drawString("Press Esc Key", 550, 750);
 
-			switch (tutorialPage)
+			switch (InputManager.getInstance().getTutorialPage())
 			{
 			case 0:
 				mgc.setColor(Color.black);

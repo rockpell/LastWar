@@ -11,7 +11,7 @@ final class Loader implements Runnable
 		Screen.getInstance().loadImage();
 		GameManager.getInstance().startLoop();
 		DataManagement.getInstance().setIsGameStart(true);
-		Screen.getInstance().pauseScreenOn();
+		GameManager.getInstance().pauseScreenOn();
 
 		Screen.getInstance().repaint();
 	}

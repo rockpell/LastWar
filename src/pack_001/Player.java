@@ -117,7 +117,7 @@ final class Player extends Colider implements Unit{
 		dm.setIsGameStart(false);
 		dm.setGameEnd(true);
 		
-		Screen.getInstance().beforeStartOn();
+		GameManager.getInstance().beforeStartOn();
 		
 		GameManager.getInstance().stopLoop();
 		

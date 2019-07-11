@@ -15,7 +15,7 @@ final class BossEnemy extends Enemy{
 	
 	public void dead(){
 		if(DataManagement.getInstance().getGameLevel().getMode() == 0){
-			Screen.getInstance().setStoryEnd(true);
+			GameManager.getInstance().setIsStoryEnd(true);
 			DataManagement.getInstance().getPlayer().dead();
 		} else {
 			super.dead();
