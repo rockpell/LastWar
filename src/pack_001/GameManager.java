@@ -54,6 +54,7 @@ final public class GameManager
 
 	public void gameStart()
 	{
+		InputManager.getInstance().getNowState().exit(InputManager.getInstance());
 		nowStartLoop();
 		DataManagement.getInstance().getAudio().play();
 		setIsCountdown(false);

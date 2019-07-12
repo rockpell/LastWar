@@ -41,7 +41,8 @@ final public class DataManagement
 	public final int rowNumber = 11, colNumber = 22;
 	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 60, colStartY1 = 50,
 			colStartY2 = screenHeight - 150;
-
+	private final int startMoney = 100000;
+	
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0, score = 0;
 	private int[] cost = new int[5];
@@ -210,7 +211,7 @@ final public class DataManagement
 		isGameStart = false;
 		gameEnd = false;
 
-		money = 0;
+		money = startMoney;
 		score = 0;
 
 		GameManager.getInstance().setPlayTime(0);

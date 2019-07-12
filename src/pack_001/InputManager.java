@@ -20,20 +20,29 @@ final public class InputManager
 
 		return instance;
 	}
-	
+
 	private DataManagement dm;
 	private GameManager gameManager;
-	private Player player;
-	
-	private boolean pup = false, pdown = false; // game before control screen value
+
+	private InputState nowState;
+
 	private int selectIndex = 0, tutorialPage = 0;
-	
-	InputManager(){
+
+	InputManager()
+	{
 		dm = DataManagement.getInstance();
 		gameManager = GameManager.getInstance();
-		player = dm.getPlayer();
+
+		nowState = new MenuState();
 	}
-	
+
+	public boolean ChageState(InputState state)
+	{
+		nowState = state;
+		System.out.println("state: " + state.toString());
+		return true;
+	}
+
 	public KeyListener keyBind()
 	{
 		KeyListener result = new KeyListener()
@@ -69,177 +78,44 @@ final public class InputManager
 					dm.getSkill(4).skillExcute();
 				}
 
-				if (_keyList.size() > 1)
+				if (_keyList.size() > 0)
 				{
-					String _keyValue = "";
-					int _count = 0;
+					int _xValue = 0, _yValue = 0;
 					for (int it : _keyList)
 					{
 						switch (it)
 						{
 						case KeyEvent.VK_UP:
-							_keyValue += "up";
-							_count++;
+							_yValue -= 1;
 							break;
 						case KeyEvent.VK_DOWN:
-							_keyValue += "down";
-							_count++;
+							_yValue += 1;
 							break;
 						case KeyEvent.VK_RIGHT:
-							_keyValue += "right";
-							_count++;
+							_xValue += 1;
 							break;
 						case KeyEvent.VK_LEFT:
-							_keyValue += "left";
-							_count++;
+							_xValue -= 1;
 							break;
 						}
 					}
-
-					if (_count > 1)
-					{
-						player.move(_keyValue);
-						return;
-					}
+					nowState.arrowKey(InputManager.getInstance(), _xValue, _yValue);
 				}
 
-				if (e.getKeyCode() == KeyEvent.VK_UP)
+				if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
 				{
-					player.move("up");
-					beforeControl(0);
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-				{
-					player.move("down");
-					beforeControl(1);
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-				{
-					player.move("right");
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_LEFT)
-				{
-					player.move("left");
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
-				{
-					if (gameManager.getIsTutorialStart())
-					{
-						tutorialPage += 1;
-					}
-					else if (!dm.getGameEnd())
-					{
-						if (gameManager.getIsPause())
-						{
-							if (!dm.getIsGameStart())
-							{ // before game
-								if (gameManager.getIsStroyStart())
-								{ // story screen after
-									gameManager.loadThread();
-									gameManager.setIsBeforeStart(true);
-									dm.createGameLevel(0);
-									gameManager.setIsStroyStart(false);
-									return;
-								}
-								
-								if (selectIndex == 0)
-								{ // story mode
-									gameManager.setIsStroyStart(true);
-								}
-								else if (selectIndex == 1)
-								{ // never ending mode
-									GameManager.getInstance().loadThread();
-									gameManager.setIsBeforeStart(true);
-									dm.createGameLevel(1);
-									System.out.println("gameManager.getIsbeforeStart: " + gameManager.getIsBeforeStart());
-								}
-								else if (selectIndex == 2)
-								{ // game exit
-									System.exit(0);
-								}
-								else if (selectIndex == -1)
-								{ // show tutorial image
-									gameManager.setIsTutorialStart(true);
-									tutorialPage = 0;
-									Screen.getInstance().tloadImage();
-								}
-							}
-							else
-							{ // restart
-								// am.play();
-								if (!gameManager.getIsCountDown())
-								{
-									gameManager.pauseScreenOn();
-									gameManager.startLoop();
-								}
-							}
 
-						}
-						else
-						{ // game stop
-							if (!gameManager.getIsCountDown())
-							{
-								gameManager.pauseScreenOn();
-								gameManager.stopLoop();
-								dm.getAudio().stop();
-							}
-						}
-					}
-					else
-					{ // game end after replay
-						if (gameManager.getIsStroyEnd())
-						{
-							return;
-						}
-						dm.initData();
-						dm.setIsGameStart(true);
-						gameManager.newLoop();
-						gameManager.startLoop();
-						gameManager.setIsPause(false);
-						
-						player = dm.getPlayer();
-						
-						gameManager.setIsBeforeStart(true);
-						gameManager.setIsStoryEnd(false);
-					}
-					Screen.getInstance().repaint();
+					nowState.selectKey(InputManager.getInstance(), selectIndex);
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 				{ // return main menu
-					if (dm.getGameEnd())
-					{
-						dm.initData();
-						gameManager.setIsPause(true);
-						gameManager.initLoop();
-						gameManager.setIsStoryEnd(false);
-						player = dm.getPlayer();
-						selectIndex = 0;
-						Screen.getInstance().repaint();
-					}
-					else if (gameManager.getIsPause() && !gameManager.getIsTutorialStart())
-					{
-						dm.initData();
-						GameManager.getInstance().initLoop();
-						player = dm.getPlayer();
-						selectIndex = 0;
-						gameManager.setIsBeforeStart(false);
-						Screen.getInstance().repaint();
-					}
-					else if (gameManager.getIsTutorialStart())
-					{
-						gameManager.setIsTutorialStart(false);
-						tutorialPage = 0;
-						Screen.getInstance().repaint();
-					}
+					nowState.escKey(InputManager.getInstance());
 				}
-
 			}
 
 			@Override
 			public synchronized void keyReleased(KeyEvent e)
-			{
-				// TODO Auto-generated method stub
-
+			{ // 키 입력 해제 후에도 해당 방향으로 이동하지 않게 해줌
 				_keyList.remove(e.getKeyCode());
 
 				for (int it : _keyList)
@@ -247,40 +123,33 @@ final public class InputManager
 					switch (it)
 					{
 					case KeyEvent.VK_UP:
-						player.move("up");
+						nowState.arrowKey(InputManager.getInstance(), 0, -1);
 						break;
 					case KeyEvent.VK_DOWN:
-						player.move("down");
+						nowState.arrowKey(InputManager.getInstance(), 0, 1);
 						break;
 					case KeyEvent.VK_RIGHT:
-						player.move("right");
+						nowState.arrowKey(InputManager.getInstance(), 1, 0);
 						break;
 					case KeyEvent.VK_LEFT:
-						player.move("left");
+						nowState.arrowKey(InputManager.getInstance(), -1, 0);
 						break;
 					}
-					return;
 				}
-
 				if (_keyList.size() == 0)
 				{
-					player.move("stop");
+					nowState.arrowKey(InputManager.getInstance(), 0, 0);
 				}
 			}
-
 			@Override
-			public synchronized void keyTyped(KeyEvent e)
-			{ // not working arrow key
-				// TODO Auto-generated method stub
-				// System.out.println(e.getKeyChar());
-			}
-
+			public synchronized void keyTyped(KeyEvent e){}
 		};
 
 		return result;
 	}
-	
-	public MouseAdapter mouseBind() {
+
+	public MouseAdapter mouseBind()
+	{
 		MouseAdapter result = new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
@@ -294,52 +163,70 @@ final public class InputManager
 		};
 		return result;
 	}
-	
-	private void controlPosition()
+
+	public void selectControl(int upDown)
 	{
-		if (pup)
+		if (upDown == 1 || upDown == -1)
 		{
-			pup = false;
-			if (selectIndex > -1)
-			{
-				selectIndex -= 1;
-			}
+			selectIndex += upDown;
 		}
 
-		if (pdown)
-		{
-			pdown = false;
-			if (selectIndex < 2)
-			{
-				selectIndex += 1;
-			}
-		}
-
-	}
-
-	private void beforeControl(int type)
-	{
-		if (!dm.getIsGameStart() && !dm.getGameEnd() && !gameManager.getIsBeforeStart() && !gameManager.getIsStroyEnd())
-		{
-			if (type == 0)
-			{
-				pup = true;
-			}
-			else if (type == 1)
-			{
-				pdown = true;
-			}
-		}
-
-		controlPosition();
+		if (selectIndex > 2)
+			selectIndex = 2;
+		else if (selectIndex < -1)
+			selectIndex = -1;
 		Screen.getInstance().repaint();
 	}
-	
-	public int getSelectIndex() {
+
+	public boolean menuSelect()
+	{
+		if (selectIndex == -1)
+		{ // show tutorial image
+			gameManager.setIsTutorialStart(true);
+			tutorialPage = 0;
+			Screen.getInstance().tloadImage();
+		}
+		else if (selectIndex == 0)
+		{ // story mode
+			gameManager.setIsStroyStart(true);
+		}
+		else if (selectIndex == 1)
+		{ // never ending mode
+			gameManager.loadThread();
+			gameManager.setIsBeforeStart(true);
+			dm.createGameLevel(1);
+		}
+		else if (selectIndex == 2)
+		{ // game exit
+			System.exit(0);
+		}
+		selectIndex = 0;
+		Screen.getInstance().repaint();
+		return true;
+	}
+
+	public int getSelectIndex()
+	{
 		return selectIndex;
 	}
-	
-	public int getTutorialPage() {
+
+	public int getTutorialPage()
+	{
 		return tutorialPage;
+	}
+
+	public void setTutorialPage(int value)
+	{
+		tutorialPage = value;
+	}
+
+	public void addTutorialPage(int value)
+	{
+		tutorialPage += value;
+	}
+
+	public InputState getNowState()
+	{
+		return nowState;
 	}
 }

@@ -69,7 +69,8 @@ final class WallSkill extends Skill
 			}
 			dm.getPlayer().setOutTrigger(true);
 			dm.initCoolTime();
-		} else if (dm.getCoolTimeLeft() != 0)
+		}
+		else if (dm.getCoolTimeLeft() != 0)
 		{
 			Screen.getInstance().setMessageText("cool");
 		}
@@ -94,7 +95,8 @@ final class HealSkill extends Skill
 		{
 			Screen.getInstance().setMessageText("point");
 			return;
-		} else if (dm.getPlayer().getHp() == dm.getPlayer().getMaxHp())
+		}
+		else if (dm.getPlayer().getHp() == dm.getPlayer().getMaxHp())
 		{
 			Screen.getInstance().setMessageText("heal");
 			return;
