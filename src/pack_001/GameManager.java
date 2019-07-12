@@ -48,13 +48,13 @@ final public class GameManager
 	public void gameStart()
 	{
 		nowState.exit(this); // CountDownState를 벗어나기 위한 함수
-		StartGameLoop();
+		startGameLoop();
 		DataManagement.getInstance().getAudio().play();
 		countdownTime = 0;
 		stopSchedule();
 	}
 
-	private void StartGameLoop()
+	private void startGameLoop()
 	{
 		gameLoop = new GameLoop(20);
 

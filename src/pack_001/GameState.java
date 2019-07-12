@@ -24,7 +24,6 @@ class MenuState extends GameState
 		}
 		else if (selectIndex == 1) // never ending mode
 		{
-			GameManager.getInstance().starCountdown();
 			gameManager.ChageState(new CountDownState());
 		}
 	}
@@ -55,14 +54,9 @@ class TutorialState extends GameState
 
 class StoryState extends GameState
 {
-	public StoryState()
-	{
-		GameManager.getInstance().stopGameLoop();
-	}
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		GameManager.getInstance().starCountdown();
 		gameManager.ChageState(new CountDownState());
 	}
 
@@ -103,7 +97,6 @@ class PauseState extends GameState
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		GameManager.getInstance().starCountdown();
 		gameManager.ChageState(new CountDownState());
 	}
 
@@ -118,6 +111,10 @@ class PauseState extends GameState
 
 class CountDownState extends GameState
 {
+	public CountDownState()
+	{
+		GameManager.getInstance().starCountdown();
+	}
 	public void exit(GameManager gameManager)
 	{
 		gameManager.ChageState(new ProgressState());
@@ -134,8 +131,6 @@ class DeadState extends GameState
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
 		DataManagement.getInstance().initData();
-		
-		GameManager.getInstance().starCountdown();
 				
 		gameManager.ChageState(new CountDownState());
 	}

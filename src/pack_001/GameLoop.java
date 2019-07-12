@@ -34,7 +34,7 @@ final class GameLoop implements Runnable
 				FPScounter.StartCounter();
 
 				sc.repaint();
-
+				
 				loopColider();
 				dm.getWarpGate().work();
 				dm.getPlayer().work();
