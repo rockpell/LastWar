@@ -24,6 +24,7 @@ class MenuState extends GameState
 		}
 		else if (selectIndex == 1) // never ending mode
 		{
+			GameManager.getInstance().startLoop();
 			gameManager.ChageState(new CountDownState());
 		}
 	}
@@ -57,7 +58,8 @@ class StoryState extends GameState
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		GameManager.getInstance().loadThread();
+//		GameManager.getInstance().loadThread();
+		GameManager.getInstance().startLoop();
 		DataManagement.getInstance().createGameLevel(0);
 		gameManager.ChageState(new CountDownState());
 	}

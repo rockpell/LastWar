@@ -92,7 +92,7 @@ final public class GameManager
 		isStop = true;
 	}
 
-	public void loadThread()
+	public void loadThread() // 이미지 로드용 스레드 실행
 	{
 		Thread _lth1 = new Thread(new Loader());
 		_lth1.start();

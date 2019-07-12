@@ -20,6 +20,7 @@ public class mainClass
 				ex.addKeyListener(InputManager.getInstance().keyBind());
 				ex.addMouseListener(InputManager.getInstance().mouseBind());
 				
+				GameManager.getInstance().loadThread();
 				ex.setVisible(true);
 			}
 		});

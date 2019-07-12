@@ -18,11 +18,10 @@ final class ImageManagement
 		image = target;
 		width = image.getWidth();
 		height = image.getHeight();
-
 	}
 
 	public ImageManagement(Image target)
-	{
+	{		
 		BufferedImage bimage = new BufferedImage(target.getWidth(null), target.getHeight(null),
 				BufferedImage.TYPE_INT_ARGB);
 

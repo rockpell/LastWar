@@ -179,7 +179,7 @@ final public class InputManager
 		}
 		else if (selectIndex == 1)
 		{ // never ending mode
-			gameManager.loadThread();
+//			gameManager.loadThread();
 			dm.createGameLevel(1);
 		}
 		else if (selectIndex == 2)
