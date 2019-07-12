@@ -16,11 +16,8 @@ final class BossEnemy extends Enemy{
 	public void dead(){
 		if(DataManagement.getInstance().getGameLevel().getMode() == 0){
 			DataManagement.getInstance().getAudio().stop();
-			DataManagement.getInstance().setIsGameStart(false);
 			
-			InputManager.getInstance().ChageState(new StoryEndState());
-			GameManager.getInstance().setIsStoryEnd(true);
-			GameManager.getInstance().beforeStartOn();
+			GameManager.getInstance().ChageState(new StoryEndState());
 			GameManager.getInstance().stopLoop();
 			
 //			DataManagement.getInstance().getPlayer().dead();

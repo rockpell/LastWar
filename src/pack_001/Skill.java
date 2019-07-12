@@ -12,7 +12,7 @@ class Skill extends UI
 
 	public void skillExcute()
 	{
-		if (GameManager.getInstance().getIsPause() || GameManager.getInstance().getIsCountDown())
+		if (!(GameManager.getInstance().getNowState() instanceof ProgressState))
 		{
 			return;
 		}

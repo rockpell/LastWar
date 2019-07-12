@@ -48,8 +48,6 @@ final public class DataManagement
 	private int[] cost = new int[5];
 	private int wall_plus_hp = 0;
 
-	private boolean isGameStart = false, gameEnd = false;
-
 	private DataManagement()
 	{
 		initData();
@@ -208,9 +206,6 @@ final public class DataManagement
 		coolTime = 15;
 		coolTimeLeft = 0;
 
-		isGameStart = false;
-		gameEnd = false;
-
 		money = startMoney;
 		score = 0;
 
@@ -259,22 +254,6 @@ final public class DataManagement
 		}
 
 		return audioManager;
-	}
-
-	public boolean getIsGameStart() {
-		return isGameStart;
-	}
-
-	public void setIsGameStart(boolean val) {
-		isGameStart = val;
-	}
-
-	public boolean getGameEnd() {
-		return gameEnd;
-	}
-
-	public void setGameEnd(boolean val) {
-		gameEnd = val;
 	}
 
 	public void createGameLevel(int type) {

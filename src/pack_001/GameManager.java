@@ -19,21 +19,27 @@ final public class GameManager
 	private int playTime = 0, levelStartTime = 0;
 	private int countdownTime = 0;
 	private int fps = 51;
+	
 	private boolean isStop = false;
-	private boolean isCountdown = false;
-
-	public boolean isStroyStart = false, isStroyEnd = false, isTutorialStart = false;
-	public boolean isPause = true, isBeforeStart = false;
 
 	private GameLoop gameLoop;
 	private Thread th1;
 	private Timer jobScheduler;
-
+	
+	private GameState nowState;
+	
 	private GameManager()
 	{
-
+		nowState = new MenuState();
 	}
-
+	
+	public boolean ChageState(GameState state)
+	{
+		nowState = state;
+		System.out.println("state: " + state.toString());
+		return true;
+	}
+	
 	public void newLoop()
 	{
 		gameLoop = null;
@@ -49,15 +55,13 @@ final public class GameManager
 	{
 		jobScheduler = new Timer();
 		jobScheduler.schedule(new StartCountdown(1000), 1000);
-		setIsCountdown(true);
 	}
 
 	public void gameStart()
 	{
-		InputManager.getInstance().getNowState().exit(InputManager.getInstance());
+		nowState.exit(this);
 		nowStartLoop();
 		DataManagement.getInstance().getAudio().play();
-		setIsCountdown(false);
 		setTempTime(0);
 		stopSchedule();
 	}
@@ -148,74 +152,9 @@ final public class GameManager
 	{
 		return fps;
 	}
-
-	public void setIsCountdown(boolean value)
-	{
-		isCountdown = value;
-	}
-
-	public boolean getIsCountDown()
-	{
-		return isCountdown;
-	}
-
-	public void pauseScreenOn()
-	{
-		isPause = !isPause;
-	}
-
-	public void beforeStartOn()
-	{
-		isBeforeStart = !isBeforeStart;
-	}
-
-	public void setIsBeforeStart(boolean value) {
-		isBeforeStart = value;
-	}
 	
-	public boolean getIsBeforeStart()
+	public GameState getNowState()
 	{
-		return isBeforeStart;
-	}
-
-	public void setIsPause(boolean value) {
-		isPause = value;
-	}
-	
-	public boolean getIsPause()
-	{
-		return isPause;
-	}
-
-	public void setIsStoryEnd(boolean value)
-	{
-		isStroyEnd = value;
-	}
-
-	public boolean getIsStroyEnd()
-	{
-		return isStroyEnd;
-	}
-	
-	public void setIsStroyEnd(boolean value) {
-		isStroyEnd = value;
-	}
-
-	public void setIsTutorialStart(boolean value) {
-		isTutorialStart = value;
-	}
-	
-	public boolean getIsTutorialStart()
-	{
-		return isTutorialStart;
-	}
-
-	public void setIsStroyStart(boolean value) {
-		isStroyStart = value;
-	}
-	
-	public boolean getIsStroyStart()
-	{
-		return isStroyStart;
+		return nowState;
 	}
 }

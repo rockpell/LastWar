@@ -12,7 +12,7 @@ final class GameLevel
 	private Map<String, ArrayList<String>> sequenceData;
 
 	private int nowSequence = 0;
-	private int targetIndex = 0, all_index = 0;
+	private int patternIndex = 0, cumulativePartternIndex = 0;
 	private int mode_type = 0;
 	private boolean levelUp = true, refresh = false, patternChange = false;
 	private String patternName = null;
@@ -41,7 +41,7 @@ final class GameLevel
 	public void init()
 	{
 		nowSequence = 0;
-		targetIndex = 1;
+		patternIndex = 1;
 		levelUp = true;
 		refresh = false;
 		patternChange = false;
@@ -83,17 +83,17 @@ final class GameLevel
 		{
 			ArrayList<String> tempList = sequenceData.get("" + nowSequence);
 			patternChange = false;
-			targetIndex += 1;
-			all_index += 1;
+			patternIndex += 1;
+			cumulativePartternIndex += 1;
 
-			if (tempList.size() <= targetIndex)
+			if (tempList.size() <= patternIndex)
 			{
-				targetIndex = -1;
+				patternIndex = -1;
 				levelUp = true;
 				return;
 			}
 
-			patternName = tempList.get(targetIndex);
+			patternName = tempList.get(patternIndex);
 			System.out.println("patternName : " + patternName);
 			gameManager.refreshLevelStartTime();
 		}
@@ -152,8 +152,8 @@ final class GameLevel
 		return mode_type;
 	}
 
-	public int getAllIndex()
+	public int getCumulativePartternIndex()
 	{
-		return all_index;
+		return cumulativePartternIndex;
 	}
 }

@@ -118,12 +118,8 @@ final class Player extends Colider implements Unit
 	{
 		DataManagement dm = DataManagement.getInstance();
 		dm.getAudio().stop();
-		dm.setIsGameStart(false);
-		dm.setGameEnd(true);
 
-		InputManager.getInstance().ChageState(new DeadState());
-		
-		GameManager.getInstance().beforeStartOn();
+		GameManager.getInstance().ChageState(new DeadState());
 
 		GameManager.getInstance().stopLoop();
 
