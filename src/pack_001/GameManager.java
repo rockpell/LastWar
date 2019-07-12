@@ -19,62 +19,52 @@ final public class GameManager
 	private int playTime = 0, levelStartTime = 0;
 	private int countdownTime = 0;
 	private int fps = 51;
-	
+
 	private boolean isStop = false;
 
 	private GameLoop gameLoop;
 	private Thread th1;
 	private Timer jobScheduler;
-	
+
 	private GameState nowState;
-	
+
 	private GameManager()
 	{
 		nowState = new MenuState();
 	}
-	
+
 	public boolean ChageState(GameState state)
 	{
 		nowState = state;
-		System.out.println("state: " + state.toString());
 		return true;
 	}
-	
-	public void newLoop()
-	{
-		gameLoop = null;
-		gameLoop = new GameLoop(20);
-	}
 
-	public void initLoop()
-	{
-		gameLoop = null;
-	}
-
-	public void startLoop()
+	public void starCountdown()
 	{
 		jobScheduler = new Timer();
-		jobScheduler.schedule(new StartCountdown(1000), 1000);
+		jobScheduler.schedule(new CountdownTimer(1000), 1000);
 	}
 
 	public void gameStart()
 	{
-		nowState.exit(this);
-		nowStartLoop();
+		nowState.exit(this); // CountDownState를 벗어나기 위한 함수
+		StartGameLoop();
 		DataManagement.getInstance().getAudio().play();
-		setTempTime(0);
+		countdownTime = 0;
 		stopSchedule();
 	}
 
-	public void nowStartLoop()
+	private void StartGameLoop()
 	{
-		if (gameLoop == null)
-		{
-			gameLoop = new GameLoop(20);
-		}
+		gameLoop = new GameLoop(20);
 
 		th1 = new Thread(gameLoop);
 		th1.start();
+	}
+
+	public void stopGameLoop()
+	{
+		isStop = true;
 	}
 
 	public void addSchedule(TimerTask task, long time)
@@ -82,14 +72,9 @@ final public class GameManager
 		jobScheduler.schedule(task, time);
 	}
 
-	public void stopSchedule()
+	private void stopSchedule()
 	{
 		jobScheduler.cancel();
-	}
-
-	public void stopLoop()
-	{
-		isStop = true;
 	}
 
 	public void loadThread() // 이미지 로드용 스레드 실행
@@ -100,12 +85,9 @@ final public class GameManager
 
 	public void killThread()
 	{
-		if (isStop)
-		{
-			th1.interrupt();
-			isStop = false;
-			Screen.getInstance().repaint();
-		}
+		th1.interrupt();
+		isStop = false;
+		Screen.getInstance().repaint();
 	}
 
 	public int getPlayTime()
@@ -138,11 +120,6 @@ final public class GameManager
 		return countdownTime;
 	}
 
-	public void setTempTime(int value)
-	{
-		countdownTime = value;
-	}
-
 	public void setFps(int value)
 	{
 		fps = value;
@@ -152,9 +129,14 @@ final public class GameManager
 	{
 		return fps;
 	}
-	
+
 	public GameState getNowState()
 	{
 		return nowState;
+	}
+
+	public boolean getIsStop()
+	{
+		return isStop;
 	}
 }

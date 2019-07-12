@@ -7,7 +7,6 @@ final class Laser extends Colider implements Obstacle{
 	private String name;
 	private float x = 0, y = 0, width = 0, height = 0;
 	private int count = 0, countLimit = 50, deadLimit = 75;
-//	private int indexX, indexY;
 	private boolean wallColide = false, is_active = false;
 	private Wall targetWall;
 	
@@ -68,15 +67,15 @@ final class Laser extends Colider implements Obstacle{
 			name = "row" + (x+1);
 			width = 1150 - 32;
 			height = 10;
-			this.x = dm.rowStartX1 + 32;
-			this.y = dm.rowStartY + y*50 + 16;
+			this.x = Screen.rowStartX1 + 32;
+			this.y = Screen.rowStartY + y*50 + 16;
 			
 		} else if(x == 2 || x == 3){
 			name = "col" + (x-1);
 			width = 10;
 			height = 600 - 32;
-			this.x = dm.colStartX + y*50 + 16;
-			this.y = dm.colStartY1 + 32;
+			this.x = Screen.colStartX + y*50 + 16;
+			this.y = Screen.colStartY1 + 32;
 			
 		}
 	}
@@ -137,7 +136,7 @@ final class Laser extends Colider implements Obstacle{
 		Rectangle2D.Float wallRectange = targetWall.getBounds();
 		
 		if(name.equals("row1")){
-			width = wallRectange.x - dm.rowStartX1 - 32;
+			width = wallRectange.x - Screen.rowStartX1 - 32;
 			cwidth = width;
 		} else if(name.equals("row2")){
 			width = 1150 - 32;
@@ -145,7 +144,7 @@ final class Laser extends Colider implements Obstacle{
 			width -= (x - 32);
 			cwidth = width;
 		} else if(name.equals("col1")){
-			height = wallRectange.y - dm.colStartY1 - 32;
+			height = wallRectange.y - Screen.colStartY1 - 32;
 			cheight = height;
 		} else if(name.equals("col2")){
 			height = 600 - 32;

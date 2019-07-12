@@ -2,11 +2,11 @@ package pack_001;
 
 import java.util.TimerTask;
 
-final class StartCountdown extends TimerTask
+final class CountdownTimer extends TimerTask
 { // 321 카운트 다운 타이머
 	private int delay;
 
-	StartCountdown(int delay)
+	CountdownTimer(int delay)
 	{
 		this.delay = delay;
 	}
@@ -19,7 +19,7 @@ final class StartCountdown extends TimerTask
 
 		if (GameManager.getInstance().getCountdownTime() < 3)
 		{
-			GameManager.getInstance().addSchedule(new StartCountdown(delay), delay);
+			GameManager.getInstance().addSchedule(new CountdownTimer(delay), delay);
 		}
 		else
 		{

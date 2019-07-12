@@ -17,11 +17,6 @@ final class Player extends Colider implements Unit
 	private boolean damaged = false; // damaged == 피해 입음 상태 표시
 	private int damage_count = 0;
 
-	public Player()
-	{
-
-	}
-
 	// up: y==-1, down: y==1, right: x==1, left: x==-1
 	public void move(int x, int y)
 	{
@@ -110,7 +105,6 @@ final class Player extends Colider implements Unit
 				dead();
 			}
 		}
-
 	}
 
 	@Override
@@ -120,16 +114,11 @@ final class Player extends Colider implements Unit
 		dm.getAudio().stop();
 
 		GameManager.getInstance().ChageState(new DeadState());
-
-		GameManager.getInstance().stopLoop();
-
-		System.out.println("dead");
 	}
 
 	@Override
 	public int getHp()
 	{
-		// TODO Auto-generated method stub
 		return hp;
 	}
 
@@ -192,29 +181,24 @@ final class Player extends Colider implements Unit
 
 	public void checkMoveable(Rectangle2D.Float target)
 	{
-		// target
 		if ((x + cx) + cwidth >= target.x && x + cx < target.x && y + cy < target.y + target.height
 				&& y + cy + cheight > target.y)
 		{ // 물체를 기준으로 왼쪽에서 충돌
-			// System.out.println("colide left");
 			isMoveRight = true;
 		}
 		if (x + cx <= target.x + target.width && (x + cx + cwidth) > target.x + target.width
 				&& y + cy < target.y + target.height && y + cy + cheight > target.y)
 		{ // 물체 오른쪽에 충돌
-			// System.out.println("colide right");
 			isMoveLeft = true;
 		}
 		if (y + cy < target.y && y + cy + cwidth >= target.y && x + cx < target.x + target.width
 				&& x + cx + cwidth > target.x)
 		{ // 물체 위쪽에 충돌
-			// System.out.println("colide up");
 			isMoveDown = true;
 		}
 		if (y + cy <= target.y + target.height && y + cy + cheight > target.y + target.height
 				&& x + cx < target.x + target.width && x + cx + cwidth > target.x)
 		{ // 물체 아래쪽에 충돌
-			// System.out.println("colide down");
 			isMoveUp = true;
 		}
 	}

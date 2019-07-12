@@ -24,7 +24,7 @@ class MenuState extends GameState
 		}
 		else if (selectIndex == 1) // never ending mode
 		{
-			GameManager.getInstance().startLoop();
+			GameManager.getInstance().starCountdown();
 			gameManager.ChageState(new CountDownState());
 		}
 	}
@@ -55,19 +55,21 @@ class TutorialState extends GameState
 
 class StoryState extends GameState
 {
+	public StoryState()
+	{
+		GameManager.getInstance().stopGameLoop();
+	}
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-//		GameManager.getInstance().loadThread();
-		GameManager.getInstance().startLoop();
-		DataManagement.getInstance().createGameLevel(0);
+		GameManager.getInstance().starCountdown();
 		gameManager.ChageState(new CountDownState());
 	}
 
 	@Override
 	public void escKey(GameManager inputManager)
 	{
-
+		inputManager.ChageState(new MenuState());
 	}
 }
 
@@ -83,7 +85,7 @@ class ProgressState extends GameState
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
 		// TODO Auto-generated method stub
-		GameManager.getInstance().stopLoop();
+		GameManager.getInstance().stopGameLoop();
 		DataManagement.getInstance().getAudio().stop();
 		
 		gameManager.ChageState(new PauseState());
@@ -101,7 +103,7 @@ class PauseState extends GameState
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		GameManager.getInstance().startLoop();
+		GameManager.getInstance().starCountdown();
 		gameManager.ChageState(new CountDownState());
 	}
 
@@ -109,7 +111,6 @@ class PauseState extends GameState
 	public void escKey(GameManager gameManager)
 	{
 		DataManagement.getInstance().initData();
-		GameManager.getInstance().initLoop();
 		Screen.getInstance().repaint();
 		gameManager.ChageState(new MenuState());
 	}
@@ -125,13 +126,16 @@ class CountDownState extends GameState
 
 class DeadState extends GameState
 {
+	public DeadState()
+	{
+		GameManager.getInstance().stopGameLoop();
+	}
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
 		DataManagement.getInstance().initData();
 		
-		GameManager.getInstance().newLoop();
-		GameManager.getInstance().startLoop();
+		GameManager.getInstance().starCountdown();
 				
 		gameManager.ChageState(new CountDownState());
 	}
@@ -140,7 +144,6 @@ class DeadState extends GameState
 	public void escKey(GameManager gameManager)
 	{
 		DataManagement.getInstance().initData();
-		GameManager.getInstance().initLoop();
 		
 		Screen.getInstance().repaint();
 		
@@ -154,7 +157,6 @@ class StoryEndState extends GameState
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
 		DataManagement.getInstance().initData();
-		GameManager.getInstance().initLoop();
 		
 		Screen.getInstance().repaint();
 		

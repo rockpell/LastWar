@@ -7,7 +7,6 @@ public class mainClass
 
 	public static void main(String[] args)
 	{
-		// Screen abc = Screen.getInstance();
 		GameManager.getInstance();
 
 		EventQueue.invokeLater(new Runnable()

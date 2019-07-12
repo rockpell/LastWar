@@ -27,7 +27,7 @@ class Skill extends UI
 	}
 
 	private boolean pointCheck(int x, int y)
-	{ //
+	{ 
 		if (this.x < x && x < this.x + this.width)
 		{
 			if (this.y < y && y < this.y + this.height)
@@ -41,11 +41,9 @@ class Skill extends UI
 
 final class WallSkill extends Skill
 {
-
 	WallSkill(int x, int y, int width, int height)
 	{
 		super(x, y, width, height);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -56,7 +54,7 @@ final class WallSkill extends Skill
 
 		if (dm.getCost(0) > dm.getMoney())
 		{
-			Screen.getInstance().setMessageText("point");
+			Screen.getInstance().setSkillMessageText("point");
 			return;
 		}
 
@@ -72,7 +70,7 @@ final class WallSkill extends Skill
 		}
 		else if (dm.getCoolTimeLeft() != 0)
 		{
-			Screen.getInstance().setMessageText("cool");
+			Screen.getInstance().setSkillMessageText("cool");
 		}
 	}
 }
@@ -93,12 +91,12 @@ final class HealSkill extends Skill
 
 		if (dm.getCost(1) > dm.getMoney())
 		{
-			Screen.getInstance().setMessageText("point");
+			Screen.getInstance().setSkillMessageText("point");
 			return;
 		}
 		else if (dm.getPlayer().getHp() == dm.getPlayer().getMaxHp())
 		{
-			Screen.getInstance().setMessageText("heal");
+			Screen.getInstance().setSkillMessageText("heal");
 			return;
 		}
 
@@ -107,7 +105,7 @@ final class HealSkill extends Skill
 		dm.getPlayer().heal();
 		dm.subMoney(cost1);
 		dm.upCost(1);
-		Screen.getInstance().setMessageText("heal_ok");
+		Screen.getInstance().setSkillMessageText("heal_ok");
 		Screen.getInstance().setCostMessageText(dm.getCost(1) - cost1);
 	}
 }
@@ -128,7 +126,7 @@ final class HpSkill extends Skill
 
 		if (dm.getCost(2) > dm.getMoney())
 		{
-			Screen.getInstance().setMessageText("point");
+			Screen.getInstance().setSkillMessageText("point");
 			return;
 		}
 
@@ -137,7 +135,7 @@ final class HpSkill extends Skill
 		dm.getPlayer().maxHpUp();
 		dm.subMoney(cost1);
 		dm.upCost(2);
-		Screen.getInstance().setMessageText("hp_ok");
+		Screen.getInstance().setSkillMessageText("hp_ok");
 		Screen.getInstance().setCostMessageText(dm.getCost(2) - cost1);
 	}
 }
@@ -157,7 +155,7 @@ final class WallHpSkill extends Skill
 
 		if (dm.getCost(3) > dm.getMoney())
 		{
-			Screen.getInstance().setMessageText("point");
+			Screen.getInstance().setSkillMessageText("point");
 			return;
 		}
 
@@ -166,7 +164,7 @@ final class WallHpSkill extends Skill
 		dm.subMoney(cost1);
 		dm.upCost(3);
 		dm.plusHp();
-		Screen.getInstance().setMessageText("wall_hp_ok");
+		Screen.getInstance().setSkillMessageText("wall_hp_ok");
 		Screen.getInstance().setCostMessageText(dm.getCost(3) - cost1);
 	}
 }
@@ -186,7 +184,7 @@ final class WallCoolSkill extends Skill
 
 		if (dm.getCost(4) > dm.getMoney())
 		{
-			Screen.getInstance().setMessageText("point");
+			Screen.getInstance().setSkillMessageText("point");
 			return;
 		}
 
@@ -195,7 +193,7 @@ final class WallCoolSkill extends Skill
 		dm.subMoney(cost1);
 		dm.upCost(4);
 		dm.minusWallCoolTime(1);
-		Screen.getInstance().setMessageText("wall_cool_ok");
+		Screen.getInstance().setSkillMessageText("wall_cool_ok");
 		Screen.getInstance().setCostMessageText(dm.getCost(4) - cost1);
 	}
 }

@@ -36,12 +36,9 @@ final public class DataManagement
 	public Image excavator_001, excavator_002, brick_black;
 	public Image closed_door, open_door;
 	public Image t_skill, t_02, t_03, t_05, t_06;
-
-	public final int screenWidth = 1200, screenHeight = 800;
-	public final int rowNumber = 11, colNumber = 22;
-	public final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 60, colStartY1 = 50,
-			colStartY2 = screenHeight - 150;
-	private final int startMoney = 100000;
+	
+	private final int rowArrowCount = 11, colArrowCount = 22;
+	private final int startMoney = 0;
 	
 	private int coolTime = 15, coolTimeLeft = 0;
 	private int money = 0, score = 0;
@@ -73,10 +70,10 @@ final public class DataManagement
 
 			if (i < 2)
 			{
-				limit = rowNumber;
+				limit = rowArrowCount;
 			} else
 			{
-				limit = colNumber;
+				limit = colArrowCount;
 			}
 
 			for (int v = 0; v < limit; v++)
@@ -257,7 +254,6 @@ final public class DataManagement
 	}
 
 	public void createGameLevel(int type) {
-		gameLevel = null;
 		gameLevel = new GameLevel(type);
 	}
 

@@ -176,10 +176,10 @@ final public class InputManager
 		}
 		else if (selectIndex == 0)
 		{ // story mode
+			dm.createGameLevel(0);
 		}
 		else if (selectIndex == 1)
 		{ // never ending mode
-//			gameManager.loadThread();
 			dm.createGameLevel(1);
 		}
 		else if (selectIndex == 2)

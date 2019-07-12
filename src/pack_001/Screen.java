@@ -30,8 +30,12 @@ final public class Screen extends JFrame
 		return instance;
 	}
 
-	private final int screenWidth = 1200, screenHeight = 800;
-
+	public static final int screenWidth = 1200, screenHeight = 800;
+	public static final int rowStartX1 = 20, rowStartX2 = screenWidth - 50, rowStartY = 110, colStartX = 60, colStartY1 = 50,
+			colStartY2 = screenHeight - 150;
+	private final int gui_x = screenWidth / 2 - 140;
+	private final int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
+	
 	BufferedImage memoryimage;
 	Graphics2D mgc;
 
@@ -46,10 +50,7 @@ final public class Screen extends JFrame
 	private Image closed_door, open_door;
 	private Image t_skill, t_02, t_03, t_05, t_06;
 
-	private int gui_x = screenWidth / 2 - 140;
-	private int gui_y1 = 430, gui_y2 = 500, gui_y3 = 570;
-
-	private int messageTextDuration = 0, messageTextMaxDuration = 50;
+	private int skillMessageTextDuration = 0, skillMessageTextMaxDuration = 50;
 	private String messageText, costMessageText;
 
 	private Screen()
@@ -259,43 +260,43 @@ final public class Screen extends JFrame
 			case 0:
 				if (lar.isExist())
 				{
-					mgc.drawImage(arrow_right_red, dataManagement.rowStartX1, dataManagement.rowStartY + lar.getIndexY() * 50, null);
+					mgc.drawImage(arrow_right_red, rowStartX1, rowStartY + lar.getIndexY() * 50, null);
 				}
 				else
 				{
-					mgc.drawImage(arrow_right, dataManagement.rowStartX1, dataManagement.rowStartY + lar.getIndexY() * 50, null);
+					mgc.drawImage(arrow_right, rowStartX1, rowStartY + lar.getIndexY() * 50, null);
 				}
 				break;
 			case 1:
 				if (lar.isExist())
 				{
-					mgc.drawImage(arrow_left_red, dataManagement.rowStartX2, dataManagement.rowStartY + lar.getIndexY() * 50, null);
+					mgc.drawImage(arrow_left_red, rowStartX2, rowStartY + lar.getIndexY() * 50, null);
 				}
 				else
 				{
-					mgc.drawImage(arrow_left, dataManagement.rowStartX2, dataManagement.rowStartY + lar.getIndexY() * 50, null);
+					mgc.drawImage(arrow_left, rowStartX2, rowStartY + lar.getIndexY() * 50, null);
 				}
 
 				break;
 			case 2:
 				if (lar.isExist())
 				{
-					mgc.drawImage(arrow_down_red, dataManagement.colStartX + lar.getIndexY() * 50, dataManagement.colStartY1, null);
+					mgc.drawImage(arrow_down_red, colStartX + lar.getIndexY() * 50, colStartY1, null);
 				}
 				else
 				{
-					mgc.drawImage(arrow_down, dataManagement.colStartX + lar.getIndexY() * 50, dataManagement.colStartY1, null);
+					mgc.drawImage(arrow_down, colStartX + lar.getIndexY() * 50, colStartY1, null);
 				}
 
 				break;
 			case 3:
 				if (lar.isExist())
 				{
-					mgc.drawImage(arrow_up_red, dataManagement.colStartX + lar.getIndexY() * 50, dataManagement.colStartY2, null);
+					mgc.drawImage(arrow_up_red, colStartX + lar.getIndexY() * 50, colStartY2, null);
 				}
 				else
 				{
-					mgc.drawImage(arrow_up, dataManagement.colStartX + lar.getIndexY() * 50, dataManagement.colStartY2, null);
+					mgc.drawImage(arrow_up, colStartX + lar.getIndexY() * 50, colStartY2, null);
 				}
 			}
 		}
@@ -495,7 +496,7 @@ final public class Screen extends JFrame
 		{
 			// mgc.setColor(Color.red);
 			mgc.setFont(new Font("default", Font.BOLD, 20));
-			mgc.drawString(getMessageText(), skill5.getX() + 180, skill5.getY() + 10);
+			mgc.drawString(messageText, skill5.getX() + 180, skill5.getY() + 10);
 			if (getCostMessageText() != null)
 				mgc.drawString(getCostMessageText(), skill5.getX() + 180, skill5.getY() + 38);
 		}
@@ -835,12 +836,12 @@ final public class Screen extends JFrame
 		}
 	}
 
-	public void initMessage()
+	public void initSkillMessage()
 	{
-		messageTextDuration = 0;
+		skillMessageTextDuration = 0;
 	}
 
-	public void setMessageText(String text)
+	public void setSkillMessageText(String text)
 	{
 		switch (text)
 		{
@@ -867,7 +868,7 @@ final public class Screen extends JFrame
 			break;
 		}
 
-		messageTextDuration = messageTextMaxDuration;
+		skillMessageTextDuration = skillMessageTextMaxDuration;
 	}
 
 	public void setCostMessageText(int value)
@@ -875,12 +876,12 @@ final public class Screen extends JFrame
 		costMessageText = "Cost " + String.valueOf(value) + " Up";
 	}
 
-	public String getCostMessageText()
+	private String getCostMessageText()
 	{
 		return costMessageText;
 	}
 
-	public boolean initCostMessageText()
+	private boolean initCostMessageText()
 	{
 		costMessageText = null;
 		return true;
@@ -888,26 +889,21 @@ final public class Screen extends JFrame
 
 	public boolean isAppearMessage()
 	{
-		if (messageTextDuration > 0)
+		if (skillMessageTextDuration > 0)
 		{
 			return true;
 		}
 		return false;
 	}
 
-	public String getMessageText()
+	public int getSkillMessageTextDuration()
 	{
-		return messageText;
+		return skillMessageTextDuration;
 	}
 
-	public int getMessageTextDuration()
+	public boolean addSkillMessageTextDuration(int value)
 	{
-		return messageTextDuration;
-	}
-
-	public boolean addMessageTextDuration(int value)
-	{
-		messageTextDuration += value;
+		skillMessageTextDuration += value;
 		return true;
 	}
 }
