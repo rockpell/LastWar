@@ -15,7 +15,6 @@ final class AudioManager{
 	
 	AudioManager(){
 		url = this.getClass().getClassLoader().getResource("game_music/hit_and_run.wav");
-			
 	}
 	
 	public void play(){

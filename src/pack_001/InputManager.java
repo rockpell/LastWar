@@ -21,14 +21,14 @@ final public class InputManager
 		return instance;
 	}
 
-	private DataManagement dm;
+	private DataManager dm;
 	private GameManager gameManager;
 
 	private int selectIndex = 0, tutorialPage = 0;
 
 	InputManager()
 	{
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 		gameManager = GameManager.getInstance();
 	}
 
@@ -93,7 +93,6 @@ final public class InputManager
 
 				if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
 				{
-
 					gameManager.getNowState().selectKey(GameManager.getInstance(), selectIndex);
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
@@ -172,7 +171,6 @@ final public class InputManager
 		if (selectIndex == -1)
 		{ // show tutorial image
 			tutorialPage = 0;
-			Screen.getInstance().tloadImage();
 		}
 		else if (selectIndex == 0)
 		{ // story mode

@@ -10,11 +10,11 @@ final class Laser extends Colider implements Obstacle{
 	private boolean wallColide = false, is_active = false;
 	private Wall targetWall;
 	
-	private DataManagement dm;
+	private DataManager dm;
 	private LaserArrow linkLar;
 	
 	public Laser(int x, int y){
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 		
 		if(dm.addColider(this)){
 			linkLar = dm.findArrow(x, y);

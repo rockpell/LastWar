@@ -18,7 +18,7 @@ final class Wall extends Colider implements Obstacle
 		setSize(48, 48);
 		trigger = true; // 충돌 가능
 
-		maxHp += DataManagement.getInstance().getPlusHp();
+		maxHp += DataManager.getInstance().getPlusHp();
 		hp = maxHp;
 	}
 
@@ -26,7 +26,7 @@ final class Wall extends Colider implements Obstacle
 	public void dead()
 	{
 		// TODO Auto-generated method stub
-		DataManagement.getInstance().removeWall(this);
+		DataManager.getInstance().removeWall(this);
 	}
 
 	public void work()

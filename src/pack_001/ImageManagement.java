@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 final class ImageManagement
 {
-	private DataManagement dm;
+	private DataManager dm;
 	BufferedImage image;
 	private int width;
 	private int height;
@@ -34,7 +34,7 @@ final class ImageManagement
 		this.width = image.getWidth();
 		this.height = image.getHeight();
 
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 	}
 
 	public BufferedImage grayImage()

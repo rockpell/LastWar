@@ -6,7 +6,9 @@ final class Loader implements Runnable
 	public void run()
 	{
 		// TODO Auto-generated method stub
-		DataManagement.getInstance().loadImage();
-		Screen.getInstance().loadImage();
+		DataManager.getInstance().imageLoad();
+		DataManager.getInstance().tutorialImageLoad();
+		Screen.getInstance().imageLoad();
+		Screen.getInstance().tutorialImageLoad();
 	}
 }

@@ -27,14 +27,11 @@ final class JParser { // 레이저 패턴과 패턴 순서를 json파일로 부터 읽어오는 클래
 		sequenceData2 = new HashMap<String, ArrayList<String>>();
 		patternData = new HashMap<String, JsonPattern>();
 		
-		File abc = new File("resource/last_war.json");
-		
+		File abc = new File(getClass().getClassLoader().getResource("image/last_war.json").getFile());
 		JSONParser jsonParser = new JSONParser();
 		try{
 			
-			File bhc = new File(abc.getAbsolutePath());
-			
-			JSONObject jsonObject = (JSONObject)jsonParser.parse(new FileReader(bhc));
+			JSONObject jsonObject = (JSONObject)jsonParser.parse(new FileReader(abc));
 			
 			Set<String> keys = jsonObject.keySet();
 			

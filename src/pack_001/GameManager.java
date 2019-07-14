@@ -49,7 +49,7 @@ final public class GameManager
 	{
 		nowState.exit(this); // CountDownState를 벗어나기 위한 함수
 		startGameLoop();
-		DataManagement.getInstance().getAudio().play();
+		DataManager.getInstance().getAudio().play();
 		countdownTime = 0;
 		stopSchedule();
 	}

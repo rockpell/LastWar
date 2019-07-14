@@ -28,7 +28,7 @@ final class AlarmText extends UI
 		fy -= 0.3f;
 		if (time > 100)
 		{
-			DataManagement.getInstance().removeAlarm(this);
+			DataManager.getInstance().removeAlarm(this);
 		}
 	}
 

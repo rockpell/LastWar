@@ -110,7 +110,7 @@ final class Player extends Colider implements Unit
 	@Override
 	public void dead()
 	{
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 		dm.getAudio().stop();
 
 		GameManager.getInstance().ChageState(new DeadState());

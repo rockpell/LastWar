@@ -9,7 +9,7 @@ final class GameLoop implements Runnable
 
 	private Screen sc;
 	private GameManager gameManager;
-	private DataManagement dm;
+	private DataManager dm;
 	private GameLevel gameLevel;
 
 	GameLoop(int interval)
@@ -17,7 +17,7 @@ final class GameLoop implements Runnable
 		this.interval = interval;
 		sc = Screen.getInstance();
 		gameManager = GameManager.getInstance();
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 
 		playTime = gameManager.getPlayTime();
 

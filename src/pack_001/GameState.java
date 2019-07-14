@@ -80,7 +80,7 @@ class ProgressState extends GameState
 	{
 		// TODO Auto-generated method stub
 		GameManager.getInstance().stopGameLoop();
-		DataManagement.getInstance().getAudio().stop();
+		DataManager.getInstance().getAudio().stop();
 		
 		gameManager.ChageState(new PauseState());
 	}
@@ -88,7 +88,7 @@ class ProgressState extends GameState
 	@Override
 	public void arrowKey(GameManager gameManager, int x, int y)
 	{
-		DataManagement.getInstance().getPlayer().move(x, y);
+		DataManager.getInstance().getPlayer().move(x, y);
 	}
 }
 
@@ -103,7 +103,7 @@ class PauseState extends GameState
 	@Override
 	public void escKey(GameManager gameManager)
 	{
-		DataManagement.getInstance().initData();
+		DataManager.getInstance().initData();
 		Screen.getInstance().repaint();
 		gameManager.ChageState(new MenuState());
 	}
@@ -130,7 +130,7 @@ class DeadState extends GameState
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		DataManagement.getInstance().initData();
+		DataManager.getInstance().initData();
 				
 		gameManager.ChageState(new CountDownState());
 	}
@@ -138,7 +138,7 @@ class DeadState extends GameState
 	@Override
 	public void escKey(GameManager gameManager)
 	{
-		DataManagement.getInstance().initData();
+		DataManager.getInstance().initData();
 		
 		Screen.getInstance().repaint();
 		
@@ -151,16 +151,10 @@ class StoryEndState extends GameState
 	@Override
 	public void selectKey(GameManager gameManager, int selectIndex)
 	{
-		DataManagement.getInstance().initData();
+		DataManager.getInstance().initData();
 		
 		Screen.getInstance().repaint();
 		
 		gameManager.ChageState(new MenuState());
-	}
-
-	@Override
-	public void escKey(GameManager inputManager)
-	{
-
 	}
 }

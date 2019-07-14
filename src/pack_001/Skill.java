@@ -50,7 +50,7 @@ final class WallSkill extends Skill
 	public void skillExcute()
 	{
 		super.skillExcute();
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 
 		if (dm.getCost(0) > dm.getMoney())
 		{
@@ -87,7 +87,7 @@ final class HealSkill extends Skill
 	public void skillExcute()
 	{
 		super.skillExcute();
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 
 		if (dm.getCost(1) > dm.getMoney())
 		{
@@ -122,7 +122,7 @@ final class HpSkill extends Skill
 	public void skillExcute()
 	{
 		super.skillExcute();
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 
 		if (dm.getCost(2) > dm.getMoney())
 		{
@@ -151,7 +151,7 @@ final class WallHpSkill extends Skill
 	public void skillExcute()
 	{
 		super.skillExcute();
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 
 		if (dm.getCost(3) > dm.getMoney())
 		{
@@ -180,7 +180,7 @@ final class WallCoolSkill extends Skill
 	public void skillExcute()
 	{
 		super.skillExcute();
-		DataManagement dm = DataManagement.getInstance();
+		DataManager dm = DataManager.getInstance();
 
 		if (dm.getCost(4) > dm.getMoney())
 		{

@@ -40,7 +40,7 @@ final public class Screen extends JFrame
 	Graphics2D mgc;
 
 	private Player player;
-	private DataManagement dataManagement;
+	private DataManager dataManager;
 	private GameManager gameManager;
 
 	private Image playerImage, hp_potion, hp_plus, wall_hp, wall_time;
@@ -57,9 +57,9 @@ final public class Screen extends JFrame
 	{
 		super("Last War");
 
-		dataManagement = DataManagement.getInstance();
+		dataManager = DataManager.getInstance();
 		gameManager = GameManager.getInstance();
-		player = dataManagement.getPlayer();
+		player = dataManager.getPlayer();
 
 		setSize(screenWidth, screenHeight);
 
@@ -68,39 +68,37 @@ final public class Screen extends JFrame
 		setVisible(true);
 	}
 
-	public void loadImage()
+	public void imageLoad()
 	{
-		playerImage = dataManagement.mshi;
-		arrow_right = dataManagement.arrow_right;
-		arrow_left = dataManagement.arrow_left;
-		arrow_up = dataManagement.arrow_up;
-		arrow_down = dataManagement.arrow_down;
-		arrow_right_red = dataManagement.arrow_right_red;
-		arrow_left_red = dataManagement.arrow_left_red;
-		arrow_up_red = dataManagement.arrow_up_red;
-		arrow_down_red = dataManagement.arrow_down_red;
-		excavator_001 = dataManagement.excavator_001;
-		excavator_002 = dataManagement.excavator_002;
-		closed_door = dataManagement.closed_door;
-		open_door = dataManagement.open_door;
-		hp_potion = dataManagement.hp_potion;
-		hp_plus = dataManagement.hp_plus;
-		brick_black = dataManagement.brick_black;
-		wall_hp = dataManagement.wall_hp;
-		wall_time = dataManagement.wall_time;
+		playerImage = dataManager.mshi;
+		arrow_right = dataManager.arrow_right;
+		arrow_left = dataManager.arrow_left;
+		arrow_up = dataManager.arrow_up;
+		arrow_down = dataManager.arrow_down;
+		arrow_right_red = dataManager.arrow_right_red;
+		arrow_left_red = dataManager.arrow_left_red;
+		arrow_up_red = dataManager.arrow_up_red;
+		arrow_down_red = dataManager.arrow_down_red;
+		excavator_001 = dataManager.excavator_001;
+		excavator_002 = dataManager.excavator_002;
+		closed_door = dataManager.closed_door;
+		open_door = dataManager.open_door;
+		hp_potion = dataManager.hp_potion;
+		hp_plus = dataManager.hp_plus;
+		brick_black = dataManager.brick_black;
+		wall_hp = dataManager.wall_hp;
+		wall_time = dataManager.wall_time;
 	}
 
-	public void tloadImage()
+	public void tutorialImageLoad()
 	{
-		dataManagement.tloadImage();
-		playerImage = dataManagement.mshi;
-		brick_black = dataManagement.brick_black;
-		excavator_001 = dataManagement.excavator_001;
-		t_skill = dataManagement.t_skill;
-		t_02 = dataManagement.t_02;
-		t_03 = dataManagement.t_03;
-		t_05 = dataManagement.t_05;
-		t_06 = dataManagement.t_06;
+		brick_black = dataManager.brick_black;
+		excavator_001 = dataManager.excavator_001;
+		t_skill = dataManager.t_skill;
+		t_02 = dataManager.t_02;
+		t_03 = dataManager.t_03;
+		t_05 = dataManager.t_05;
+		t_06 = dataManager.t_06;
 	}
 
 	public void update(Graphics g)
@@ -143,8 +141,8 @@ final public class Screen extends JFrame
 			mgc.setFont(new Font("default", Font.BOLD, 16));
 
 			mgc.drawString("Time:  " + GameManager.getInstance().getPlayTime() / 10, 800, screenHeight - 80);
-			mgc.drawString("Score: " + String.valueOf(dataManagement.getScore()), 800, screenHeight - 50);
-			mgc.drawString("Point: " + String.valueOf(dataManagement.getMoney()), 800, screenHeight - 20);
+			mgc.drawString("Score: " + String.valueOf(dataManager.getScore()), 800, screenHeight - 50);
+			mgc.drawString("Point: " + String.valueOf(dataManager.getMoney()), 800, screenHeight - 20);
 
 			mgc.drawString("fps: " + GameManager.getInstance().getFps(), 20, 60);
 
@@ -168,13 +166,13 @@ final public class Screen extends JFrame
 
 	private void drawPlayer()
 	{
-		player = dataManagement.getPlayer();
+		player = dataManager.getPlayer();
 		Point2D.Float point = player.getPosition();
 		AffineTransform t = new AffineTransform();
 		t.translate(point.x, point.y); // x/y set here
 		t.scale(1, 1); // scale = 1
 
-		float opacity = 1 - (float) (dataManagement.getPlayer().getDamageCount() % 10) / 10;
+		float opacity = 1 - (float) (dataManager.getPlayer().getDamageCount() % 10) / 10;
 		mgc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 
 		mgc.drawImage(playerImage, t, null);
@@ -197,9 +195,9 @@ final public class Screen extends JFrame
 
 		int hp_x = 12;
 
-		if (dataManagement.getPlayer().getMaxHp() >= 10)
+		if (dataManager.getPlayer().getMaxHp() >= 10)
 		{
-			if (dataManagement.getPlayer().getHp() >= 10)
+			if (dataManager.getPlayer().getHp() >= 10)
 			{
 				hp_x = 20;
 			}
@@ -217,7 +215,7 @@ final public class Screen extends JFrame
 
 	private void drawWall()
 	{
-		for (Wall wa : dataManagement.getWallSet())
+		for (Wall wa : dataManager.getWallSet())
 		{
 			float wx = wa.getPosition("x");
 			float wy = wa.getPosition("y");
@@ -253,7 +251,7 @@ final public class Screen extends JFrame
 
 	private void drawArrow()
 	{
-		for (LaserArrow lar : dataManagement.getArrowSet())
+		for (LaserArrow lar : dataManager.getArrowSet())
 		{
 			switch (lar.getIndexX())
 			{
@@ -305,7 +303,7 @@ final public class Screen extends JFrame
 
 	private void drawLaser(Graphics2D g)
 	{
-		for (Laser la : dataManagement.getColiderSet())
+		for (Laser la : dataManager.getColiderSet())
 		{
 			if (!la.getIsActive())
 			{
@@ -368,7 +366,7 @@ final public class Screen extends JFrame
 
 	private void drawEnemy()
 	{
-		for (Enemy en : dataManagement.getEnemySet())
+		for (Enemy en : dataManager.getEnemySet())
 		{
 			int bar_x = 0;
 			AffineTransform t = new AffineTransform();
@@ -447,11 +445,11 @@ final public class Screen extends JFrame
 
 	private void drawSkillUI()
 	{
-		Skill skill1 = dataManagement.getSkill(0);
-		Skill skill2 = dataManagement.getSkill(1);
-		Skill skill3 = dataManagement.getSkill(2);
-		Skill skill4 = dataManagement.getSkill(3);
-		Skill skill5 = dataManagement.getSkill(4);
+		Skill skill1 = dataManager.getSkill(0);
+		Skill skill2 = dataManager.getSkill(1);
+		Skill skill3 = dataManager.getSkill(2);
+		Skill skill4 = dataManager.getSkill(3);
+		Skill skill5 = dataManager.getSkill(4);
 
 		mgc.setColor(Color.black);
 		mgc.drawRect(skill1.getX() - 2, skill1.getY() - 3, skill1.getWidth() + 4, skill1.getHeight() + 4);
@@ -475,22 +473,22 @@ final public class Screen extends JFrame
 		mgc.drawString("F", skill4.getX() + 18, skill4.getY() + 62);
 		mgc.drawString("G", skill5.getX() + 18, skill5.getY() + 62);
 
-		mgc.drawString(String.valueOf(dataManagement.getCost(0)) + "P", skill1.getX(), skill1.getY() - 2);
-		mgc.drawString(String.valueOf(dataManagement.getCost(1)) + "P", skill2.getX(), skill2.getY() - 2);
-		mgc.drawString(String.valueOf(dataManagement.getCost(2)) + "P", skill3.getX(), skill3.getY() - 2);
-		mgc.drawString(String.valueOf(dataManagement.getCost(3)) + "P", skill4.getX(), skill4.getY() - 2);
-		mgc.drawString(String.valueOf(dataManagement.getCost(4)) + "P", skill5.getX(), skill5.getY() - 2);
+		mgc.drawString(String.valueOf(dataManager.getCost(0)) + "P", skill1.getX(), skill1.getY() - 2);
+		mgc.drawString(String.valueOf(dataManager.getCost(1)) + "P", skill2.getX(), skill2.getY() - 2);
+		mgc.drawString(String.valueOf(dataManager.getCost(2)) + "P", skill3.getX(), skill3.getY() - 2);
+		mgc.drawString(String.valueOf(dataManager.getCost(3)) + "P", skill4.getX(), skill4.getY() - 2);
+		mgc.drawString(String.valueOf(dataManager.getCost(4)) + "P", skill5.getX(), skill5.getY() - 2);
 
-		if (dataManagement.getCoolTimeLeft() != 0)
+		if (dataManager.getCoolTimeLeft() != 0)
 		{
 			mgc.setFont(new Font("default", Font.PLAIN, 12));
-			mgc.drawString(String.valueOf(dataManagement.getCoolTimeLeft()), skill1.getX() + 18, skill1.getY() - 13);
+			mgc.drawString(String.valueOf(dataManager.getCoolTimeLeft()), skill1.getX() + 18, skill1.getY() - 13);
 		}
 	}
 
 	private void drawSkillMessageText()
 	{
-		Skill skill5 = dataManagement.getSkill(4);
+		Skill skill5 = dataManager.getSkill(4);
 
 		if (isAppearMessage())
 		{
@@ -505,10 +503,10 @@ final public class Screen extends JFrame
 			initCostMessageText();
 		}
 
-		if (dataManagement.getGameLevel().getMode() == 0)
+		if (dataManager.getGameLevel().getMode() == 0)
 		{
 			String ntext = "left wave : "
-					+ String.valueOf(dataManagement.getScenario().getPatterns() - dataManagement.getGameLevel().getCumulativePartternIndex());
+					+ String.valueOf(dataManager.getScenario().getPatterns() - dataManager.getGameLevel().getCumulativePartternIndex());
 			mgc.setFont(new Font("default", Font.BOLD, 20));
 			mgc.drawString(ntext, skill5.getX() + 180, skill5.getY() + 60);
 		}
@@ -518,7 +516,7 @@ final public class Screen extends JFrame
 	{
 		mgc.setColor(Color.black);
 		mgc.setFont(new Font("default", Font.PLAIN, 12));
-		for (AlarmText at : dataManagement.getAlarmList())
+		for (AlarmText at : dataManager.getAlarmList())
 		{
 			mgc.drawString(at.getText(), at.getFX(), at.getFY());
 		}
@@ -613,7 +611,7 @@ final public class Screen extends JFrame
 			mgc.drawString("Game Over", screenWidth / 2 - 180, 220);
 
 			mgc.setColor(Color.red);
-			mgc.drawString("Score : " + String.valueOf(dataManagement.getScore()), screenWidth / 2 - 330, 390);
+			mgc.drawString("Score : " + String.valueOf(dataManager.getScore()), screenWidth / 2 - 330, 390);
 
 			mgc.setFont(new Font("TimesRoman", Font.BOLD, 55));
 			mgc.setColor(Color.red);
@@ -819,14 +817,14 @@ final public class Screen extends JFrame
 	private void warpGate()
 	{
 
-		float wx = dataManagement.getWarpGate().x;
-		float wy = dataManagement.getWarpGate().y;
+		float wx = dataManager.getWarpGate().x;
+		float wy = dataManager.getWarpGate().y;
 
 		AffineTransform t = new AffineTransform();
 		t.translate(wx, wy); // x/y set here
 		t.scale(1, 1);
 
-		if (dataManagement.getWarpGate().isOpen())
+		if (dataManager.getWarpGate().isOpen())
 		{
 			mgc.drawImage(open_door, t, null);
 		}

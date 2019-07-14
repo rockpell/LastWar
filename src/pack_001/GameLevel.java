@@ -7,7 +7,7 @@ import java.util.Map;
 final class GameLevel
 {
 	private GameManager gameManager;
-	private DataManagement dm;
+	private DataManager dm;
 
 	private Map<String, ArrayList<String>> sequenceData;
 
@@ -20,7 +20,7 @@ final class GameLevel
 	public GameLevel(int type)
 	{
 		gameManager = GameManager.getInstance();
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 
 		mode_type = type;
 

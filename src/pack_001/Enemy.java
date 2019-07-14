@@ -23,11 +23,11 @@ class Enemy extends Colider implements Unit
 	private int alive_time = 0, level = 0;
 	private float vision = 200.0f;
 
-	private DataManagement dm;
+	private DataManager dm;
 
 	Enemy(int hp)
 	{
-		dm = DataManagement.getInstance();
+		dm = DataManager.getInstance();
 
 		setHp(hp);
 
@@ -113,7 +113,7 @@ class Enemy extends Colider implements Unit
 
 	private void calDistance()
 	{
-		Point2D.Float target = DataManagement.getInstance().getPlayer().getPosition();
+		Point2D.Float target = DataManager.getInstance().getPlayer().getPosition();
 		float x1 = (float) Math.pow((this.x + (this.width / 2) - target.x), 2);
 		float x2 = (float) Math.pow((this.y + (this.height / 2) - target.y), 2);
 
@@ -184,7 +184,7 @@ class Enemy extends Colider implements Unit
 
 		if (!randMove)
 		{
-			move(DataManagement.getInstance().getPlayer().getPosition());
+			move(DataManager.getInstance().getPlayer().getPosition());
 		}
 		else
 		{
