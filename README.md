@@ -36,6 +36,11 @@ json
 Eclipse
 
 ## 인게임 화면
+
+### 메뉴 화면
+![menu_screenshot](./menu_screenshot.jpg)
+
+### 플레이 화면
 ![screenshot](./screenshot.jpg)
 
 ## 사용 디자인 패턴
