@@ -38,7 +38,7 @@ json
 Eclipse
 
 ## 실행 파일 및 실행 방법
-https://github.com/rockpell/rockpell.github.io/raw/master/assets/files/LastWar.zip
+<https://github.com/rockpell/rockpell.github.io/raw/master/assets/files/LastWar.zip>
 
 다운 받으신 파일의 압축을 해제한후 .jar 파일을 실행하면 게임이 시작됩니다.
 
