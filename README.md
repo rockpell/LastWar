@@ -22,6 +22,8 @@
 
 메뉴 선택: SpaceBar, Enter
 
+게임 종료: esc
+
 ## 개발환경
 Windows10(64bit)
 JRE1.8
@@ -34,6 +36,13 @@ json
 
 ## 사용 IDE
 Eclipse
+
+## 실행 파일 및 실행 방법
+https://github.com/rockpell/rockpell.github.io/raw/master/assets/files/LastWar.zip
+
+다운 받으신 파일의 압축을 해제한후 .jar 파일을 실행하면 게임이 시작됩니다.
+
+압축을 해체한 파일의 일부분이 없을 경우 게임이 비정상적인 작동을 할 수 있습니다.
 
 ## 인게임 화면
 
