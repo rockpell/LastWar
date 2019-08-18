@@ -44,7 +44,7 @@ Eclipse
 ![screenshot](./screenshot.jpg)
 
 ## 사용 디자인 패턴
-- MVㅊ
+- MVC
 - State 패턴
 - 싱글톤 패턴
 
