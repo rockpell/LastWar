@@ -71,6 +71,8 @@ State 패턴을 적용하기 위해 게임의 상태를 분류하였습니다.
 
 이때 어떤 상태로 변경하는지는 각 상태클래스에서 지정합니다.
 
+## 싱글톤 적용 클래스
+GameManager, DataManager, InputManager, Screen
 
 ## json 용도
 Laser가 등장하는 패턴데이터, 각 패턴이 나타나는 순서인 시퀀스로 구성된 json파일을 사용하였습니다.
