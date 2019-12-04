@@ -52,6 +52,9 @@ Eclipse
 ### 플레이 화면
 ![screenshot](./screenshot.jpg)
 
+## 클래스 다이어 그램(중요 클래스만 표현)
+![class_diagram](./LastWarClassDiagram.png)
+
 ## 사용 디자인 패턴
 - MVC
 - State 패턴
